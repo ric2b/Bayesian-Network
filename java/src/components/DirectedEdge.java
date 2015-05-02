@@ -18,6 +18,14 @@ public class DirectedEdge extends Edge {
 		return node2;
 	}
 	
+	public boolean isSource(Node node) {
+		return node == node1;
+	}
+	
+	public boolean isDest(Node node) {
+		return node == node2;
+	}
+	
 	public String getString() {
 		return "edge[" + node1 + "->" + node2 +"]";
 	}
