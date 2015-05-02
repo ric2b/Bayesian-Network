@@ -1,4 +1,4 @@
-package proj;
+package input;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,12 +8,12 @@ import java.util.ArrayList;
 public class CSVFileReader {
 	
 	protected ArrayList<String[]> contents = new ArrayList<>();
-	protected int cursorRow = 0, cursorColumn = 0;	//cursor que indica posicao no ficheiro em memória actual 					 			
+	protected int cursorRow = 0, cursorColumn = 0;	//cursor que indica posicao no ficheiro em memï¿½ria actual 					 			
 	
 	public CSVFileReader(String pathname) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(pathname));
 		
-		//carregar ficheiro para a memória
+		//carregar ficheiro para a memï¿½ria
 		String line = null;
 		while((line = reader.readLine()) != null) {
 			//adicionar ao contents um array de strings com os valores entre virgulas da linha
@@ -26,10 +26,10 @@ public class CSVFileReader {
 	public String[] readLine() {
 		String[] line = null;
 		
-		if(this.cursorRow < contents.size()) {	//testar se já estamos no fim do ficheiro
+		if(this.cursorRow < contents.size()) {	//testar se jï¿½ estamos no fim do ficheiro
 			line = contents.get(this.cursorRow);
 			
-			//mover cursor para o inicio da próxima linha 
+			//mover cursor para o inicio da prï¿½xima linha 
 			this.cursorRow++;
 			this.cursorColumn = 0;
 		}
@@ -40,14 +40,14 @@ public class CSVFileReader {
 	public String read() {
 		String value = null;
 		
-		if(this.cursorRow < contents.size()) {	//testar se já estamos no fim do ficheiro
+		if(this.cursorRow < contents.size()) {	//testar se jï¿½ estamos no fim do ficheiro
 			value = contents.get(this.cursorRow)[this.cursorColumn];
 			
-			//mover cursor para próxima coluna
+			//mover cursor para prï¿½xima coluna
 			this.cursorColumn++;
 			if(this.cursorColumn >= contents.get(this.cursorRow).length) {
 				//chegou-se o fim da linha
-				//mover cursor para o inicio da próxima linha
+				//mover cursor para o inicio da prï¿½xima linha
 				this.cursorColumn = 0;
 				this.cursorRow++;
 			}

@@ -1,4 +1,4 @@
-package proj;
+package input;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public class TrainFileReader extends CSVFileReader {
 	}
 	
 	public int getSubjects() {
-		return alturaArray - 2; //primeira posicao da lista é o sep e a segunda as RVars
+		return alturaArray - 2; //primeira posicao da lista ï¿½ o sep e a segunda as RVars
 	}
 	
 	public int getRVars() {
