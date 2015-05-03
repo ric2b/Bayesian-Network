@@ -138,6 +138,10 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 		return new ParentsIterator(getNode(index));
 	}
 
+	protected Iterator<Node<T>> parents(Node<T> node) {
+		return edgeMap.get(node).iterator();
+	}
+
 	@Override
 	public Iterator<T> children(T t) throws NullPointerException, NoSuchElementException {
 		//este método não é implementado aqui devido à sua ineficiencia
