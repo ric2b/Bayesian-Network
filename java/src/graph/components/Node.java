@@ -44,8 +44,8 @@ public class Node<T> {
 			return false;
 		}
 		
-		Node other = (Node) obj;
 		//considerar apenas o indice
+		Node<?> other = (Node<?>) obj;
 		if (index != other.index)
 			return false;
 					
