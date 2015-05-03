@@ -130,4 +130,13 @@ public abstract class Graph<T> {
 		return nodeCount;
 	}
 	
+	public void clear() {
+		//limpar todos os mapas
+		edgeMap.clear();
+		nodeMap.clear();
+		indexMap.clear();
+		
+		nodeCount = 0;
+	}
+	
 }
