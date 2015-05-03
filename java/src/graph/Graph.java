@@ -74,13 +74,13 @@ public abstract class Graph<T> {
 	
 	public void addEdge(T t1, T t2) throws NullPointerException, NoSuchElementException {
 		//usar metodo abstracto que adiciona a aresta a partir de  Nodes
-		//este metodo deve ser implementado por um subclasse de acordo com as suas especificações
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
 		this.addEdge(getNode(t1), getNode(t2));
 	}
 
 	public void addEdge(int index1, int index2) throws NoSuchElementException {
 		//usar metodo abstracto que adiciona a aresta
-		//este metodo deve ser implementado por um subclasse de acordo com as suas especificações
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
 		this.addEdge(getNode(index1), getNode(index2));
 	}
 	
@@ -88,13 +88,13 @@ public abstract class Graph<T> {
 	
 	public void removeNode(T t) throws NullPointerException, NoSuchElementException {
 		//usar metodo abstracto que remove um nó
-		//este metodo deve ser implementado por um subclasse de acordo com as suas especificações
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
 		this.removeNode(getNode(t));
 	}
 	
 	public void removeNode(int index) throws NoSuchElementException {
 		//usar metodo abstracto que remove um nó
-		//este metodo deve ser implementado por um subclasse de acordo com as suas especificações
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
 		this.removeNode(getNode(index));
 	}
 
@@ -102,25 +102,27 @@ public abstract class Graph<T> {
 	
 	public void removeEdge(T t1, T t2) throws NullPointerException, NoSuchElementException {
 		//usar metodo abstracto que remove uma aresta
-		//este metodo deve ser implementado por um subclasse de acordo com as suas especificações
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
 		this.removeEdge(getNode(t1), getNode(t2));
 	}
 
 	public void removeEdge(int index1, int index2) throws NoSuchElementException {
 		//usar metodo abstracto que remove uma aresta
-		//este metodo deve ser implementado por um subclasse de acordo com as suas especificações
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
 		this.removeEdge(getNode(index1), getNode(index2));
 	}
 
 	protected abstract void removeAllEdges(Node<T> node);
 	
 	public void removeAllEdges(T t) throws NullPointerException, NoSuchElementException {
-		//remover todas as arestas do nó
+		//usar metodo abstracto que remove todas as arestas de um nó
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
 		this.removeAllEdges(getNode(t));
 	}
 
 	public void removeAllEdges(int index) throws NoSuchElementException {
-		//remover todas as arestas do nó
+		//usar metodo abstracto que remove todas as arestas de um nó
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
 		this.removeAllEdges(index);
 	}
 	
