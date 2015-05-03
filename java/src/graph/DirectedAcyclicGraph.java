@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -71,5 +72,32 @@ public class DirectedAcyclicGraph<T> extends Graph<T> {
 		}
 		
 		return node;
+	}
+	
+	public Collection<T> getParents(T t) throws NullPointerException, NoSuchElementException {
+		//usar metodo abstracto que obter pais de um nó
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
+		return this.getParents(getNode(t));
+	}
+	
+	public Collection<T> getParents(int index) throws NoSuchElementException {
+		//usar metodo abstracto que obter pais de um nó
+		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
+		return this.getParents(getNode(index));
+	}
+	
+	protected Collection<T> getParents(Node<T> node) {
+		Collection<T> parents = new ArrayList<>(nodeCount);
+		//converter conjunto de Node<T> para conjunto de T
+		for(Node<T> auxNode : edgeMap.get(node)) {
+			parents.add(auxNode.get());
+		}
+		
+		return parents;
+	}
+	
+	protected boolean isCycle(Node<T> node) {
+		//método precisa de ser implementado
+		return false;
 	}
 }
