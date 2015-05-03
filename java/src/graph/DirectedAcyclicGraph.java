@@ -2,12 +2,13 @@ package graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import graph.components.Node;
 import graph.components.NodeFactory;
 
-public class DirectedAcyclicGraph<T> extends Graph<T> {
+public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<T> {
 	
 	/*
 	 * Nota:	no edgeMap são colocados os pais de cada nó para representar arestas direccionadas
@@ -99,5 +100,53 @@ public class DirectedAcyclicGraph<T> extends Graph<T> {
 	protected boolean isCycle(Node<T> node) {
 		//método precisa de ser implementado
 		return false;
+	}
+	
+	protected class ParentsIterator implements Iterator<T> {
+		
+		Node<T> node = null;
+		Iterator<Node<T>> nodeIterator = null;
+		
+		public ParentsIterator(Node<T> node) {
+			this.node = node;
+			nodeIterator = edgeMap.get(this.node).iterator();
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return nodeIterator.hasNext();
+		}
+
+		@Override
+		public T next() {
+			return nodeIterator.next().get();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException(); 
+		}
+	}
+	
+	@Override
+	public Iterator<T> parents(T t) throws NullPointerException, NoSuchElementException {
+		return new ParentsIterator(getNode(t));
+	}
+
+	@Override
+	public Iterator<T> parents(int index) throws NoSuchElementException {
+		return new ParentsIterator(getNode(index));
+	}
+
+	@Override
+	public Iterator<T> children(T t) throws NullPointerException, NoSuchElementException {
+		//este método não é implementado aqui devido à sua ineficiencia
+		throw new UnsupportedOperationException(); 
+	}
+
+	@Override
+	public Iterator<T> children(int index) throws NoSuchElementException {
+		//este método não é implementado aqui devido à sua ineficiencia
+		throw new UnsupportedOperationException(); 
 	}
 }
