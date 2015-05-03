@@ -29,13 +29,13 @@ public class EstimateTable {
 	
 	public void setEstimate(int config, int value, double estimate) {
 		//caso o valor de config ou de value não esteja dentro dos limites do array é feito o throw
-		//de uma IndexOutOfBoundsException
+		//de uma ArrayIndexOutOfBoundsException
 		this.estimates[config][value] = estimate;
 	}
 	
 	public double getEstimate(int config, int value) {
 		//caso o valor de config ou de value não esteja dentro dos limites do array é feito o throw
-		//de uma IndexOutOfBoundsException
+		//de uma ArrayIndexOutOfBoundsException
 		return this.estimates[config][value];
 	}
 	
