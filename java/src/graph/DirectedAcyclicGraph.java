@@ -3,7 +3,10 @@ package graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 
 import graph.components.Node;
 import graph.components.NodeFactory;
@@ -97,8 +100,44 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 		return parents;
 	}
 	
-	protected boolean isCycle(Node<T> node) {
-		//mÃ©todo precisa de ser implementado
+	protected boolean doesItCreateCycle(Node<T> source, Node<T> destination) {
+		// testa se adicionar uma aresta (U,V) (de U para V) cria um ciclo
+		// assumindo que o grafo é aciclico antes da nova aresta, isto só acontece se já existe um caminho de V para U,
+		// uma vez que nesse caso é possivel ir de V para U e depois usar a nova aresta para ir de U para V (ciclo)
+		// O teste é feito com base numa BFS, uma vez que esta DAG pode ter altura infinita mas largura limitada a 3^andares 
+		
+		Queue<Node<T>> queue = new LinkedList<Node<T>>(); // lista dos nós descobertos mas por visitar
+		List<Node<T>> visitedNodes = new ArrayList<Node<T>>(); // lista dos nós já visitados
+		
+		//primeiro nó a ser "descoberto" é V (o destino da nova aresta)
+		queue.add(destination); 
+		visitedNodes.add(destination);
+		
+		Node<T> currentNode;
+		Node<T> tmpNode;
+		while(!queue.isEmpty()){
+			
+			currentNode = queue.poll(); // vai buscar à fila o próximo nó a visitar (e remove-o da fila)
+			if(currentNode.equals(source)){ 
+				return true; // se o nó actual é U, foi encontrado um caminho de V para U, a aresta (U,V) vai criar um ciclo
+			}
+			
+			visitedNodes.add(currentNode); // o nó actual é marcado como visitado
+			Iterator<Node<T>> currentNodeIterator = this.parents(currentNode); 
+			// o iterador é usado para saber os nós vizinhos do nó actual
+			
+			while(currentNodeIterator.hasNext()){ // iterar por todos os nós vizinhos do nó actual
+				tmpNode = currentNodeIterator.next(); 
+				if(!visitedNodes.contains(tmpNode)){ 
+					// cada nó vizinho é adicionado à lista de nós a visitar se ainda não foi visitado
+					// isso só acontece para nós que ainda não tinham sido descobertos
+					queue.add(tmpNode);
+				}				
+			}
+		}
+		
+		// se não há mais nós descobertos por visitar e nenhum dos visitados era U,
+		// então não há caminho de V para U e a aresta não vai criar um ciclo
 		return false;
 	}
 	
