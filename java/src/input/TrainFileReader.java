@@ -6,61 +6,59 @@ import java.util.Arrays;
 public class TrainFileReader extends CSVFileReader {
 	
 	String[] firstLine = this.contents.get(0); //primeira posicao da lista <-> primeira linha do ficheiro
-	int numberOfRVars = getRVars();
-	int alturaArray = getLineCount();
-	int numberOfSubjects = getSubjects();
-	int[] rangeRVars = new int[numberOfRVars];
-		
+	String lastElement = firstLine[firstLine.length-1]; //ultima posicao da primeira posicao da lista <-> nome e ultimo instante de tempo da ultima RVar  
+
+	int arrayHeight = -1;
+	int timeInstants = -1;
+	int numberOfSubjects = -1;
+	int numberOfRVars = -1;
+	String[] nameRVars = null;
+	int[] rangeRVars = null;
+
 	public TrainFileReader(String pathname) throws IOException {
-		super(pathname);	
+		super(pathname);
+		arrayHeight = getLineCount();
+		timeInstants = (Integer.parseInt(lastElement.substring(lastElement.lastIndexOf("_")+1,lastElement.length())))+1;
+		numberOfSubjects = arrayHeight - 1;	//primeira posicao da lista tem as RVars
+		numberOfRVars = firstLine.length / timeInstants;
 	}
 	
-	public int getSubjects() {
-		return alturaArray - 1; //primeira posicao da lista tem as RVars
+	public int getTimeInstants() {			
+		return timeInstants;
 	}
 	
-	public int getRVars() {
-		int i = 0, numberOfRVars = 0;	
-		
-		while(i < firstLine.length){
-			if(firstLine[i].endsWith("_0")) {
-				numberOfRVars++;
-			}
-			else {
-				break;
-			}
-			i++;
-		}
-		
+	public int getSubjectsCount() {
+		return numberOfSubjects; 
+	}
+	
+	public int getRVarsCount() {	
 		return numberOfRVars;
 	}
 	
 	public String[] getNameRVars() {
-		int i = 0;
-		String[] nameRVars = new String[numberOfRVars];
 		
-		while(i < numberOfRVars)  {
-			nameRVars[i] = firstLine[i].substring(0, firstLine[i].lastIndexOf("_0")); //procurar ultima ocorrencia de "_0"
-			rangeRVars[i] = getRangeSingleRVar(i);
-			i++;
+		if(nameRVars == null) {
+			nameRVars = new String[numberOfRVars];
+			rangeRVars = new int[numberOfRVars];
+			for(int i = 0; i < numberOfRVars; i++) {
+				nameRVars[i] = firstLine[i].substring(0, firstLine[i].lastIndexOf("_0")); //procurar ultima ocorrencia de "_0"
+				rangeRVars[i] = getRangeSingleRVar(i);
+			}
 		}
 		
-		return nameRVars;	
+		return nameRVars;
 	}
 	
-	public int getRangeSingleRVar(int i) {
-		int j = 1, sample = 0, max = 0;
+	public int getRangeSingleRVar(int i_Arg) {
+		int sample = 0, max = 0;
 		
-		while(i < firstLine.length) { //percorrer instantes de tempo da RVar
-			while(j <= numberOfSubjects) { //percorrer amostras da RVar
+		for(int i = i_Arg; i < firstLine.length; i += numberOfRVars) { //percorrer instantes de tempo da RVar
+			for(int j = 1; j <= numberOfSubjects; j++) { //percorrer amostras da RVar
 				sample = Integer.parseInt((this.contents.get(j))[i]); //recolher amostra da linha j e da coluna i
 				if(sample > max) {
 					max = sample; 
 				}
-				j++;
 			}
-			j = 1;
-			i += numberOfRVars;
 		}
 	
 		return max+1;
@@ -69,23 +67,14 @@ public class TrainFileReader extends CSVFileReader {
 	public int[] getRangeAllRVars() {	
 		return rangeRVars;
 	}
-	
-	public int getTimeInstants() {	
-		int timeInstants = 0;
-		String lastElement = firstLine[firstLine.length-1];
 		
-		timeInstants = Integer.parseInt(lastElement.substring(lastElement.lastIndexOf("_")+1,lastElement.length()));
-		
-		return timeInstants+1;
-	}
-	
-	public static void main(String[] args) throws IOException {
+	/*public static void main(String[] args) throws IOException {
 		TrainFileReader reader = new TrainFileReader("short-test-data.csv");
 		
-		System.out.println("#Subjects: " + reader.getSubjects());
-		System.out.println("#RVars: " + reader.getRVars());
-		System.out.println("#TimeInstants: " + reader.getTimeInstants());
+		System.out.println("#Subjects: " + reader.numberOfSubjects);
+		System.out.println("#RVars: " + reader.numberOfRVars);
+		System.out.println("#TimeInstants: " + reader.timeInstants);
 		System.out.println("Name of RVars: " + Arrays.deepToString(reader.getNameRVars()));
 		System.out.println("Range of RVars: " + Arrays.toString(reader.getRangeAllRVars()));
-	}
+	}*/
 }
