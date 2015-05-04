@@ -5,24 +5,29 @@ import java.util.Arrays;
 
 public class TrainFileReader extends CSVFileReader {
 	
-	String[] firstLine = this.contents.get(1); //segunda posicao da lista <-> primeira linha do ficheiro
+	String[] firstLine = this.contents.get(0); //primeira posicao da lista <-> primeira linha do ficheiro
 	int numberOfRVars = getRVars();
 	int alturaArray = getLineCount();
+	int numberOfSubjects = getSubjects();
+	int[] rangeRVars = new int[numberOfRVars];
 		
 	public TrainFileReader(String pathname) throws IOException {
 		super(pathname);	
 	}
 	
 	public int getSubjects() {
-		return alturaArray - 2; //primeira posicao da lista � o sep e a segunda as RVars
+		return alturaArray - 1; //primeira posicao da lista tem as RVars
 	}
 	
 	public int getRVars() {
 		int i = 0, numberOfRVars = 0;	
 		
 		while(i < firstLine.length){
-			if(firstLine[i].endsWith("_0")){
+			if(firstLine[i].endsWith("_0")) {
 				numberOfRVars++;
+			}
+			else {
+				break;
 			}
 			i++;
 		}
@@ -34,35 +39,53 @@ public class TrainFileReader extends CSVFileReader {
 		int i = 0;
 		String[] nameRVars = new String[numberOfRVars];
 		
-		while(i < numberOfRVars){
-			nameRVars[i] = firstLine[i].substring(0, firstLine[i].indexOf("_0"));
+		while(i < numberOfRVars)  {
+			nameRVars[i] = firstLine[i].substring(0, firstLine[i].lastIndexOf("_0")); //procurar ultima ocorrencia de "_0"
+			rangeRVars[i] = getRangeSingleRVar(i);
 			i++;
 		}
 		
-		return nameRVars;		
+		return nameRVars;	
 	}
 	
-	public int getRange(String nameRVar) {
-		int range = 0;
-
-		return range;
+	public int getRangeSingleRVar(int i) {
+		int j = 1, sample = 0, max = 0;
+		
+		while(i < firstLine.length) { //percorrer instantes de tempo da RVar
+			while(j <= numberOfSubjects) { //percorrer amostras da RVar
+				sample = Integer.parseInt((this.contents.get(j))[i]); //recolher amostra da linha j e da coluna i
+				if(sample > max) {
+					max = sample; 
+				}
+				j++;
+			}
+			j = 1;
+			i += numberOfRVars;
+		}
+	
+		return max+1;
+	}
+	
+	public int[] getRangeAllRVars() {	
+		return rangeRVars;
 	}
 	
 	public int getTimeInstants() {	
 		int timeInstants = 0;
 		String lastElement = firstLine[firstLine.length-1];
 		
-		timeInstants = Integer.parseInt(lastElement.substring(lastElement.indexOf("_")+1,lastElement.length()));
+		timeInstants = Integer.parseInt(lastElement.substring(lastElement.lastIndexOf("_")+1,lastElement.length()));
 		
 		return timeInstants+1;
 	}
 	
 	public static void main(String[] args) throws IOException {
-		TrainFileReader reader = new TrainFileReader("train-data.csv");
+		TrainFileReader reader = new TrainFileReader("short-test-data.csv");
 		
 		System.out.println("#Subjects: " + reader.getSubjects());
 		System.out.println("#RVars: " + reader.getRVars());
 		System.out.println("#TimeInstants: " + reader.getTimeInstants());
 		System.out.println("Name of RVars: " + Arrays.deepToString(reader.getNameRVars()));
+		System.out.println("Range of RVars: " + Arrays.toString(reader.getRangeAllRVars()));
 	}
 }
