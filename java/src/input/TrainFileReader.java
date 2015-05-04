@@ -24,6 +24,9 @@ public class TrainFileReader extends CSVFileReader {
 			if(firstLine[i].endsWith("_0")){
 				numberOfRVars++;
 			}
+			else{
+				break;
+			}
 			i++;
 		}
 		
