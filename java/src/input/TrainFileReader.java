@@ -1,19 +1,25 @@
 package input;
 
 import java.io.IOException;
-import java.util.Arrays;
+//import java.util.Arrays;
+
+import dataset.TimeSlice;
+import bayessian.RandomVector;
 
 public class TrainFileReader extends CSVFileReader {
 	
 	String[] firstLine = this.contents.get(0); //primeira posicao da lista <-> primeira linha do ficheiro
-	String lastElement = firstLine[firstLine.length-1]; //ultima posicao da primeira posicao da lista <-> nome e ultimo instante de tempo da ultima RVar  
-
+	String lastElement = firstLine[firstLine.length-1]; //ultima posicao da primeira posicao da lista <-> nome e ultimo instante de tempo da ultima RVar 
+	
 	int arrayHeight = -1;
 	int timeInstants = -1;
 	int numberOfSubjects = -1;
 	int numberOfRVars = -1;
 	String[] nameRVars = null;
 	int[] rangeRVars = null;
+	
+	RandomVector randomVector = null;
+	TimeSlice timeSlice = null;
 
 	public TrainFileReader(String pathname) throws IOException {
 		super(pathname);
@@ -46,6 +52,8 @@ public class TrainFileReader extends CSVFileReader {
 			}
 		}
 		
+		randomVector = new RandomVector(nameRVars, numberOfRVars); //chamar construtor do RandomVector
+		
 		return nameRVars;
 	}
 	
@@ -66,6 +74,13 @@ public class TrainFileReader extends CSVFileReader {
 	
 	public int[] getRangeAllRVars() {	
 		return rangeRVars;
+	}
+	
+	public TimeSlice getTimeSlice(int time) {
+		
+		timeSlice = new TimeSlice(randomVector, numberOfSubjects); //chamar construtor da TimeSlice
+		
+		return timeSlice;	
 	}
 		
 	/*public static void main(String[] args) throws IOException {
