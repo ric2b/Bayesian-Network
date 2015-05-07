@@ -8,9 +8,11 @@ import java.util.ArrayList;
 
 public class CSVFileReader {
 	
-	protected ArrayList<String[]> contents = new ArrayList<>();
-	protected int cursorRow = 0, cursorColumn = 0;	//cursor que indica posicao no ficheiro em memoria actual 					 			
-			
+	private ArrayList<String[]> contents = new ArrayList<>();
+	private int cursorRow = 0, cursorColumn = 0;	//cursor que indica posicao no ficheiro em memoria actual 					 			
+	private int columnCount = 0;					//numero de colunas de dados
+	private int size = 0;						//numero de posições com dados do ficheiro
+	
 	public CSVFileReader(String pathname) throws IOException {
 		
 		BufferedReader reader = new BufferedReader(new FileReader(pathname));
@@ -21,7 +23,16 @@ public class CSVFileReader {
 				continue;
 			}
 			//adicionar ao contents um array de strings com os valores entre virgulas da linha
-			contents.add(line.split(","));
+	        String[] strings = line.split(",");
+			contents.add(strings);
+			
+			//o número de colunas é dados pela linha com maior númeor de colunas
+			if(strings.length > columnCount) {
+				columnCount = strings.length;
+			}
+			
+			//adicioanr novas posições ao tamanho do ficheiro
+			size += strings.length;
 	    }
 	    reader.close();
 	}
@@ -59,30 +70,27 @@ public class CSVFileReader {
 		return value;
 	}
 	
-	public int getLineCount() {
-		return contents.size();
-	}
-	
 	public void reset() {
 		this.cursorRow = 0; 
 		this.cursorColumn = 0;
 	}
 	
-	/*public static void main(String[] args) throws IOException {
-		CSVFileReader reader = new CSVFileReader("short-test-data.csv");
-		
-		String[] line = null;
-		while((line = reader.readLine()) != null) {
-			System.out.println(Arrays.deepToString(line));
-		}
-		
-		System.out.println();
-		
-		reader.reset();
-		
-		String value = null;
-		while((value = reader.read()) != null) {
-			System.out.print(value + ';');
-		}
-	}*/
+	public String[] getRow(int row) {
+		return contents.get(row);
+	}
+	
+	public String getPosition(int row, int column) {
+		return contents.get(row)[column];
+	}
+	
+	public int getRowCount() {
+		return contents.size();
+	}
+	
+	public int getColumnCount() {
+		return columnCount;
+	}
+	public int size() {
+		return this.size;
+	}
 }

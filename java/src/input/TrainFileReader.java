@@ -6,21 +6,24 @@ import java.io.IOException;
 import dataset.TimeSlice;
 import bayessian.RandomVector;
 
-public class TrainFileReader extends CSVFileReader {
+public class TrainFileReader {
 	
-	String[] firstLine = this.contents.get(0); //primeira posicao da lista <-> primeira linha do ficheiro
-	String lastElement = firstLine[firstLine.length-1]; //ultima posicao da primeira posicao da lista <-> nome e ultimo instante de tempo da ultima RVar 
+	CSVFileReader fileReader = null; 
+	String[] firstLine = null; 								//primeira posicao da lista <-> primeira linha do ficheiro 
 		
 	public TrainFileReader(String pathname) throws IOException {
-		super(pathname);	
+		this.fileReader = new CSVFileReader(pathname);
+		this.firstLine = fileReader.getRow(0);
 	}
 	
-	public int getTimeInstants() {			
+	public int getTimeInstants() {	
+		String[] lastRow = fileReader.getRow(fileReader.getRowCount() - 1);	//obter ultima linha do ficheiro
+		String lastElement = lastRow[lastRow.length - 1];					//obter ultima posição da ultima linha do ficheiro
 		return (Integer.parseInt(lastElement.substring(lastElement.lastIndexOf("_")+1,lastElement.length())))+1;
 	}
 	
 	public int getSubjectsCount() {
-		return getLineCount() - 1; 
+		return fileReader.getRowCount() - 1; 
 	}
 	
 	public int getRVarsCount() {	
@@ -48,13 +51,12 @@ public class TrainFileReader extends CSVFileReader {
 		return randomVector;
 	}
 	
-	public int getRangeSingleRVar(int i_Arg, int numberOfRVars) {
-		int numberOfSubjects = getLineCount() - 1;	//primeira posicao da lista tem as RVars
+	private int getRangeSingleRVar(int varIndex, int numberOfRVars) {
 		int sample = 0, max = 0;
-	
-		for(int i = i_Arg; i < firstLine.length; i += numberOfRVars) { //percorrer instantes de tempo da RVar
-			for(int j = 1; j <= numberOfSubjects; j++) { //percorrer amostras da RVar
-				sample = Integer.parseInt((this.contents.get(j))[i]); //recolher amostra da linha j e da coluna i
+		
+		for(int i = varIndex; i < firstLine.length; i += numberOfRVars) { 	//percorrer instantes de tempo da RVar
+			for(int j = 1; j <= fileReader.getRowCount(); j++) { 			//percorrer amostras da RVar
+				sample = Integer.parseInt(fileReader.getPosition(i, j)); 	//recolher amostra da linha j e da coluna i
 				if(sample > max) {
 					max = sample; 
 				}
@@ -67,7 +69,7 @@ public class TrainFileReader extends CSVFileReader {
 	public TimeSlice getTimeSlice(int time) {
 		
 		RandomVector randomVector = getRVars();
-		int numberOfSubjects = getLineCount() - 1;
+		int numberOfSubjects = fileReader.getRowCount() - 1;
 		
 		TimeSlice timeSlice = null;
 		
