@@ -5,6 +5,10 @@ import java.util.NoSuchElementException;
 
 public class StaticRandomVariable extends RandomVariable {
 
+	public StaticRandomVariable(String name, int range, int timeInstant) {
+		super(name, range, timeInstant);
+	}
+
 	public void	setRange(int range) {
 		this.range = range;
 	}
