@@ -9,28 +9,29 @@ import java.util.NoSuchElementException;
 import java.util.List;
 
 import graph.components.Node;
-import graph.components.NodeFactory;
 
 public abstract class Graph<T> {
 	
 	protected Map<Node<T>, Collection<Node<T>>> edgeMap = null;		// mapa que representa as arestas
-	protected Map<T, Node<T>> nodeMap = null;								// permite obter o nó para um dado T
-	protected Map<Integer, Node<T>> indexMap = null;					// permite obter o nó a partir de um dado indice 
-	protected NodeFactory<T> factory = null;								// fabrica utilizada para criar os nós dependendo do tipo de grafo
-	protected int nodeCount = 0;													// numero de nós no grafo
+	protected Map<T, Node<T>> nodeMap = null;						// permite obter o nó para um dado T
+	protected Map<Integer, Node<T>> indexMap = null;				// permite obter o nó a partir de um dado indice 
+	protected int nodeCount = 0;									// numero de nós no grafo
 	
-	@SuppressWarnings("unchecked")	//utilizado para remover os warnings do eclipse devido ao cast da factory
-	public Graph(NodeFactory<? extends T> factory) {
-		this.factory = (NodeFactory<T>) factory;
+	/**
+	 * Constructor sem argumentos do grafo
+	 */
+	public Graph() {
 		this.edgeMap = new HashMap<>();
 		this.nodeMap = new HashMap<>();
 		this.indexMap = new HashMap<>();
 	}
 	
-	public Graph(NodeFactory<? extends T> factory, Collection<? extends T> ts) {
-		//chamar constructor anterior
-		this(factory);
-		 
+	/**
+	 * Constructor do grafo que permite introduzir uma coleção de nós no grafo.
+	 * Estes nós são colocados no grafo sem qualquer ligação entre eles.
+	 * @param ts	coleção de T's com que se pretende iniciar o grafo 
+	 */
+	public Graph(Collection<? extends T> ts) {
 		//criar nós a partir da collection
 		for(T t : ts) {
 			this.addNode(t);
@@ -54,7 +55,7 @@ public abstract class Graph<T> {
 		}
 		
 		//usar como indice o numero de nós total para garantir que não é repetido
-		Node<T> node = ((NodeFactory<T>) factory).createNode(nodeCount, ((T) t));
+		Node<T> node = new Node<T>(nodeCount, t);
 		
 		//colocar nó no mapa de aresta com nenhuma aresta definida
 		edgeMap.put(node, new HashSet<Node<T>>()); 

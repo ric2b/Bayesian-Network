@@ -5,7 +5,7 @@ public class Node<T> {
 	protected int index = -1;
 	protected T t = null;
 	
-	protected Node(int index, T t) {
+	public Node(int index, T t) {
 		this.index = index;
 		this.t = t;
 	}

@@ -9,20 +9,22 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import graph.components.Node;
-import graph.components.NodeFactory;
 
 public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<T> {
 	
 	/*
-	 * Nota:	no edgeMap sÃ£o colocados os pais de cada nÃ³ para representar arestas direccionadas
+	 * Nota: no edgeMap sÃ£o colocados os pais de cada nÃ³ para representar arestas direccionadas
 	 */
 	
-	public DirectedAcyclicGraph(NodeFactory<? extends T> factory) {
-		super(factory);
+	/**
+	 * Constructor sem argumentos
+	 */
+	public DirectedAcyclicGraph() {
+		super();
 	}
 	
-	public DirectedAcyclicGraph(NodeFactory<? extends T> factory, Collection<? extends T> ts) {
-		super(factory, ts);
+	public DirectedAcyclicGraph(Collection<? extends T> ts) {
+		super(ts);
 	}
 
 	@Override
@@ -102,14 +104,14 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 	
 	protected boolean doesItCreateCycle(Node<T> source, Node<T> destination) {
 		// testa se adicionar uma aresta (U,V) (de U para V) cria um ciclo
-		// assumindo que o grafo é aciclico antes da nova aresta, isto só acontece se já existe um caminho de V para U,
-		// uma vez que nesse caso é possivel ir de V para U e depois usar a nova aresta para ir de U para V (ciclo)
-		// O teste é feito com base numa BFS, uma vez que esta DAG pode ter altura infinita mas largura limitada a 3^andares 
+		// assumindo que o grafo ï¿½ aciclico antes da nova aresta, isto sï¿½ acontece se jï¿½ existe um caminho de V para U,
+		// uma vez que nesse caso ï¿½ possivel ir de V para U e depois usar a nova aresta para ir de U para V (ciclo)
+		// O teste ï¿½ feito com base numa BFS, uma vez que esta DAG pode ter altura infinita mas largura limitada a 3^andares 
 		
-		Queue<Node<T>> queue = new LinkedList<Node<T>>(); // lista dos nós descobertos mas por visitar
-		List<Node<T>> visitedNodes = new ArrayList<Node<T>>(); // lista dos nós já visitados
+		Queue<Node<T>> queue = new LinkedList<Node<T>>(); // lista dos nï¿½s descobertos mas por visitar
+		List<Node<T>> visitedNodes = new ArrayList<Node<T>>(); // lista dos nï¿½s jï¿½ visitados
 		
-		//primeiro nó a ser "descoberto" é V (o destino da nova aresta)
+		//primeiro nï¿½ a ser "descoberto" ï¿½ V (o destino da nova aresta)
 		queue.add(destination); 
 		visitedNodes.add(destination);
 		
@@ -117,27 +119,27 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 		Node<T> tmpNode;
 		while(!queue.isEmpty()){
 			
-			currentNode = queue.poll(); // vai buscar à fila o próximo nó a visitar (e remove-o da fila)
+			currentNode = queue.poll(); // vai buscar ï¿½ fila o prï¿½ximo nï¿½ a visitar (e remove-o da fila)
 			if(currentNode.equals(source)){ 
-				return true; // se o nó actual é U, foi encontrado um caminho de V para U, a aresta (U,V) vai criar um ciclo
+				return true; // se o nï¿½ actual ï¿½ U, foi encontrado um caminho de V para U, a aresta (U,V) vai criar um ciclo
 			}
 			
-			visitedNodes.add(currentNode); // o nó actual é marcado como visitado
+			visitedNodes.add(currentNode); // o nï¿½ actual ï¿½ marcado como visitado
 			Iterator<Node<T>> currentNodeIterator = this.parents(currentNode); 
-			// o iterador é usado para saber os nós vizinhos do nó actual
+			// o iterador ï¿½ usado para saber os nï¿½s vizinhos do nï¿½ actual
 			
-			while(currentNodeIterator.hasNext()){ // iterar por todos os nós vizinhos do nó actual
+			while(currentNodeIterator.hasNext()){ // iterar por todos os nï¿½s vizinhos do nï¿½ actual
 				tmpNode = currentNodeIterator.next(); 
 				if(!visitedNodes.contains(tmpNode)){ 
-					// cada nó vizinho é adicionado à lista de nós a visitar se ainda não foi visitado
-					// isso só acontece para nós que ainda não tinham sido descobertos
+					// cada nï¿½ vizinho ï¿½ adicionado ï¿½ lista de nï¿½s a visitar se ainda nï¿½o foi visitado
+					// isso sï¿½ acontece para nï¿½s que ainda nï¿½o tinham sido descobertos
 					queue.add(tmpNode);
 				}				
 			}
 		}
 		
-		// se não há mais nós descobertos por visitar e nenhum dos visitados era U,
-		// então não há caminho de V para U e a aresta não vai criar um ciclo
+		// se nï¿½o hï¿½ mais nï¿½s descobertos por visitar e nenhum dos visitados era U,
+		// entï¿½o nï¿½o hï¿½ caminho de V para U e a aresta nï¿½o vai criar um ciclo
 		return false;
 	}
 	
