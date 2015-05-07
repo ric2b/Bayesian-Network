@@ -14,10 +14,10 @@ import graph.components.NodeFactory;
 public abstract class Graph<T> {
 	
 	protected Map<Node<T>, Collection<Node<T>>> edgeMap = null;		// mapa que representa as arestas
-	protected Map<T, Node<T>> nodeMap = null;								// permite obter o nó para um dado T
-	protected Map<Integer, Node<T>> indexMap = null;					// permite obter o nó a partir de um dado indice 
-	protected NodeFactory<T> factory = null;								// fabrica utilizada para criar os nós dependendo do tipo de grafo
-	protected int nodeCount = 0;													// numero de nós no grafo
+	protected Map<T, Node<T>> nodeMap = null;						// permite obter o nó para um dado T
+	protected Map<Integer, Node<T>> indexMap = null;				// permite obter o nó a partir de um dado indice 
+	protected NodeFactory<T> factory = null;						// fabrica utilizada para criar os nós dependendo do tipo de grafo
+	protected int nodeCount = 0;									// numero de nós no grafo
 	
 	@SuppressWarnings("unchecked")	//utilizado para remover os warnings do eclipse devido ao cast da factory
 	public Graph(NodeFactory<? extends T> factory) {
