@@ -2,16 +2,17 @@ package bayessian;
 
 public class RandomVector {
 	
-	String[] vars = null;
+	RandomVariable[] vars = null;
 	
-	public RandomVector(String [] nameRVars, int numberOfRVars) {
-		vars = new String[numberOfRVars];
-		for(int i = 0; i < numberOfRVars; i++) {
-			vars[i] = nameRVars[i];
+	public RandomVector(String [] nameRVars, int[] rangeOfRVars) {
+		vars = new StaticRandomVariable[nameRVars.length];	
+		for(int i = 0; i < nameRVars.length; i++) {
+			RandomVariable RVar = new StaticRandomVariable(nameRVars[i], rangeOfRVars[i]);
+			vars[i] = RVar;
 		}
 	}
 	
-	public String[] getRandomVector() {
+	public RandomVariable[] getRandomVector() {
 		return vars;
 	}
 }

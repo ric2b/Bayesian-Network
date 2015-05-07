@@ -7,6 +7,11 @@ public abstract class RandomVariable implements Iterable<Integer> {
 	protected String name = null;
 	protected int range = -1;
 	
+	public RandomVariable(String nameRVar, int rangeOfRVar) {
+		name = nameRVar;
+		range = rangeOfRVar;
+	}
+	
 	public String getName() {
 		return name;
 	}

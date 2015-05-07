@@ -10,56 +10,48 @@ public class TrainFileReader extends CSVFileReader {
 	
 	String[] firstLine = this.contents.get(0); //primeira posicao da lista <-> primeira linha do ficheiro
 	String lastElement = firstLine[firstLine.length-1]; //ultima posicao da primeira posicao da lista <-> nome e ultimo instante de tempo da ultima RVar 
-	
-	int arrayHeight = -1;
-	int timeInstants = -1;
-	int numberOfSubjects = -1;
-	int numberOfRVars = -1;
-	String[] nameRVars = null;
-	int[] rangeRVars = null;
-	
-	RandomVector randomVector = null;
-	TimeSlice timeSlice = null;
-
+		
 	public TrainFileReader(String pathname) throws IOException {
-		super(pathname);
-		arrayHeight = getLineCount();
-		timeInstants = (Integer.parseInt(lastElement.substring(lastElement.lastIndexOf("_")+1,lastElement.length())))+1;
-		numberOfSubjects = arrayHeight - 1;	//primeira posicao da lista tem as RVars
-		numberOfRVars = firstLine.length / timeInstants;
+		super(pathname);	
 	}
 	
 	public int getTimeInstants() {			
-		return timeInstants;
+		return (Integer.parseInt(lastElement.substring(lastElement.lastIndexOf("_")+1,lastElement.length())))+1;
 	}
 	
 	public int getSubjectsCount() {
-		return numberOfSubjects; 
+		return getLineCount() - 1; 
 	}
 	
 	public int getRVarsCount() {	
-		return numberOfRVars;
+		return firstLine.length / getTimeInstants();
 	}
 	
-	public String[] getNameRVars() {
+	public RandomVector getRVars() {
+		
+		String[] nameRVars = null;
+		int[] rangeRVars = null;
+		RandomVector randomVector = null;
+		int numberOfRVars = getRVarsCount();
 		
 		if(nameRVars == null) {
 			nameRVars = new String[numberOfRVars];
 			rangeRVars = new int[numberOfRVars];
 			for(int i = 0; i < numberOfRVars; i++) {
 				nameRVars[i] = firstLine[i].substring(0, firstLine[i].lastIndexOf("_0")); //procurar ultima ocorrencia de "_0"
-				rangeRVars[i] = getRangeSingleRVar(i);
+				rangeRVars[i] = getRangeSingleRVar(i, numberOfRVars);
 			}
 		}
 		
-		randomVector = new RandomVector(nameRVars, numberOfRVars); //chamar construtor do RandomVector
+		randomVector = new RandomVector(nameRVars, rangeRVars); //chamar construtor do RandomVector
 		
-		return nameRVars;
+		return randomVector;
 	}
 	
-	public int getRangeSingleRVar(int i_Arg) {
+	public int getRangeSingleRVar(int i_Arg, int numberOfRVars) {
+		int numberOfSubjects = getLineCount() - 1;	//primeira posicao da lista tem as RVars
 		int sample = 0, max = 0;
-		
+	
 		for(int i = i_Arg; i < firstLine.length; i += numberOfRVars) { //percorrer instantes de tempo da RVar
 			for(int j = 1; j <= numberOfSubjects; j++) { //percorrer amostras da RVar
 				sample = Integer.parseInt((this.contents.get(j))[i]); //recolher amostra da linha j e da coluna i
@@ -72,13 +64,16 @@ public class TrainFileReader extends CSVFileReader {
 		return max+1;
 	}
 	
-	public int[] getRangeAllRVars() {	
-		return rangeRVars;
-	}
-	
 	public TimeSlice getTimeSlice(int time) {
 		
+		RandomVector randomVector = getRVars();
+		int numberOfSubjects = getLineCount() - 1;
+		
+		TimeSlice timeSlice = null;
+		
 		timeSlice = new TimeSlice(randomVector, numberOfSubjects); //chamar construtor da TimeSlice
+		
+		//construir timeslice
 		
 		return timeSlice;	
 	}

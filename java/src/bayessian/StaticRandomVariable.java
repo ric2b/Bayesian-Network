@@ -4,6 +4,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class StaticRandomVariable extends RandomVariable {
+	
+	public StaticRandomVariable(String nameRVar, int rangeOfRVar) {
+		super(nameRVar, rangeOfRVar);
+	}
 
 	public void	setRange(int range) {
 		this.range = range;
@@ -20,7 +24,7 @@ public class StaticRandomVariable extends RandomVariable {
 		
 		@Override
 		public boolean hasNext() {
-			//testar se o valor actual já ultrapassou (range - 1)
+			//testar se o valor actual ja ultrapassou (range - 1)
 			return this.currentValue < range;
 		}
 
@@ -45,5 +49,4 @@ public class StaticRandomVariable extends RandomVariable {
 	public Iterator<Integer> iterator() {
 		return new StaticRandomVariableIterator();
 	}
-
 }
