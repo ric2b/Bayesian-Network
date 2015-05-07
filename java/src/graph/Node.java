@@ -1,11 +1,17 @@
-package graph.components;
+package graph;
 
-public class Node<T> {
+/*
+ * Ter em conta que Node é só uma classe que existe dentro do grafo utilizada para representar os
+ * diferentes nós do mesmo. Desta forma tem apenas visibilidade de package de forma que um cliente 
+ * deste grafo não possa criar objectos da classe Node nem precise de conhecer a sua implementação. 
+ */
+
+class Node<T> {
 	
 	protected int index = -1;
 	protected T t = null;
 	
-	protected Node(int index, T t) {
+	public Node(int index, T t) {
 		this.index = index;
 		this.t = t;
 	}
