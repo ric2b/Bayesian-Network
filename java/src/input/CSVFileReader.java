@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+//import java.util.Arrays;
 
 public class CSVFileReader {
 	
@@ -68,8 +68,8 @@ public class CSVFileReader {
 		this.cursorColumn = 0;
 	}
 	
-	public static void main(String[] args) throws IOException {
-		CSVFileReader reader = new CSVFileReader("cenas-data.csv");
+	/*public static void main(String[] args) throws IOException {
+		CSVFileReader reader = new CSVFileReader("short-test-data.csv");
 		
 		String[] line = null;
 		while((line = reader.readLine()) != null) {
@@ -84,5 +84,5 @@ public class CSVFileReader {
 		while((value = reader.read()) != null) {
 			System.out.print(value + ';');
 		}
-	}
+	}*/
 }
