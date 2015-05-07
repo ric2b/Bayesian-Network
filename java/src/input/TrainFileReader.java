@@ -3,8 +3,10 @@ package input;
 import java.io.IOException;
 //import java.util.Arrays;
 
+
 import dataset.TimeSlice;
 import bayessian.RandomVector;
+import bayessian.Sample;
 
 public class TrainFileReader extends CSVFileReader {
 	
@@ -66,15 +68,18 @@ public class TrainFileReader extends CSVFileReader {
 	
 	public TimeSlice getTimeSlice(int time) {
 		
-		RandomVector randomVector = getRVars();
 		int numberOfSubjects = getLineCount() - 1;
 		
-		TimeSlice timeSlice = null;
+		TimeSlice timeSlice = new TimeSlice(numberOfSubjects); //chamar construtor da TimeSlice
+		Sample sample = new Sample(getRVarsCount());
 		
-		timeSlice = new TimeSlice(randomVector, numberOfSubjects); //chamar construtor da TimeSlice
-		
-		//construir timeslice
-		
+		for(int i = 0; i < numberOfSubjects; i++) {
+			sample = new Sample(); //WIP
+			if(timeSlice.addSample(sample) == false) {
+				break;
+			}
+		}
+	
 		return timeSlice;	
 	}
 		
