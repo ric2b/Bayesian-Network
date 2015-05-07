@@ -1,4 +1,4 @@
-package graph.components;
+package graph;
 
 public class Node<T> {
 	
