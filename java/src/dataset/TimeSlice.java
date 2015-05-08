@@ -33,4 +33,8 @@ public class TimeSlice {
 	public int getSampleCount() {
 		return k+1;
 	}
+	
+	public boolean hasSample(int indexOfSample) {
+		return indexOfSample < timeSlice.length && timeSlice[indexOfSample] != null;
+	}
 }
