@@ -1,7 +1,6 @@
 package input;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import dataset.TimeSlice;
 import bayessian.RandomVector;

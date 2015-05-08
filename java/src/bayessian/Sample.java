@@ -8,6 +8,15 @@ public class Sample {
 										// quando se cria o primeiro objecto da classe Sample
 	int[] values = null; 				// vector de inteiros que corresponde a uma linha de uma time slice
 	
+	public Sample(int numberOfRVars) {
+		if(Sample.length != -1 && Sample.length != numberOfRVars) {
+			throw new IllegalArgumentException("o numero de variaveis aleatorias já está definido");
+		}
+		
+		Sample.length = numberOfRVars;
+		this.values = new int[numberOfRVars];
+	}
+	
 	public Sample(int[] values) {
 		if(values.length == 0) {
 			throw new IllegalArgumentException("o array values deve ter um comprimento superior a zero");
