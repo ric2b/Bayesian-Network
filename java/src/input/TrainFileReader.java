@@ -1,15 +1,16 @@
 package input;
 
 import java.io.IOException;
-//import java.util.Arrays;
+import java.util.Arrays;
 
 import dataset.TimeSlice;
 import bayessian.RandomVector;
+import bayessian.Sample;
 
 public class TrainFileReader {
 	
 	CSVFileReader fileReader = null; 
-	String[] firstLine = null; 								//primeira posicao da lista <-> primeira linha do ficheiro 
+	String[] firstLine = null; 
 		
 	public TrainFileReader(String pathname) throws IOException {
 		this.fileReader = new CSVFileReader(pathname);
@@ -17,9 +18,8 @@ public class TrainFileReader {
 	}
 	
 	public int getTimeInstants() {	
-		String[] lastRow = fileReader.getRow(fileReader.getRowCount() - 1);	//obter ultima linha do ficheiro
-		String lastElement = lastRow[lastRow.length - 1];					//obter ultima posição da ultima linha do ficheiro
-		return (Integer.parseInt(lastElement.substring(lastElement.lastIndexOf("_")+1,lastElement.length())))+1;
+	String lastElement = firstLine[firstLine.length - 1]; //obter ultima posicao da primeira linha do ficheiro
+		return (Integer.parseInt(lastElement.substring(lastElement.lastIndexOf("_")+1, lastElement.length())))+1;
 	}
 	
 	public int getSubjectsCount() {
@@ -30,8 +30,7 @@ public class TrainFileReader {
 		return firstLine.length / getTimeInstants();
 	}
 	
-	public RandomVector getRVars() {
-		
+	public RandomVector getRVars() {		
 		String[] nameRVars = null;
 		int[] rangeRVars = null;
 		RandomVector randomVector = null;
@@ -53,10 +52,11 @@ public class TrainFileReader {
 	
 	private int getRangeSingleRVar(int varIndex, int numberOfRVars) {
 		int sample = 0, max = 0;
+		int numberOfSubjects = getSubjectsCount();
 		
 		for(int i = varIndex; i < firstLine.length; i += numberOfRVars) { 	//percorrer instantes de tempo da RVar
-			for(int j = 1; j <= fileReader.getRowCount(); j++) { 			//percorrer amostras da RVar
-				sample = Integer.parseInt(fileReader.getPosition(i, j)); 	//recolher amostra da linha j e da coluna i
+			for(int j = 1; j <= numberOfSubjects; j++) { 					//percorrer amostras da RVar
+				sample = Integer.parseInt(fileReader.getPosition(j, i)); 	//recolher amostra da linha j e da coluna i
 				if(sample > max) {
 					max = sample; 
 				}
@@ -67,26 +67,38 @@ public class TrainFileReader {
 	}
 	
 	public TimeSlice getTimeSlice(int time) {
+		int numberOfSubjects = getSubjectsCount();
+		int numberOfRVars = getRVarsCount();
+		int k = 0;
 		
-		RandomVector randomVector = getRVars();
-		int numberOfSubjects = fileReader.getRowCount() - 1;
+		TimeSlice timeSlice = new TimeSlice(numberOfSubjects); //chamar construtor da TimeSlice	
 		
-		TimeSlice timeSlice = null;
-		
-		timeSlice = new TimeSlice(randomVector, numberOfSubjects); //chamar construtor da TimeSlice
-		
-		//construir timeslice
-		
+		for(int j = 1; j <= numberOfSubjects; j++) { //percorrer todos os subjects
+			k = 0;
+			Sample sample = new Sample(numberOfRVars);										//cada subject corresponde a uma Sample
+			for(int i = numberOfRVars*time; i < numberOfRVars*time+numberOfRVars; i++) { 	//percorrer RVars desse instante de tempo, para um dado subject (j)
+				sample.setValue(k, Integer.parseInt(fileReader.getPosition(j, i)));			//recolher amostra da linha j e da coluna i			
+				k++;
+			}
+			if(timeSlice.addSample(sample) == false) {
+				break;
+			}
+		}
+	
 		return timeSlice;	
 	}
 		
 	/*public static void main(String[] args) throws IOException {
 		TrainFileReader reader = new TrainFileReader("short-test-data.csv");
 		
-		System.out.println("#Subjects: " + reader.numberOfSubjects);
-		System.out.println("#RVars: " + reader.numberOfRVars);
-		System.out.println("#TimeInstants: " + reader.timeInstants);
-		System.out.println("Name of RVars: " + Arrays.deepToString(reader.getNameRVars()));
-		System.out.println("Range of RVars: " + Arrays.toString(reader.getRangeAllRVars()));
+		System.out.println("#Subjects: " + reader.getSubjectsCount());
+		System.out.println("#RVars: " + reader.getRVarsCount());
+		System.out.println("#TimeInstants: " + reader.getTimeInstants());
+
+		for(int k = 0; k < reader.getSubjectsCount(); k++) {
+			for(int i = 0; i < reader.getRVarsCount(); i++) {
+				System.out.println(reader.getTimeSlice(0).getSample(k).getValue(i));
+			}
+		}
 	}*/
 }
