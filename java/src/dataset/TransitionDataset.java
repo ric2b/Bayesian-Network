@@ -1,4 +1,6 @@
-package input.datastructures;
+package dataset;
+
+import input.datastructures.TimeSlice;
 
 import java.util.ArrayList;
 import java.util.List;
