@@ -11,7 +11,7 @@ public class CSVFileReader {
 	private ArrayList<String[]> contents = new ArrayList<>();
 	private int cursorRow = 0, cursorColumn = 0;	//cursor que indica posicao no ficheiro em memoria actual 					 			
 	private int columnCount = 0;					//numero de colunas de dados
-	private int size = 0;						//numero de posições com dados do ficheiro
+	private int size = 0;							//numero de posicoes com dados do ficheiro
 	
 	public CSVFileReader(String pathname) throws IOException {
 		
@@ -26,12 +26,12 @@ public class CSVFileReader {
 	        String[] strings = line.split(",");
 			contents.add(strings);
 			
-			//o número de colunas é dados pela linha com maior númeor de colunas
+			//o numero de colunas e dado pela linha com maior numero de colunas
 			if(strings.length > columnCount) {
 				columnCount = strings.length;
 			}
 			
-			//adicioanr novas posições ao tamanho do ficheiro
+			//adicionar novas posicoes ao tamanho do ficheiro
 			size += strings.length;
 	    }
 	    reader.close();

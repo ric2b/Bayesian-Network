@@ -1,7 +1,5 @@
 package dataset;
 
-import input.datastructures.TimeSlice;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +19,7 @@ public class TransitionDataset {
 	public TransitionDataset(TimeSlice timeSlice0, TimeSlice timeSlice1, TimeSlice... timeSlices) {
 		
 		//juntar samples da time slice 0 e timeslice 1
-		for(int j = 0; j < timeSlice0.size(); j++) {
+		for(int j = 0; j < timeSlice0.getSampleCount(); j++) {
 			//testar se ambos os time slices têm amostras definidas
 			if(timeSlice0.hasSample(j) && timeSlice1.hasSample(j)) {
 				samplesOfTimeT.add(timeSlice0.getSample(j));
@@ -33,7 +31,7 @@ public class TransitionDataset {
 			//foram recebidas mais do que 2 timeslices
 			
 			//juntar samples da timeslice 1 e timeslice 2
-			for(int j = 0; j < timeSlice1.size(); j++) {
+			for(int j = 0; j < timeSlice1.getSampleCount(); j++) {
 				//testar se ambos os time slices têm amostras definidas
 				if(timeSlice1.hasSample(j) && timeSlices[0].hasSample(j)) {
 					samplesOfTimeT.add(timeSlice1.getSample(j));
@@ -43,7 +41,7 @@ public class TransitionDataset {
 			
 			//juntar restantes timeslices
 			for(int i = 0; i < timeSlices.length - 1; i++) {
-				for(int j = 0; j < timeSlices[i].size(); j++) {
+				for(int j = 0; j < timeSlices[i].getSampleCount(); j++) {
 					//testar se ambos os time slices têm amostras definidas
 					if(timeSlices[i].hasSample(j) && timeSlices[i+1].hasSample(j)) {
 						samplesOfTimeT.add(timeSlices[i].getSample(j));
