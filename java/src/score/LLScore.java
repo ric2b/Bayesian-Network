@@ -13,15 +13,13 @@ public class LLScore<T> extends Score<T> {
 		int score = 0;
 				
 		for(int i: BN) { // for each node of the Network
-			int[] parentRanges = BN.getParentRanges(i); // get the ranges of the parents
 			int Q = BN.getParentConfigurationCount(i);
 						
 			for(int J = 0; J < Q; J++) {
-				int[] parentValues = InstanceCounting.mapJToj(parentRanges, J);
 				int N = BN.getRange(i);
-				for(int k; k < N; k++) {
-					int Nij = BN.getNij(i,J);
-					score += BN.getNijk(i,J,k) * log (BN.getNijk(i,J,k)/Nij);
+				for(int k = 0; k < N; k++) {
+					int Nij = InstanceCounting.getNij(i,J, BN);
+					score += InstanceCounting.getNijk(i,J,k, BN) * Math.log((InstanceCounting.getNijk(i,J,k, BN)*1.0)/Nij);
 				}
 			}
 		}
