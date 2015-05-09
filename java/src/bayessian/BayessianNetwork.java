@@ -23,7 +23,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	 * @param dataset
 	 * @param score
 	 */
-	public BayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score) {
+	public BayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score<T> score) {
 		this.vars = Arrays.copyOf(vars, vars.length);
 		
 		//construir mapa de indices

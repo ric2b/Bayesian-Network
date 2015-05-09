@@ -1,7 +1,5 @@
 package score;
 
-import java.util.Iterator;
-
 import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
 
@@ -14,10 +12,7 @@ public class MDLScore<T> extends LLScore<T> {
 		
 		int complexity = 0;
 		
-		Iterator<Integer> BNNodesIterator = BN.iterator();
-			//for(int i: BN.iterator()) { Não consigo fazer isto, depois volto a tentar
-		while(BNNodesIterator.hasNext()){	
-			int i = BNNodesIterator.next();
+		for(int i: BN) { 
 			//complexity += (i.getRange() - 1) * i.getParentConfigurations();
 		}
 		

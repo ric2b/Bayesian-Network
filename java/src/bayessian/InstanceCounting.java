@@ -2,7 +2,7 @@ package bayessian;
 
 public class InstanceCounting {
 
-	public int[] mapJToj(int[] parentRanges, int J){ 
+	public static int[] mapJToj(int[] parentRanges, int J){ 
 		// 'J' is the configurations using all parents, 'j' is the configuration of a single parent
 		int j[] = new int[3];
 		int tempVal;
@@ -16,7 +16,7 @@ public class InstanceCounting {
 		return j;
 	}
 	
-	public int mapjToJ(int[] parentRanges, int[] j){ 
+	public static int mapjToJ(int[] parentRanges, int[] j){ 
 		// 'J' is the configurations using all parents, 'j' is the configuration of a single parent
 		// j should have size 3 and if parent 1 or 2 don't exist their respective positions should have value 0
 		// j[i] and parentRanges[i] should be related to the same parent (same order for both arrays)
