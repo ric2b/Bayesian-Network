@@ -30,7 +30,7 @@ public class InstanceCounting {
 	public static int getNijk(int i, int J, int k, BayessianNetwork<? extends RandomVariable> BN) {
 		int Nijk = 0;
 				
-		RandomVariable var = BN.vars[i];
+		RandomVariable var = BN.getVariable(i);
 		Collection<Integer> parents = BN.getParents(i);
 		int[] parentValues = InstanceCounting.mapJToj(BN.getParentRanges(i),J);
 		

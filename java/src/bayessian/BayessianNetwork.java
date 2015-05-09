@@ -36,6 +36,22 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	}
 	
 	/**
+	 * Retorna um objecto do tipo RandomVariable da variável aleatória actual do iterador.
+	 * @return variável aleatória actual
+	 */
+	public RandomVariable getVariable(int index) {
+		return vars[index];
+	}	
+	
+	/**
+	 * Retorna o range da variável aleatória actual.
+	 * @return range da variável aleatória actual
+	 */
+	public int getRange(int index) {
+		return vars[index].getRange();
+	}
+	
+	/**
 	 * Retorna uma coleção com os indices dos pais da variável aleatória actual do iterador.
 	 * @return coleção dos indices dos pais
 	 */
@@ -65,11 +81,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		}		
 		return count; 
 	}
-	
-	public int getRange(int index) {
-		return vars[index].getRange();
-	}
-	
+
 	/**
 	 * Retorna o número de configurações dos pais da variável aleatória dada.
 	 * @return número de configurações dos pais
@@ -125,23 +137,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
-		}
-		
-		/**
-		 * Retorna o range da variável aleatória actual.
-		 * @return range da variável aleatória actual
-		 */
-		public int getRange() {
-			return vars[currentIndex].getRange();
-		}
-		
-		/**
-		 * Retorna um objecto do tipo RandomVariable da variável aleatória actual do iterador.
-		 * @return variável aleatória actual
-		 */
-		public RandomVariable getVariable() {
-			return vars[currentIndex];
-		}		
+		}	
 	}
 	
 	public BayessianIterator<Integer> iterator() {
