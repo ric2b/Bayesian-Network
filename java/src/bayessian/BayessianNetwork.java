@@ -36,6 +36,44 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	}
 	
 	/**
+	 * Retorna o número de configurações dos pais da variável aleatória dada.
+	 * @return número de configurações dos pais
+	 */	
+	public int getParentConfigurationCount(int index) {
+		Collection<RandomVariable> parents = graph.getParents(vars[index]);
+		if(parents.isEmpty()) {
+			return 0;
+		}
+		
+		int count = 1;
+		for(RandomVariable parent : parents) {
+			count *= parent.getRange();
+		}		
+		return count; 
+	}
+	
+	public int getRange(int index) {
+		return vars[index].getRange();
+	}
+	
+	/**
+	 * Retorna o número de configurações dos pais da variável aleatória dada.
+	 * @return número de configurações dos pais
+	 */	
+	public int[] getParentRanges(int index) {
+		Collection<RandomVariable> parents = graph.getParents(vars[index]);
+		int[] parentRanges = new int[3];
+		
+		int i = 0;
+		for(RandomVariable parent : parents) {
+			parentRanges[i] = parent.getRange();
+			i++;
+		}
+		
+		return parentRanges; 
+	}
+	
+	/**
 	 * Iterador que pode ser usado para iterar por todas as variáveis aleatórias da BN.
 	 * Este iterador utiliza apenas os indices das variáveis tendo em conta o vector aleatório.
 	 * O objectivo deste iterador é ser usado por métodos deste package para iterar pelas vários
@@ -103,27 +141,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		 */
 		public RandomVariable getVariable() {
 			return vars[currentIndex];
-		}
-		
-		/**
-		 * Retorna o número de configurações dos pais da variável aleatória actual.
-		 * @return número de configurações dos pais
-		 */
-		public int getParentConfigurationCount() {
-			
-			Collection<RandomVariable> parents = graph.getParents(vars[currentIndex]);
-			if(parents.isEmpty()) {
-				return 0;
-			}
-			
-			int count = 1;
-			for(RandomVariable parent : parents) {
-				count *= parent.getRange();
-			}
-			
-			return count; 
-		}
-		
+		}		
 	}
 	
 	public BayessianIterator<Integer> iterator() {

@@ -14,11 +14,8 @@ public class LLScore<T> extends Score<T> {
 				
 		for(int i: BN) { // for each node of the Network
 			int[] parentRanges = BN.getParentRanges(i); // get the ranges of the parents
-			
-			int Q = 1;
-			for(int ri: parentRanges)
-				Q *= ri; // get the number of different possible configurations for the parents
-			
+			int Q = BN.getParentConfigurationCount(i);
+						
 			for(int J = 0; J < Q; J++) {
 				int[] parentValues = InstanceCounting.mapJToj(parentRanges, J);
 				int N = BN.getRange(i);
@@ -28,6 +25,7 @@ public class LLScore<T> extends Score<T> {
 				}
 			}
 		}
+		
 		return score;
 	}
 }

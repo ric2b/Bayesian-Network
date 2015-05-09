@@ -13,7 +13,7 @@ public class MDLScore<T> extends LLScore<T> {
 		int complexity = 0;
 		
 		for(int i: BN) { 
-			//complexity += (i.getRange() - 1) * i.getParentConfigurations();
+			complexity += (BN.getRange(i) - 1) * BN.getParentConfigurationCount(i);
 		}
 		
 		return complexity;
