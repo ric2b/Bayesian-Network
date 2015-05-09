@@ -35,6 +35,10 @@ public class BayessianNetwork<T extends RandomVariable> {
 		// implementar geedy-hill para construir dataset
 	}
 	
+	int getNij(int i, int j) {
+		return 0;
+	}
+	
 	/**
 	 * Iterador que pode ser usado para iterar por todas as variáveis aleatórias da BN.
 	 * Este iterador utiliza apenas os indices das variáveis tendo em conta o vector aleatório.
@@ -128,6 +132,5 @@ public class BayessianNetwork<T extends RandomVariable> {
 	
 	protected BayessianIterator iterator() {
 		return new BayessianIterator();
-	}
-	
+	}	
 }
