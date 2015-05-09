@@ -114,7 +114,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		 */
 		@Override
 		public boolean hasNext() {
-			return currentIndex < vars.length;
+			return currentIndex < BayessianNetwork.this.vars.length;
 		}
 		
 		/**
@@ -138,8 +138,13 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}	
+
 	}
 	
+	/**
+	 * Devolve um BayessianIterator que permite iterar por todas as variáveis aleatórias da BN pelo seus indices.
+	 * @return iterador por indices das variaveis da BN
+	 */
 	public BayessianIterator<Integer> iterator() {
 		return new BayessianIterator<Integer>();
 	}
