@@ -50,7 +50,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		 */
 		@Override
 		public boolean hasNext() {
-			return currentIndex < vars.length;
+			return currentIndex < BayessianNetwork.this.vars.length;
 		}
 		
 		/**
@@ -82,8 +82,8 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		public Collection<Integer> getParents() {
 			Collection<Integer> parents = new ArrayList<>(3);
 			//converter collection de random variables para collection de indices
-			for(RandomVariable parent : graph.getParents(vars[currentIndex])) {
-				parents.add(varsToIndex.get(parent));
+			for(RandomVariable parent : graph.getParents(BayessianNetwork.this.vars[currentIndex])) {
+				parents.add(BayessianNetwork.this.varsToIndex.get(parent));
 			}
 			
 			return parents;
@@ -94,7 +94,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		 * @return range da variável aleatória actual
 		 */
 		public int getRange() {
-			return vars[currentIndex].getRange();
+			return BayessianNetwork.this.vars[currentIndex].getRange();
 		}
 		
 		/**
@@ -102,7 +102,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		 * @return variável aleatória actual
 		 */
 		public RandomVariable getVariable() {
-			return vars[currentIndex];
+			return BayessianNetwork.this.vars[currentIndex];
 		}
 		
 		/**
@@ -111,7 +111,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		 */
 		public int getParentConfigurationCount() {
 			
-			Collection<RandomVariable> parents = graph.getParents(vars[currentIndex]);
+			Collection<RandomVariable> parents = BayessianNetwork.this.graph.getParents(BayessianNetwork.this.vars[currentIndex]);
 			if(parents.isEmpty()) {
 				return 0;
 			}
@@ -126,6 +126,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 	}
 	
+	/**
+	 * Devolve um BayessianIterator que permite iterar por todas as variáveis aleatórias da BN pelo seus indices.
+	 * @return iterador por indices das variaveis da BN
+	 */
 	public BayessianIterator<Integer> iterator() {
 		return new BayessianIterator<Integer>();
 	}
