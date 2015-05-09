@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 import dataset.TransitionDataset;
 import graph.DirectedAcyclicGraph;
 
-public class BayessianNetwork<T extends RandomVariable> {
+public class BayessianNetwork<T extends RandomVariable> implements Iterable<Integer> {
 	
 	protected DirectedAcyclicGraph<RandomVariable> graph = new DirectedAcyclicGraph<RandomVariable>();
 	protected RandomVariable[] vars = null;
@@ -41,7 +41,7 @@ public class BayessianNetwork<T extends RandomVariable> {
 	 * O objectivo deste iterador é ser usado por métodos deste package para iterar pelas vários
 	 * indices que correspondem às variáveis aleatórias armazenadas em vars.
 	 */
-	protected class BayessianIterator implements Iterator<Integer> {
+	protected class BayessianIterator<E extends Number> implements Iterator<Integer> {
 
 		protected int currentIndex = 0;		// indice da variável aleatória actual
 		
@@ -126,7 +126,7 @@ public class BayessianNetwork<T extends RandomVariable> {
 		
 	}
 	
-	public BayessianIterator iterator() {
-		return new BayessianIterator();
-	}	
+	public BayessianIterator<Integer> iterator() {
+		return new BayessianIterator<Integer>();
+	}
 }
