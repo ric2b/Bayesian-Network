@@ -1,10 +1,11 @@
 package score;
 
-import graph.DirectedAcyclicGraph;
+import bayessian.BayessianNetwork;
+import bayessian.RandomVariable;
 
 public class LLScore<T> extends Score<T> {
-	LLScore(DirectedAcyclicGraph<T> BNgraph) {
-		super(BNgraph);
+	LLScore(BayessianNetwork<? extends RandomVariable> BN) {
+		super(BN);
 	}
 	
 	int getScore() {

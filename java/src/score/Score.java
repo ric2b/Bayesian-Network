@@ -1,12 +1,13 @@
 package score;
 
-import graph.DirectedAcyclicGraph;
+import bayessian.BayessianNetwork;
+import bayessian.RandomVariable;
 
 public abstract class Score<T> {
-	DirectedAcyclicGraph<T> BNgraph;	
+	BayessianNetwork<? extends RandomVariable> BN;	
 	
-	Score(DirectedAcyclicGraph<T> BNgraph) {
-		this.BNgraph = BNgraph;
+	Score(BayessianNetwork<? extends RandomVariable> BN) {
+		this.BN = BN;
 	}
 	
 	abstract int getScore();
