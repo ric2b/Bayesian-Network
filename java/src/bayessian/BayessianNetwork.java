@@ -15,7 +15,11 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	
 	protected DirectedAcyclicGraph<RandomVariable> graph = new DirectedAcyclicGraph<RandomVariable>();
 	protected RandomVariable[] vars = null;
+	protected EstimateTable[] estimates = null;
 	protected Map<RandomVariable, Integer> varsToIndex = null; 
+	
+	//fazer metodo protected para preencher as estimativas
+	//EstimateTable estimate = new EstimateTable(getParentConfigurationCount(i), rangeOfRVars[i]);
 	
 	/**
 	 * 
