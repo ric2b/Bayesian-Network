@@ -2,8 +2,8 @@ package graph;
 
 /*
  * Ter em conta que Node é só uma classe que existe dentro do grafo utilizada para representar os
- * diferentes nós do mesmo. Desta forma tem apenas visibilidade de package de forma que um cliente 
- * deste grafo não possa criar objectos da classe Node nem precise de conhecer a sua implementação. 
+ * diferentes nos do mesmo. Desta forma tem apenas visibilidade de package de forma que um cliente 
+ * deste grafo nao possa criar objectos da classe Node nem precise de conhecer a sua implementação. 
  */
 
 class Node<T> {
