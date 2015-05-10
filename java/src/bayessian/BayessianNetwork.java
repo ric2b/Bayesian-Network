@@ -18,9 +18,6 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	protected EstimateTable[] estimates = null;
 	protected Map<RandomVariable, Integer> varsToIndex = null; 
 	
-	//fazer metodo protected para preencher as estimativas
-	//EstimateTable estimate = new EstimateTable(getParentConfigurationCount(i), rangeOfRVars[i]);
-	
 	/**
 	 * 
 	 * @param vars
@@ -91,13 +88,14 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		return count; 
 	}
 	
-	public void fillEstimateTable() {
+	protected void fillEstimateTable() {
 		for(int i = 0; i < vars.length; i++) { //iterar sobre as RVars
 			EstimateTable estimate = new EstimateTable(getParentConfigurationCount(i), getRange(i)); //criar estimate table para cada RVar
 			for(int j = 0; j < getParentConfigurationCount(i); j++) { //iterar sobre as configuraçoes dos pais da RVar
 				for(int k = 0; k < getRange(i); k++) { //iterar sobre o range da RVar	
-					//aceder ao valor de Nijk e Nij
-					//double estimateValue = (Nijk + 0.5)/(Nij + getRange(i)*0.5);
+					int Nijk = InstanceCounting.getNijk(i, j, k, this);
+					int Nij = InstanceCounting.getNij(i, j, this);
+					double estimateValue = (Nijk + 0.5)/(Nij + getRange(i)*0.5);
 					estimate.setEstimate(j, k, estimateValue);
 				}			
 			}			
