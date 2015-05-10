@@ -27,8 +27,9 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	 * @param dataset
 	 * @param score
 	 */
-	public BayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score<T> score) {
+	public BayessianNetwork(RandomVariable[] vars, EstimateTable estimates [], TransitionDataset dataset, Score<T> score) {
 		this.vars = Arrays.copyOf(vars, vars.length);
+		this.estimates = Arrays.copyOf(estimates, estimates.length);
 		
 		//construir mapa de indices
 		this.varsToIndex = new HashMap<>(this.vars.length);
@@ -40,16 +41,20 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	}
 	
 	/**
-	 * Retorna um objecto do tipo RandomVariable da vari谩vel aleat贸ria actual do iterador.
-	 * @return vari谩vel aleat贸ria actual
+	 * Retorna um objecto do tipo RandomVariable da variavel aleatoria actual do iterador.
+	 * @return variavel aleatoria actual
 	 */
 	public RandomVariable getVariable(int index) {
 		return vars[index];
 	}	
 	
+	public EstimateTable getEstimate(int index) {
+		return estimates[index];
+	}
+	
 	/**
-	 * Retorna o range da vari谩vel aleat贸ria actual.
-	 * @return range da vari谩vel aleat贸ria actual
+	 * Retorna o range da variavel aleatoria actual.
+	 * @return range da variavel aleatoria actual
 	 */
 	public int getRange(int index) {
 		return vars[index].getRange();
@@ -84,6 +89,20 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 			count *= parent.getRange();
 		}		
 		return count; 
+	}
+	
+	public void fillEstimateTable() {
+		for(int i = 0; i < vars.length; i++) { //iterar sobre as RVars
+			EstimateTable estimate = new EstimateTable(getParentConfigurationCount(i), getRange(i)); //criar estimate table para cada RVar
+			for(int j = 0; j < getParentConfigurationCount(i); j++) { //iterar sobre as configura鏾es dos pais da RVar
+				for(int k = 0; k < getRange(i); k++) { //iterar sobre o range da RVar	
+					//aceder ao valor de Nijk e Nij
+					//double estimateValue = (Nijk + 0.5)/(Nij + getRange(i)*0.5);
+					estimate.setEstimate(j, k, estimateValue);
+				}			
+			}			
+			estimates[i] = estimate;
+		}
 	}
 
 	/**
