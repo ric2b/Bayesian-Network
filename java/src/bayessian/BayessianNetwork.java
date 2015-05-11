@@ -65,6 +65,27 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		return parents;
 	}
 	
+//	/**
+//	 * Retorna um array com os indices dos pais da variável aleatória actual do iterador.
+//	 * @param index
+//	 * @return array com os indices dos pais
+//	 */
+//	public int[] getParents(int index) {
+//		//obter collection dada pelo grafo
+//		Collection<RandomVariable> graphParents = this.graph.getParents(this.vars[index]);
+//		
+//		//converter collection de random variables para um array de indices dos pais
+//		int[] parents = new int[graphParents.size()];
+//		//converter collection de random variables para collection de indices
+//		int i = 0;
+//		for(RandomVariable parent : graphParents) {
+//			parents[i] = this.varsToIndex.get(parent);
+//			i++;
+//		}
+//		
+//		return parents;
+//	}
+	
 	/**
 	 * Retorna o número de configurações dos pais da variável aleatória dada.
 	 * @return número de configurações dos pais
