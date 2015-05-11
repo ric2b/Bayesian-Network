@@ -1,4 +1,4 @@
-package bayessian;
+package dataset;
 
 import java.util.Arrays;
 

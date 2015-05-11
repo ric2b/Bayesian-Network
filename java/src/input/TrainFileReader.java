@@ -2,9 +2,9 @@ package input;
 
 import java.io.IOException;
 
+import dataset.Sample;
 import dataset.TimeSlice;
 import bayessian.RandomVector;
-import bayessian.Sample;
 
 public class TrainFileReader {
 	
