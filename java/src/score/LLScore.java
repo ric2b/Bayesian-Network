@@ -4,7 +4,7 @@ import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
 import bayessian.InstanceCounting;
 
-public class LLScore<T> extends Score<T> {
+public class LLScore extends Score {
 	LLScore(BayessianNetwork<? extends RandomVariable> BN) {
 		super(BN);
 	}
