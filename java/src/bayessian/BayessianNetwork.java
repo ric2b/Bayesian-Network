@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import score.Score;
 import dataset.TransitionDataset;
 import graph.DirectedAcyclicGraph;
 
@@ -22,7 +23,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	 * @param dataset
 	 * @param score
 	 */
-	public BayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score<T> score) {
+	public BayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score) {
 		this.vars = Arrays.copyOf(vars, vars.length);
 		
 		//construir mapa de indices
