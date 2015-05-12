@@ -1,6 +1,6 @@
 package bayessian;
 
-import dataset.TransitionDataset;
+import dataset.Dataset;
 
 public class InstanceCounting {
 
@@ -25,11 +25,11 @@ public class InstanceCounting {
 		return j[2]*parentRanges[1] + j[1]*parentRanges[0] + j[0];
 	}
 	
-	public static int getNijk(int i, int J, int k, BayessianNetwork<? extends RandomVariable> BN, TransitionDataset dataset) {
+	public static int getNijk(int i, int J, int k, BayessianNetwork<? extends RandomVariable> BN, Dataset dataset) {
 		return dataset.countValues(i, k, BN.getParents(i), InstanceCounting.mapJToj(BN.getParentRanges(i),J));
 	}
 	
-	public static int getNij(int i, int J, BayessianNetwork<? extends RandomVariable> BN, TransitionDataset dataset) {
+	public static int getNij(int i, int J, BayessianNetwork<? extends RandomVariable> BN, Dataset dataset) {
 		int Nij = 0;
 		
 		for(int k = 0; k < BN.getRange(i); k++){

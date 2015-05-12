@@ -1,6 +1,6 @@
 package score;
 
-import dataset.TransitionDataset;
+import dataset.Dataset;
 import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
 import bayessian.InstanceCounting;
@@ -11,7 +11,7 @@ public class LLScore extends Score {
 	}
 	
 	@Override
-	int getScore(TransitionDataset dataset) {
+	int getScore(Dataset dataset) {
 		int score = 0;
 				
 		for(int i: BN) { // for each node of the Network
