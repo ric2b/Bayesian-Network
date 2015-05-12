@@ -61,4 +61,8 @@ public class Sample {
 			System.out.println(s2.getValue(i));
 		}
 	}
+	
+	public String toString() {
+		return Arrays.toString(values);
+	}
 }

@@ -1,10 +1,13 @@
 package dataset;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-public class TimeSlice {
+public class TimeSlice implements Iterable<Sample> {
 	
-	Sample[] timeSlice = null;
-	int k = -1;
+	private Sample[] timeSlice = null;
+	private int k = -1;
 	
 	public TimeSlice(int numberOfSamples) {
 		k = 0; 
@@ -36,4 +39,95 @@ public class TimeSlice {
 	public boolean hasSample(int indexOfSample) {
 		return indexOfSample < timeSlice.length && timeSlice[indexOfSample] != null;
 	}
+
+	private class Itr implements Iterator<Sample> {
+		
+		private int curPosition = -1;	// posição actual do iterador
+		private int nextPosition = -1;	// próxima posição calculada do iterador
+		
+		@Override
+		public boolean hasNext() {
+			return findNextPosition();
+		}
+
+		@Override
+		public Sample next() {
+			
+			if(!findNextPosition()) {
+				// não foi encontrada próxima posição
+				throw new NoSuchElementException();	
+			}
+			
+			// assumir próxima posição
+			curPosition = nextPosition;
+			
+			// devolver posição actual
+			return TimeSlice.this.timeSlice[curPosition];
+		}
+		
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+		
+		private boolean findNextPosition() {
+			
+			if(this.nextPosition > this.curPosition) {
+				// já existe uma próxima posição determinada
+				return true;
+			}
+			
+			this.nextPosition = -1;
+			// procurar próxima posição não vazia a partir da posição actual
+			for(int i = this.curPosition + 1; i < TimeSlice.this.k; i++) {
+				if(TimeSlice.this.hasSample(i)) {
+					this.nextPosition = i;	// guardar posição para a próxima chamada de next
+					break;
+				}
+			}
+			
+			return this.nextPosition > -1;
+		}
+		
+	}
+	
+	/**
+	 * Devolve um iterador por todas as amostras que existem no timeslice. Amostras vazias não são 
+	 * consideradas.
+	 * @return	iterador
+	 */
+	@Override
+	public Iterator<Sample> iterator() {
+		return new Itr();
+	}
+	
+	public String toString() {
+		return Arrays.toString(this.timeSlice);
+	}
+	
+	/**
+	 * programa para testar se o iterador está a funcionar correctamente
+	 */
+//	public static void main(String[] args) {
+//		
+//		TimeSlice slices = new TimeSlice(5);
+//		for(int i = 0; i < 5; i++) {
+//			
+//			if(i == 3) {
+//				slices.addSample(null);
+//			} else {
+//				slices.addSample(new Sample(3));
+//			}
+//			
+//		}
+//		
+//		System.out.println("array");
+//		System.out.println(slices);
+//		
+//		System.out.println("slice");
+//		for(Sample sample : slices) {
+//			System.out.println(sample);
+//		}
+//	}
+	
 }
