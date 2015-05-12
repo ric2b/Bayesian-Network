@@ -3,8 +3,6 @@ package dataset;
 import java.util.ArrayList;
 import java.util.List;
 
-import bayessian.Sample;
-
 public class TransitionDataset {
 	
 	private List<Sample> samplesOfTimeT = new ArrayList<>();
@@ -52,4 +50,41 @@ public class TransitionDataset {
 		}
 		
 	}
+	
+	public int countValues(int varI, int value, int[] parents, int[] parentValues) {
+		int count = 0;
+		// o numero de amostras em cada conjunto de amostras é igual
+		int sampleCount = samplesOfTimeT.size();
+		
+		for(int i = 0; i < sampleCount; i++) {
+			boolean toCount = true;	// indica se esta linha de amostras é para contar como uma combinação
+			for(int j = 0; j < parents.length; j++) {
+				if(parentValues[j] != getValue(parents[j], i)) {
+					// esta linha não contem a configuração dos pais correcta
+					toCount = false;
+					break;
+				}
+			}
+			
+			if(toCount && value == getValue(varI, i)) {
+				// linha cumpriu a configuração dos pais e o valor da variavel
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	private int getValue(int var, int sample) {
+		int value = 0;
+		
+		if(var >= Sample.length()) {
+			value = this.samplesOfTimeNextT.get(sample).getValue(var);
+		} else {
+			value = this.samplesOfTimeT.get(sample).getValue(var);
+		}
+		
+		return value;
+	}
+	
 }

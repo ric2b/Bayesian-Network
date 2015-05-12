@@ -2,8 +2,6 @@ package bayessian;
 
 import java.util.Collection;
 
-import dataset.TransitionDataset;
-
 public class InstanceCounting {
 
 	public static int[] mapJToj(int[] parentRanges, int J){ 

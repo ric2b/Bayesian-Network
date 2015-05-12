@@ -1,6 +1,5 @@
 package dataset;
 
-import bayessian.Sample;
 
 public class TimeSlice {
 	

@@ -1,4 +1,4 @@
-package bayessian;
+package dataset;
 
 import java.util.Arrays;
 
@@ -42,7 +42,7 @@ public class Sample {
 		return values[index];
 	}
 	
-	public int length() {
+	public static int length() {
 		return Sample.length;
 	}
 	
