@@ -1,5 +1,6 @@
 package score;
 
+import dataset.TransitionDataset;
 import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
 
@@ -10,5 +11,5 @@ public abstract class Score {
 		this.BN = BN;
 	}
 	
-	abstract int getScore();
+	abstract int getScore(TransitionDataset dataset);
 }
