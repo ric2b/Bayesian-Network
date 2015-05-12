@@ -3,12 +3,12 @@ package score;
 import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
 
-public class MDLScore<T> extends LLScore<T> {
+public class MDLScore extends LLScore {
 	MDLScore(BayessianNetwork<? extends RandomVariable> BN) {
 		super(BN);
 	}
 	
-	int getNetworkComplexity() { // PROVAVELMENTE ISTO DEVE SER UM MÉTODO DA BN
+	int getNetworkComplexity() { // PROVAVELMENTE ISTO DEVE SER UM Mï¿½TODO DA BN
 		
 		int complexity = 0;
 		
