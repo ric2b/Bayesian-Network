@@ -1,6 +1,5 @@
 package bayessian;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -51,40 +50,40 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		return vars[index].getRange();
 	}
 	
-	/**
-	 * Retorna uma coleção com os indices dos pais da variável aleatória actual do iterador.
-	 * @return coleção dos indices dos pais
-	 */
-	public Collection<Integer> getParents(int index) {
-		Collection<Integer> parents = new ArrayList<>(3);
-		//converter collection de random variables para collection de indices
-		for(RandomVariable parent : graph.getParents(vars[index])) {
-			parents.add(varsToIndex.get(parent));
-		}
-		
-		return parents;
-	}
-	
 //	/**
-//	 * Retorna um array com os indices dos pais da variável aleatória actual do iterador.
-//	 * @param index
-//	 * @return array com os indices dos pais
+//	 * Retorna uma coleção com os indices dos pais da variável aleatória actual do iterador.
+//	 * @return coleção dos indices dos pais
 //	 */
-//	public int[] getParents(int index) {
-//		//obter collection dada pelo grafo
-//		Collection<RandomVariable> graphParents = this.graph.getParents(this.vars[index]);
-//		
-//		//converter collection de random variables para um array de indices dos pais
-//		int[] parents = new int[graphParents.size()];
+//	public Collection<Integer> getParents(int index) {
+//		Collection<Integer> parents = new ArrayList<>(3);
 //		//converter collection de random variables para collection de indices
-//		int i = 0;
-//		for(RandomVariable parent : graphParents) {
-//			parents[i] = this.varsToIndex.get(parent);
-//			i++;
+//		for(RandomVariable parent : graph.getParents(vars[index])) {
+//			parents.add(varsToIndex.get(parent));
 //		}
 //		
 //		return parents;
 //	}
+	
+	/**
+	 * Retorna um array com os indices dos pais da variável aleatória actual do iterador.
+	 * @param index
+	 * @return array com os indices dos pais
+	 */
+	public int[] getParents(int index) {
+		//obter collection dada pelo grafo
+		Collection<RandomVariable> graphParents = this.graph.getParents(this.vars[index]);
+		
+		//converter collection de random variables para um array de indices dos pais
+		int[] parents = new int[graphParents.size()];
+		//converter collection de random variables para collection de indices
+		int i = 0;
+		for(RandomVariable parent : graphParents) {
+			parents[i] = this.varsToIndex.get(parent);
+			i++;
+		}
+		
+		return parents;
+	}
 	
 	/**
 	 * Retorna o número de configurações dos pais da variável aleatória dada.
