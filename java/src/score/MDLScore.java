@@ -1,5 +1,6 @@
 package score;
 
+import dataset.TransitionDataset;
 import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
 
@@ -19,7 +20,8 @@ public class MDLScore extends LLScore {
 		return complexity;
 	}
 	
-	int getScore() {
+	@Override
+	int getScore(TransitionDataset dataset) {
 		int score = 0;
 		
 		//score = super.getScore() - log(N)*getNetworkComplexity()/2.0;
