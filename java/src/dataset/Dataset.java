@@ -60,7 +60,35 @@ public class Dataset {
 	 */
 	public Sample getSample(int indexOfSample) {
 		return samplesOfTimeT.get(indexOfSample);
-	}	
+	}
+	
+	public int countValues(int indexI, int value, int[] indexes, int[] values) {
+		int count = 0;
+		// o numero de amostras em cada conjunto de amostras é igual
+		int sampleCount = samplesOfTimeT.size();
+		
+		for(int i = 0; i < sampleCount; i++) {
+			boolean toCount = true;	// indica se esta linha de amostras é para contar como uma combinação
+			for(int j = 0; j < indexes.length; j++) {
+				if(values[j] != getValue(indexes[j], i)) {
+					// esta linha não contem a configuração dos pais correcta
+					toCount = false;
+					break;
+				}
+			}
+			
+			if(toCount && value == getValue(indexI, i)) {
+				// linha cumpriu a configuração dos pais e o valor da variavel
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	protected int getValue(int index, int sample) {
+		return this.samplesOfTimeT.get(sample).getValue(index);
+	}
 	
 	/**
 	 * @return	numero de amostras no dataset
