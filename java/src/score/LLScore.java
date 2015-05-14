@@ -21,7 +21,10 @@ public class LLScore extends Score {
 				int N = BN.getRange(i);
 				for(int k = 0; k < N; k++) {
 					int Nij = InstanceCounting.getNij(i,J, BN, dataset);
-					score += InstanceCounting.getNijk(i,J,k, BN, dataset) * Math.log((InstanceCounting.getNijk(i,J,k, BN, dataset)*1.0)/Nij);
+					
+					if(InstanceCounting.getNijk(i,J,k, BN, dataset) != 0){ // otherwise it's 0, no need to add 
+						score += InstanceCounting.getNijk(i,J,k, BN, dataset) * Math.log((InstanceCounting.getNijk(i,J,k, BN, dataset)*1.0)/Nij);
+					}					
 				}
 			}
 		}
