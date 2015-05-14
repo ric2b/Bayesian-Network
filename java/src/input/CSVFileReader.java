@@ -19,11 +19,11 @@ public class CSVFileReader {
 		String line = null;
 		//carregar ficheiro para a memoria
 		while((line = reader.readLine()) != null) {         
-	        if(line.contains("sep")) {
+			if(line.contains("sep")) {
 				continue;
 			}
 			//adicionar ao contents um array de strings com os valores entre virgulas da linha
-	        String[] strings = line.split(",");
+			String[] strings = line.replace(" ", "").replace("\t", "").split(",");
 			contents.add(strings);
 			
 			//o numero de colunas e dado pela linha com maior numero de colunas
