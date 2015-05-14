@@ -76,8 +76,13 @@ public class TrainFileReader {
 			k = 0;
 			Sample sample = new Sample(numberOfRVars);										//cada subject corresponde a uma Sample
 			for(int i = numberOfRVars*time; i < numberOfRVars*time+numberOfRVars; i++) { 	//percorrer RVars desse instante de tempo, para um dado subject (j)
-				sample.setValue(k, Integer.parseInt(fileReader.getPosition(j, i)));			//recolher amostra da linha j e da coluna i			
-				k++;
+				try {
+					sample.setValue(k, Integer.parseInt(fileReader.getPosition(j, i)));		//recolher amostra da linha j e da coluna i	
+					k++;
+				}
+				catch (ArrayIndexOutOfBoundsException except) {
+					sample = null; // se para um dado subject nao houver uma amostra de tempo entao sample toma o valor null
+				}	
 			}
 			if(timeSlice.addSample(sample) == false) {
 				break;
@@ -87,7 +92,7 @@ public class TrainFileReader {
 		return timeSlice;	
 	}
 		
-	/*public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		TrainFileReader reader = new TrainFileReader("short-test-data.csv");
 		
 		System.out.println("#Subjects: " + reader.getSubjectsCount());
@@ -96,8 +101,13 @@ public class TrainFileReader {
 
 		for(int k = 0; k < reader.getSubjectsCount(); k++) {
 			for(int i = 0; i < reader.getRVarsCount(); i++) {
-				System.out.println(reader.getTimeSlice(0).getSample(k).getValue(i));
+				try {
+					System.out.println(reader.getTimeSlice(4).getSample(k).getValue(i));
+				}
+				catch (NullPointerException except) {
+					System.out.println("null sample");
+				}
 			}
 		}
-	}*/
+	}
 }
