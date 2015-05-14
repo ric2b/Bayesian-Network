@@ -126,6 +126,17 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 		edgeMap.get(node).clear();
 	}
 	
+	public void flipEdge(T srcNode, T destNode) {
+		this.flipEdge(getNode(srcNode), getNode(destNode));
+	}
+	
+	protected void flipEdge(Node<T> srcNode, Node<T> destNode) {
+		// remover aresta actual
+		removeEdge(srcNode, destNode);
+		// adicionar aresta inversa
+		addEdge(destNode, srcNode);
+	}
+	
 	/**
 	 * Devolve uma coleção de todos os nós pais do nó t. Caso este não tenha pais é retornada uma coleção vazia.
 	 * @param	t nó de que se quer obter os pais
