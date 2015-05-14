@@ -9,7 +9,7 @@ public class EstimateTable {
 	public EstimateTable(int configCount, int valueCount) throws InvalidAttributeValueException {
 		
 		if(configCount <= 0) {
-			throw new InvalidAttributeValueException("o numero de configurações tem que ser maior que zero");
+			throw new InvalidAttributeValueException("o numero de configuracoes tem que ser maior que zero");
 		}
 		
 		if(valueCount <= 0) {
@@ -28,13 +28,13 @@ public class EstimateTable {
 	}
 	
 	public void setEstimate(int config, int value, double estimate) {
-		//caso o valor de config ou de value não esteja dentro dos limites do array é feito o throw
+		//caso o valor de config ou de value nao esteja dentro dos limites do array e feito o throw
 		//de uma ArrayIndexOutOfBoundsException
 		this.estimates[config][value] = estimate;
 	}
 	
 	public double getEstimate(int config, int value) {
-		//caso o valor de config ou de value não esteja dentro dos limites do array é feito o throw
+		//caso o valor de config ou de value nao esteja dentro dos limites do array e feito o throw
 		//de uma ArrayIndexOutOfBoundsException
 		return this.estimates[config][value];
 	}

@@ -9,12 +9,14 @@ import java.util.NoSuchElementException;
 
 import score.Score;
 import dataset.Dataset;
+import javax.naming.directory.InvalidAttributeValueException;
 import graph.DirectedAcyclicGraph;
 
 public class BayessianNetwork<T extends RandomVariable> implements Iterable<Integer> {
 	
 	protected DirectedAcyclicGraph<RandomVariable> graph = new DirectedAcyclicGraph<RandomVariable>();
 	protected RandomVariable[] vars = null;
+	protected EstimateTable[] estimates = null;
 	protected Map<RandomVariable, Integer> varsToIndex = null; 
 	
 	/**
@@ -25,6 +27,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	 */
 	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score) {
 		this.vars = Arrays.copyOf(vars, vars.length);
+		this.estimates = Arrays.copyOf(estimates, estimates.length);
 		
 		//construir mapa de indices
 		this.varsToIndex = new HashMap<>(this.vars.length);
@@ -36,16 +39,20 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	}
 	
 	/**
-	 * Retorna um objecto do tipo RandomVariable da variável aleatória actual do iterador.
-	 * @return variável aleatória actual
+	 * Retorna um objecto do tipo RandomVariable da variavel aleatoria actual do iterador.
+	 * @return variavel aleatoria actual
 	 */
 	public RandomVariable getVariable(int index) {
 		return vars[index];
 	}	
 	
+	public EstimateTable getEstimate(int index) {
+		return estimates[index];
+	}
+	
 	/**
-	 * Retorna o range da variável aleatória actual.
-	 * @return range da variável aleatória actual
+	 * Retorna o range da variavel aleatoria actual.
+	 * @return range da variavel aleatoria actual
 	 */
 	public int getRange(int index) {
 		return vars[index].getRange();
@@ -101,6 +108,26 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 			count *= parent.getRange();
 		}		
 		return count; 
+	}
+	
+	protected void fillEstimateTable(Dataset dataset) {
+		for(int i = 0; i < vars.length; i++) { //iterar sobre as RVars
+			EstimateTable estimate;
+			try {
+				estimate = new EstimateTable(getParentConfigurationCount(i), getRange(i)); //criar estimate table para cada RVar	
+				for(int j = 0; j < getParentConfigurationCount(i); j++) { //iterar sobre as configura�oes dos pais da RVar
+					int Nij = InstanceCounting.getNij(i, j, this, dataset);
+					for(int k = 0; k < getRange(i); k++) { //iterar sobre o range da RVar	
+						int Nijk = InstanceCounting.getNijk(i, j, k, this, dataset);
+						double estimateValue = (Nijk + 0.5)/(Nij + getRange(i)*0.5);
+						estimate.setEstimate(j, k, estimateValue);
+					}			
+				}			
+				estimates[i] = estimate;
+			} catch (InvalidAttributeValueException e) {
+				e.printStackTrace();
+			} 	
+		}
 	}
 
 	/**
