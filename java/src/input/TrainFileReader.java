@@ -17,7 +17,7 @@ public class TrainFileReader {
 	}
 	
 	public int getTimeInstants() {	
-	String lastElement = firstLine[firstLine.length - 1]; //obter ultima posicao da primeira linha do ficheiro
+		String lastElement = firstLine[firstLine.length - 1]; //obter ultima posicao da primeira linha do ficheiro
 		return (Integer.parseInt(lastElement.substring(lastElement.lastIndexOf("_")+1, lastElement.length())))+1;
 	}
 	
