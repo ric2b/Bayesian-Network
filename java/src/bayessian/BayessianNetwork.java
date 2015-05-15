@@ -79,14 +79,15 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 						graph.addEdge(vars[j], vars[i]);
 						
 						// operacao de inverter aresta
-						graph.flipEdge(vars[j], vars[i]);
-						curScore = score.getScore(this, dataset);
-						if(curScore > bestScore) {
-							bestScore = curScore;
-							operation = new FlipOperation<>(vars[j], vars[i]);
+						if(graph.flipEdge(vars[j], vars[i])) {
+							curScore = score.getScore(this, dataset);
+							if(curScore > bestScore) {
+								bestScore = curScore;
+								operation = new FlipOperation<>(vars[j], vars[i]);
+							}
+							//restaurar grafo
+							graph.flipEdge(vars[i], vars[j]);
 						}
-						//restaurar grafo
-						graph.flipEdge(vars[i], vars[j]);
 						
 					} else {
 						// não existe aresta entre j e i
