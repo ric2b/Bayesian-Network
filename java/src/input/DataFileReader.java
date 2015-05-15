@@ -126,8 +126,13 @@ public class DataFileReader {
 				k = 0;
 				Sample sample = new Sample();										//cada subject corresponde a uma Sample
 				for(int i = numberOfRVars*time; i < numberOfRVars*time+numberOfRVars; i++) { 	//percorrer RVars desse instante de tempo, para um dado subject (j)
-					sample.setValue(k, Integer.parseInt(fileReader.getPosition(j, i)));			//recolher amostra da linha j e da coluna i			
-					k++;
+					try {
+						sample.setValue(k, Integer.parseInt(fileReader.getPosition(j, i)));		//recolher amostra da linha j e da coluna i	
+						k++;
+					}
+					catch (ArrayIndexOutOfBoundsException except) {
+						sample = null; // se para um dado subject nao houver uma amostra de tempo entao sample toma o valor null
+					}
 				}
 				if(timeSlice.addSample(sample) == false) {
 					break;
