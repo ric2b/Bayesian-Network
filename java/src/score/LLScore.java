@@ -11,7 +11,7 @@ public class LLScore extends Score {
 	}
 	
 	@Override
-	int getScore(Dataset dataset) {
+	public int getScore(Dataset dataset) {
 		int score = 0;
 				
 		for(int i: BN) { // for each node of the Network

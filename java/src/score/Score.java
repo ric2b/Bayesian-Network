@@ -11,5 +11,5 @@ public abstract class Score {
 		this.BN = BN;
 	}
 	
-	abstract int getScore(Dataset dataset);
+	public abstract int getScore(Dataset dataset);
 }

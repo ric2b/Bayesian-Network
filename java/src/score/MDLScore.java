@@ -21,7 +21,7 @@ public class MDLScore extends LLScore {
 	}
 	
 	@Override
-	int getScore(Dataset dataset) {
+	public int getScore(Dataset dataset) {
 		int score = 0;
 		
 		//score = super.getScore() - log(N)*getNetworkComplexity()/2.0;
