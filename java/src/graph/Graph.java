@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /*
@@ -22,6 +23,6 @@ public interface Graph<T> {
 	public void removeEdge(T t1, T t2) throws NullPointerException, NoSuchElementException;
 	public void removeAllEdges(T t) throws NullPointerException, NoSuchElementException;
 	public int nodeCount();
-	public void clear();
+	public List<T> getNodes();
 	
 }
