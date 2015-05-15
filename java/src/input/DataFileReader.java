@@ -118,18 +118,24 @@ public class DataFileReader {
 		int numberOfRVars = randomVarCount() / timeInstantCount();	// numero de variaveis num instante de tempo
 		int k = 0;
 		
+		Sample.setLength(numberOfRVars);
 		TimeSlice timeSlice = new TimeSlice(numberOfSubjects); //chamar construtor da TimeSlice	
 		
-		for(int j = 1; j <= numberOfSubjects; j++) { //percorrer todos os subjects
-			k = 0;
-			Sample sample = new Sample(numberOfRVars);										//cada subject corresponde a uma Sample
-			for(int i = numberOfRVars*time; i < numberOfRVars*time+numberOfRVars; i++) { 	//percorrer RVars desse instante de tempo, para um dado subject (j)
-				sample.setValue(k, Integer.parseInt(fileReader.getPosition(j, i)));			//recolher amostra da linha j e da coluna i			
-				k++;
+		try{
+			for(int j = 1; j <= numberOfSubjects; j++) { //percorrer todos os subjects
+				k = 0;
+				Sample sample = new Sample();										//cada subject corresponde a uma Sample
+				for(int i = numberOfRVars*time; i < numberOfRVars*time+numberOfRVars; i++) { 	//percorrer RVars desse instante de tempo, para um dado subject (j)
+					sample.setValue(k, Integer.parseInt(fileReader.getPosition(j, i)));			//recolher amostra da linha j e da coluna i			
+					k++;
+				}
+				if(timeSlice.addSample(sample) == false) {
+					break;
+				}
 			}
-			if(timeSlice.addSample(sample) == false) {
-				break;
-			}
+		} catch(Exception e) {
+			// nunca deve ocorrer
+			e.printStackTrace();
 		}
 	
 		return timeSlice;	

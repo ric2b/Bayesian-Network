@@ -4,17 +4,18 @@ import java.util.Arrays;
 
 public class Sample {
 	
-	private static int length = -1;		// todas as amostram têm o mesmo comprimento; este valor é determinado
-										// quando se cria o primeiro objecto da classe Sample
+	private static int length = -1;	// todas as amostram têm o mesmo comprimento; este valor é determinado
+												// quando se cria o primeiro objecto da classe Sample
 	int[] values = null; 				// vector de inteiros que corresponde a uma linha de uma time slice
 	
-	public Sample(int numberOfRVars) {
-		if(Sample.length != -1 && Sample.length != numberOfRVars) {
-			throw new IllegalArgumentException("o numero de variaveis aleatorias já está definido");
+	public Sample() throws Exception {
+		
+		if(Sample.length == -1) {
+			// implementar uma excepção nossa para isto
+			throw new Exception("tamanho da variavel ainda não foi definido");
 		}
 		
-		Sample.length = numberOfRVars;
-		this.values = new int[numberOfRVars];
+		this.values = new int[Sample.length];
 	}
 	
 	public Sample(int[] values) {
@@ -44,6 +45,15 @@ public class Sample {
 	
 	public static int length() {
 		return Sample.length;
+	}
+	
+	public static void setLength(int length) {
+		
+		if(length <= 0) {
+			throw new IllegalArgumentException("comprimento da saple tme que ser maior que zero");
+		}
+		
+		Sample.length = length;
 	}
 	
 	public static void main(String[] args) {
