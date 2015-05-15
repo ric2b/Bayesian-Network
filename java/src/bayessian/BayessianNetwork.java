@@ -93,7 +93,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 						
 					} else {
 						// não existe aresta entre j e i
-						if(graph.addEdge(vars[j], vars[i])) {
+						if(addAssociation(j, i)) {	// adicionar aresta com teste
 							int curScore = score.getScore(this, dataset);
 							if(curScore > bestScore) {
 								bestScore = curScore;
@@ -109,6 +109,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 			
 		} while(operation != null);
 		
+	}
+	
+	protected boolean addAssociation(int srcIndex, int destIndex) {
+		return graph.addEdge(vars[srcIndex], vars[destIndex]);
 	}
 	
 	/**
