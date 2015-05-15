@@ -44,4 +44,12 @@ public class TransitionDataset extends Dataset {
 		return value;
 	}
 	
+	public String toString() {
+		String string = "";
+		for (int i = 0; i < samplesOfTimeT.size(); i++) {
+			string += samplesOfTimeT.get(i).toString() + samplesOfTimeNextT.get(i).toString() + '\n';
+		}
+		return string;
+	}
+	
 }
