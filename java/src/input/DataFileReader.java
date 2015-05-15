@@ -1,6 +1,7 @@
 package input;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import dataset.Sample;
 import dataset.TimeSlice;
@@ -157,6 +158,9 @@ public class DataFileReader {
 			System.out.println("TimeSlice " + i);
 			System.out.println(reader.getTimeSlice(i));
 		}
+		
+		RandomVariable[] vars = reader.getRVars();
+		System.out.println(Arrays.toString(vars));
 	}
 	
 }
