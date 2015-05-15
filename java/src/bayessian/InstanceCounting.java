@@ -9,11 +9,11 @@ public class InstanceCounting {
 		int j[] = new int[3];
 		int tempVal;
 		
-		j[2] = J/parentRanges[3];
-		tempVal = (J-j[3])/parentRanges[3];
+		j[2] = J/parentRanges[2];
+		tempVal = (J-j[3])/parentRanges[2];
 		
-		j[1] = tempVal%parentRanges[2];
-		j[0] = (tempVal-j[2])/parentRanges[2];
+		j[1] = tempVal%parentRanges[1];
+		j[0] = (tempVal-j[2])/parentRanges[1];
 		
 		return j;
 	}
