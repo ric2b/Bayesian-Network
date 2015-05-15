@@ -55,6 +55,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		do {
 			if(operation != null) {
 				operation.exec(graph);
+				operation = null;
 			}
 			
 			bestScore = score.getScore(this, dataset);
