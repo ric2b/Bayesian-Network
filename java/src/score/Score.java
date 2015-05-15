@@ -1,15 +1,10 @@
 package score;
 
-import dataset.Dataset;
 import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
+import dataset.Dataset;
 
-public abstract class Score {
-	BayessianNetwork<? extends RandomVariable> BN = null;	
-	
-	Score(BayessianNetwork<? extends RandomVariable> BN) {
-		this.BN = BN;
-	}
-	
-	public abstract int getScore(Dataset dataset);
+public interface Score {
+
+	public int getScore(BayessianNetwork<? extends RandomVariable> bayessian, Dataset dataset);
 }

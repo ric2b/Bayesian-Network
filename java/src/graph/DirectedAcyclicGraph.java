@@ -2,40 +2,152 @@ package graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<T> {
+public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 	
-	/*
-	 * Nota: no edgeMap são colocados os pais de cada nó para representar arestas direccionadas
+	protected Map<Node<T>, Collection<Node<T>>> edgeMap = new HashMap<>();;		// mapa que representa as arestas
+	protected Map<T, Node<T>> nodeMap = new HashMap<>();								// permite obter o nó para um dado T
+	protected Map<Integer, Node<T>> indexMap = new HashMap<>();						// permite obter o nó a partir de um dado indice 
+	protected int nodeCount = 0;																// numero de nós no grafo
+	
+	/**
+	 * Cria um grafo vazio
 	 */
-
 	public DirectedAcyclicGraph() {
-		super();
-	}
-	
-	public DirectedAcyclicGraph(Collection<? extends T> ts) {
-		super(ts);
+		; // grafo vazio
 	}
 	
 	/**
-	 * Devolve um Node<T> tendo em conta o seu indice no grafo.
-	 * @param index	indice do nó que se pretende obter
-	 * @return	Node<T> correpondente ao index
-	 * @throws NoSuchElementException	caso o indice indicado não corresponda a nenhum nó existente no grafo
+	 * Constructor do grafo que permite introduzir uma coleção de nós no grafo.
+	 * Estes nós são colocados no grafo sem qualquer ligação entre eles.
+	 * @param ts	coleção de T's com que se pretende iniciar o grafo 
 	 */
-	protected Node<T> getNode(int index) throws NoSuchElementException {
-		Node<T> node = indexMap.get(index);
-		if(node == null) {
-			//não existe nenhum nó com índice @index
-			throw new NoSuchElementException();
+	public DirectedAcyclicGraph(Collection<? extends T> ts) {
+		//criar nós a partir da collection
+		for(T t : ts) {
+			this.addNode(t);
+		}
+	}
+	
+	/**
+	 * Adiciona um novo nó ao grafo. Este novo nó é adicionado sem qualquer aresta, ou seja,
+	 * sem qualquer ligação e nenhum dos outros nós que já existam no grafo.
+	 * @param t	objecto T que se pretende adicionar ao grafo
+	 */
+	public void addNode(T t) {
+		if(t == null) {
+			throw new NullPointerException();
 		}
 		
-		return node;
+		//usar como indice o numero de nós total para garantir que não é repetido
+		Node<T> node = new Node<T>(nodeCount, t);
+		
+		//colocar nó no mapa de aresta com nenhuma aresta definida
+		edgeMap.put(node, new HashSet<Node<T>>()); 
+		
+		//colocar nó nos mapas de indice e de T
+		nodeMap.put(t, node);
+		indexMap.put(nodeCount, node);
+		
+		nodeCount++;
+	}
+	
+	/**
+	 * Adiciona uma aresta entre os nós que representam src e dest. Caso não exista algum dos nós recebidos
+	 * no grafo a aresta não é criada e é feito um throw de uma NoSuchElementException.
+	 * @param src primeiro nó da aresta
+	 * @param dest segundo nó da aresta
+	 * @throws NullPointerException		caso src ou dest sejam null
+	 * @throws NoSuchElementException	caso src ou dest não existam no grafo
+	 */
+	public void addEdge(T src, T dest) throws NullPointerException, NoSuchElementException {
+		edgeMap.get(getNode(dest)).add(getNode(src));
+	}
+	
+	/**
+	 * Remove um nó do grafo. Caso t não exista no grafo não é feita qualquer alteração ao mesmo.
+	 * @param t nó do grafo que se prentende remover
+	 * @throws NullPointerException		caso t seja null
+	 * @throws NoSuchElementException	caso t não exista no grafo
+	 */
+	public void removeNode(T t) throws NullPointerException, NoSuchElementException {
+		Node<T> node = getNode(t);
+		
+		//remover nó de todos os mapas
+		edgeMap.remove(node);
+		nodeMap.remove(node.get());
+		indexMap.remove(node.getIndex());
+		
+		nodeCount--;
+	}
+	
+	/**
+	 * Remove aresta que liga os nós src e dest do grafo. Caso um destes nós não exista no grafo não é feita
+	 * qualquer alteração ao estado do mesmo.
+	 * @param src primeiro nó da aresta a remover
+	 * @param dest segundo nó da aresta a remover
+	 * @throws NullPointerException		caso src ou dest sejam null
+	 * @throws NoSuchElementException	caso src ou dest não exista no grafo
+	 */
+	public void removeEdge(T src, T dest) throws NullPointerException, NoSuchElementException {
+		//remover src do conjunto de pais do dest
+		edgeMap.get(getNode(dest)).remove(getNode(src));
+	}	
+	
+	/**
+	 * Remove todas as arestas existentes no grafo que tenham ligação com o nó t. Caso t não exista no grafo,
+	 * não é feita qualquer alteração ao mesmo.
+	 * @param t nó de quais as arestas se quer remover
+	 * @throws NullPointerException		caso t seja null
+	 * @throws NoSuchElementException	caso t não exista no grafo
+	 */
+	public void removeAllEdges(T t) throws NullPointerException, NoSuchElementException {
+		edgeMap.get(getNode(t)).clear();
+	}
+	
+	/**
+	 * Retorna o número de nós existente no grafo.
+	 * @return número de nós no grafo
+	 */
+	public int nodeCount() {
+		return nodeCount;
+	}
+	
+	/**
+	 * Remove todos os nós do grafo.
+	 */
+	public void removeAllNodes() {
+		//limpar todos os mapas
+		edgeMap.clear();
+		nodeMap.clear();
+		indexMap.clear();
+		
+		nodeCount = 0;
+	}
+	
+	/**
+	 * Retorna uma lista com todos os nós existentes actualmente no grafo.
+	 * Caso não existam nós no grafo é retornada uma lista vazia em vez de null, o que
+	 * faz com que o cliente não tenha de testar o retorno do método para o usar. 
+	 * @return lista de todos os nós do grafo
+	 */
+	public List<T> getNodes() {
+		List<T> nodes = new ArrayList<T>();
+		
+		//preencher lista com os elementos de todos nós
+		for(Node<T> node : edgeMap.keySet()) {
+			nodes.add(node.get());
+		}
+		
+		return nodes;
 	}
 	
 	/**
@@ -60,83 +172,12 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 		return node;
 	}
 	
-	/**
-	 * Adiciona uma aresta com origem no nó srcNode e com destino no nó destNode. Não é feita qualquer 
-	 * verificação sobre a existência dos nós recebidos no grafo uma vez que este método só pode ser 
-	 * chamado dentro da classe do grafo ou classes que herdam o mesmo. Deixa-se assim ao cuidado de quem
-	 * implementa um grafo ou uma classe que herda o mesmo a responsabilidade de garantir que ambos os nós
-	 * existem no grafo.
-	 * Este método é chamado por todos os outros métodos que adicionam arestas ao grafo com diferentes tipos
-	 * de parametros.
-	 * @param srcNode	nó de origem da aresta
-	 * @param destNode	nó de destino da aresta
-	 */
-	protected boolean addEdge(Node<T> srcNode, Node<T> destNode) {
-		//adicionar @srcNode ao conjunto de nós pais do @destNode
-		//adicionar teste de ciclo
-		return edgeMap.get(destNode).add(srcNode);
-	}
-	
-	/**
-	 * Remove node do grafo. Não é feita qualquer verificação sobre a existência do nó recebido no grafo 
-	 * uma vez que este método só pode ser chamado dentro da classe do grafo ou classes que herdam o mesmo. 
-	 * Deixa-se assim ao cuidado de quem implementa um grafo ou uma classe que herda o mesmo a responsabilidade 
-	 * de garantir que node existe no grafo.
-	 * Este método é chamado por todos os outros métodos que removem um nó do grafo com diferentes tipos
-	 * de parametros.
-	 * @param node nó do grafo que se prentende remover
-	 */
-	@Override
-	protected void removeNode(Node<T> node) {
-		//remover nó de todos os mapas
-		edgeMap.remove(node);
-		nodeMap.remove(node.get());
-		indexMap.remove(node.getIndex());
-		
-		nodeCount--;
-	}
-	
-	/**
-	 * Remove aresta com origem no nó srcNode e com destino no nó destNode. Não é feita qualquer 
-	 * verificação sobre a existência dos nós recebidos no grafo uma vez que este método só pode ser 
-	 * chamado dentro da classe do grafo ou classes que herdam o mesmo. Deixa-se assim ao cuidado de quem
-	 * implementa um grafo ou uma classe que herda o mesmo a responsabilidade de garantir que ambos os nós
-	 * existem no grafo.
-	 * Este método é chamado por todos os outros métodos que removem arestas ao grafo com diferentes tipos
-	 * de parametros.
-	 * @param srcNode	nó de origem da aresta a remover
-	 * @param destNode	nó de destino da aresta a remover
-	 */
-	@Override
-	protected void removeEdge(Node<T> srcNode, Node<T> destNode) {
-		//remover @srcNode do conjunto de pais do @destNode
-		edgeMap.get(destNode).remove(srcNode);
-	}
-	
-	/**
-	 * Remove todas as arestas existentes no grafo que tenham ligação com node. Não é feita qualquer 
-	 * verificação sobre a existência dos nós recebidos no grafo uma vez que este método só pode ser 
-	 * chamado dentro da classe do grafo ou classes que herdam o mesmo. Deixa-se assim ao cuidado de quem
-	 * implementa um grafo ou uma classe que herda o mesmo a responsabilidade de garantir que ambos os nós
-	 * existem no grafo.
-	 * Este método é chamado por todos os outros métodos que removem todas as arestas do grafo com diferentes tipos
-	 * @param node nó de quais as arestas se quer remover
-	 */
-	@Override
-	protected void removeAllEdges(Node<T> node) {
-		edgeMap.get(node).clear();
-	}
-	
-	public void flipEdge(T srcNode, T destNode) {
-		this.flipEdge(getNode(srcNode), getNode(destNode));
-	}
-	
-	protected void flipEdge(Node<T> srcNode, Node<T> destNode) {
+	public void flipEdge(T src, T dest) {
 		//adicionar teste de ciclo
 		// remover aresta actual
-		removeEdge(srcNode, destNode);
+		removeEdge(src, dest);
 		// adicionar aresta inversa
-		addEdge(destNode, srcNode);
+		addEdge(dest, src);
 	}
 	
 	/**
@@ -151,20 +192,7 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
 		return this.getParents(getNode(t));
 	}
-	
-	/**
-	 * Devolve uma coleção de todos os nós pais do nó de indice index. Caso este não tenha pais é retornada uma 
-	 * coleção vazia.
-	 * @param	index indice do nó de que se quer obter os pais
-	 * @return	coleção de pais do nó de indice index
-	 * @throws NoSuchElementException	caso não exista um nó com indice index
-	 */
-	public Collection<T> getParents(int index) throws NoSuchElementException {
-		//usar metodo abstracto que obter pais de um nó
-		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
-		return this.getParents(getNode(index));
-	}
-	
+
 	/**
 	 * Devolve uma coleção de todos os nós pais do nó t. Caso este não tenha pais é retornada uma coleção vazia.
 	 * Não é feita qualquer verificação sobre a existência do nó recebido no grafo uma vez que este método 
@@ -271,16 +299,6 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 	}
 	
 	/**
-	 * Devolve um iterador de nós do tipo T que permite iterar pelos nós pais do nó de indice index. Este método 
-	 * deve ser usado pelo cliente.
-	 * @param index indice do nó do qual se pretende obter os pais
-	 * @return iterador dos pais do nó
-	 */
-	public Iterator<T> parents(int index) throws NoSuchElementException {
-		return new ParentsIterator(getNode(index));
-	}
-	
-	/**
 	 * Devolve um iterador de nós do tipo Node<T> que permite iterar pelos nós pais do nó de indice index. 
 	 * Este método é que deve ser utilizado dentro dos métodos da classe.
 	 * @param node nó do qual se pretende obter os pais
@@ -295,8 +313,4 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 		throw new UnsupportedOperationException(); 
 	}
 
-	public Iterator<T> children(int index) throws NoSuchElementException {
-		//este método não é implementado aqui devido à sua ineficiencia
-		throw new UnsupportedOperationException(); 
-	}
 }
