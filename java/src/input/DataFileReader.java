@@ -141,17 +141,17 @@ public class DataFileReader {
 		return timeSlice;	
 	}
 		
-	/*public static void main(String[] args) throws IOException {
-		TrainFileReader reader = new TrainFileReader("short-test-data.csv");
+	public static void main(String[] args) throws IOException {
+		DataFileReader reader = new DataFileReader("train-data.csv");
 		
-		System.out.println("#Subjects: " + reader.getSubjectsCount());
+		System.out.println("#Subjects: " + reader.subjectCount());
 		System.out.println("#RVars: " + reader.randomVarCount());
-		System.out.println("#TimeInstants: " + reader.getTimeInstants());
+		System.out.println("#TimeInstants: " + reader.timeInstantCount());
 
-		for(int k = 0; k < reader.getSubjectsCount(); k++) {
-			for(int i = 0; i < reader.randomVarCount(); i++) {
-				System.out.println(reader.getTimeSlice(0).getSample(k).getValue(i));
-			}
+		for(int i = 0; i < reader.randomVarCount(); i++) {
+			System.out.println("TimeSlice " + i);
+			System.out.println(reader.getTimeSlice(i));
 		}
-	}*/
+	}
+	
 }
