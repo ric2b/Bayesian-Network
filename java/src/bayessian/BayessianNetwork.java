@@ -9,12 +9,18 @@ import java.util.NoSuchElementException;
 
 import score.Score;
 import dataset.Dataset;
+
 import javax.naming.directory.InvalidAttributeValueException;
+
 import graph.DirectedAcyclicGraph;
+import graph.operation.AddOperation;
+import graph.operation.EdgeOperation;
+import graph.operation.FlipOperation;
+import graph.operation.RemoveOperation;
 
 public class BayessianNetwork<T extends RandomVariable> implements Iterable<Integer> {
 	
-	protected DirectedAcyclicGraph<RandomVariable> graph = new DirectedAcyclicGraph<RandomVariable>();
+	protected DirectedAcyclicGraph<RandomVariable> graph = null;
 	protected RandomVariable[] vars = null;
 	protected EstimateTable[] estimates = null;
 	protected Map<RandomVariable, Integer> varsToIndex = null; 
@@ -27,15 +33,82 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	 */
 	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score) {
 		this.vars = Arrays.copyOf(vars, vars.length);
-		this.estimates = Arrays.copyOf(estimates, estimates.length);
+		this.estimates = new EstimateTable[vars.length];	// uma tabela de estimativas por variavel aleatoria
 		
-		//construir mapa de indices
+		// construir mapa de indices
 		this.varsToIndex = new HashMap<>(this.vars.length);
 		for(int i = 0; i < this.vars.length; i++) {
 			varsToIndex.put(this.vars[i], i);
 		}
 		
-		// implementar geedy-hill para construir dataset
+		// construir Bayessian Network
+		greedyHillClimbingAlgorithm(dataset, score);
+	}
+	
+	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score) {
+		
+		// começar com o grafo vazio
+		graph = new DirectedAcyclicGraph<RandomVariable>();
+		
+		// operação sobre o grafo actual que resultou no grafo com melhor score
+		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;
+		int bestScore = -1;		// melhor score obtido numa iteração
+		
+		do {
+			if(operation != null) {
+				operation.exec(graph);
+			}
+			
+			bestScore = score.getScore(this, dataset);
+			
+			for(int i = 0; i < vars.length; i++) {
+				for(int j = 0; j < vars.length; j++) {
+					if(i == j) {
+						// um nó não se pode ligar a si próprio
+						continue;
+					}
+					
+					if(graph.getParents(vars[i]).contains(vars[j])) {	// testar se j é pai de i
+						
+						// operacao de remover aresta
+						graph.removeEdge(vars[j], vars[i]);
+						int curScore = score.getScore(this, dataset);
+						if(curScore > bestScore) {
+							bestScore = curScore;
+							operation = new RemoveOperation<>(vars[j], vars[i]);
+						}
+						// restaurar grafo
+						graph.addEdge(vars[j], vars[i]);
+						
+						// operacao de inverter aresta
+						if(graph.flipEdge(vars[j], vars[i])) {
+							curScore = score.getScore(this, dataset);
+							if(curScore > bestScore) {
+								bestScore = curScore;
+								operation = new FlipOperation<>(vars[j], vars[i]);
+							}
+							//restaurar grafo
+							graph.flipEdge(vars[i], vars[j]);
+						}
+						
+					} else {
+						// não existe aresta entre j e i
+						if(graph.addEdge(vars[j], vars[i])) {
+							int curScore = score.getScore(this, dataset);
+							if(curScore > bestScore) {
+								bestScore = curScore;
+								operation = new AddOperation<>(vars[j], vars[i]);
+							}
+							//restaurar grafo
+							graph.removeEdge(vars[j], vars[i]);
+						}
+					}
+				}
+			}
+			
+			
+		} while(operation != null);
+		
 	}
 	
 	/**
