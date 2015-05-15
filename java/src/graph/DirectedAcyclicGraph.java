@@ -71,9 +71,10 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 	 * @param srcNode	nó de origem da aresta
 	 * @param destNode	nó de destino da aresta
 	 */
-	protected void addEdge(Node<T> srcNode, Node<T> destNode) {
+	protected boolean addEdge(Node<T> srcNode, Node<T> destNode) {
 		//adicionar @srcNode ao conjunto de nós pais do @destNode
-		edgeMap.get(destNode).add(srcNode);
+		//adicionar teste de ciclo
+		return edgeMap.get(destNode).add(srcNode);
 	}
 	
 	/**
@@ -131,6 +132,7 @@ public class DirectedAcyclicGraph<T> extends Graph<T> implements NavigableGraph<
 	}
 	
 	protected void flipEdge(Node<T> srcNode, Node<T> destNode) {
+		//adicionar teste de ciclo
 		// remover aresta actual
 		removeEdge(srcNode, destNode);
 		// adicionar aresta inversa

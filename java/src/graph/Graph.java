@@ -91,7 +91,7 @@ public abstract class Graph<T> {
 	
 	protected abstract Node<T> getNode(T t) throws NullPointerException, NoSuchElementException;
 	
-	protected abstract void addEdge(Node<T> node1, Node<T> node2);
+	protected abstract boolean addEdge(Node<T> node1, Node<T> node2);
 	
 	/**
 	 * Adiciona uma aresta entre os nós que representam t1 e t2. Caso não exista algum dos nós recebidos
@@ -101,10 +101,10 @@ public abstract class Graph<T> {
 	 * @throws NullPointerException		caso t1 ou t2 sejam null
 	 * @throws NoSuchElementException	caso t1 ou t2 não existam no grafo
 	 */
-	public void addEdge(T t1, T t2) throws NullPointerException, NoSuchElementException {
+	public boolean addEdge(T t1, T t2) throws NullPointerException, NoSuchElementException {
 		//usar metodo abstracto que adiciona a aresta a partir de  Nodes
 		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
-		this.addEdge(getNode(t1), getNode(t2));
+		return this.addEdge(getNode(t1), getNode(t2));
 	}
 	
 	/**
@@ -114,10 +114,10 @@ public abstract class Graph<T> {
 	 * @param index2 indice do segundo nó da aresta
 	 * @throws NoSuchElementException	caso index1 ou index2 não sejam indices de nenhum dos nós do grafo
 	 */
-	public void addEdge(int index1, int index2) throws NoSuchElementException {
+	public boolean addEdge(int index1, int index2) throws NoSuchElementException {
 		//usar metodo abstracto que adiciona a aresta
 		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
-		this.addEdge(getNode(index1), getNode(index2));
+		return this.addEdge(getNode(index1), getNode(index2));
 	}
 	
 	protected abstract void removeNode(Node<T> node);
