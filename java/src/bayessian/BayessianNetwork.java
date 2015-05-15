@@ -13,6 +13,7 @@ import dataset.Dataset;
 import javax.naming.directory.InvalidAttributeValueException;
 
 import graph.DirectedAcyclicGraph;
+import graph.operation.AddOperation;
 import graph.operation.EdgeOperation;
 import graph.operation.FlipOperation;
 import graph.operation.RemoveOperation;
@@ -34,13 +35,14 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		this.vars = Arrays.copyOf(vars, vars.length);
 		this.estimates = new EstimateTable[vars.length];	// uma tabela de estimativas por variavel aleatoria
 		
-		//construir mapa de indices
+		// construir mapa de indices
 		this.varsToIndex = new HashMap<>(this.vars.length);
 		for(int i = 0; i < this.vars.length; i++) {
 			varsToIndex.put(this.vars[i], i);
 		}
 		
-		// implementar geedy-hill para construir dataset
+		// construir Bayessian Network
+		greedyHillClimbingAlgorithm(dataset, score);
 	}
 	
 	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score) {
@@ -92,7 +94,13 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 					} else {
 						// não existe aresta entre j e i
 						if(graph.addEdge(vars[j], vars[i])) {
-							//continuar....................
+							int curScore = score.getScore(this, dataset);
+							if(curScore > bestScore) {
+								bestScore = curScore;
+								operation = new AddOperation<>(vars[j], vars[i]);
+							}
+							//restaurar grafo
+							graph.removeEdge(vars[j], vars[i]);
 						}
 					}
 				}
