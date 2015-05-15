@@ -4,10 +4,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class StaticRandomVariable extends RandomVariable {
-	
-	public StaticRandomVariable(String nameRVar, int rangeOfRVar) {
-		super(nameRVar, rangeOfRVar);
-	}
 
 	public StaticRandomVariable(String name, int range, int timeInstant) {
 		super(name, range, timeInstant);

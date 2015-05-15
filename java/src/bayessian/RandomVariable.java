@@ -18,11 +18,6 @@ public abstract class RandomVariable implements Iterable<Integer> {
 		this.timeInstant = timeInstant;
 	}
 	
-	public RandomVariable(String nameRVar, int rangeOfRVar) {
-		name = nameRVar;
-		range = rangeOfRVar;
-	}
-	
 	public String getName() {
 		return name;
 	}
