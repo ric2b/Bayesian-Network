@@ -1,19 +1,17 @@
 package bayessian;
 
-import javax.naming.directory.InvalidAttributeValueException;
-
 public class EstimateTable {
 	
 	private double estimates[][] = null;
 	
-	public EstimateTable(int configCount, int valueCount) throws InvalidAttributeValueException {
+	public EstimateTable(int configCount, int valueCount) throws IllegalArgumentException {
 		
 		if(configCount <= 0) {
-			throw new InvalidAttributeValueException("o numero de configuracoes tem que ser maior que zero");
+			throw new IllegalArgumentException("o numero de configuracoes tem que ser maior que zero");
 		}
 		
 		if(valueCount <= 0) {
-			throw new InvalidAttributeValueException("o numero de valores tem que ser maior que zero");
+			throw new IllegalArgumentException("o numero de valores tem que ser maior que zero");
 		}
 		
 		this.estimates = new double[configCount][valueCount];

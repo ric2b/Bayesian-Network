@@ -10,8 +10,6 @@ import java.util.NoSuchElementException;
 import score.Score;
 import dataset.Dataset;
 
-import javax.naming.directory.InvalidAttributeValueException;
-
 import graph.DirectedAcyclicGraph;
 import graph.operation.AddOperation;
 import graph.operation.EdgeOperation;
@@ -176,20 +174,16 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	protected void fillEstimateTable(Dataset dataset) {
 		for(int i = 0; i < vars.length; i++) { //iterar sobre as RVars
 			EstimateTable estimate;
-			try {
-				estimate = new EstimateTable(getParentConfigurationCount(i), getRange(i)); //criar estimate table para cada RVar	
-				for(int j = 0; j < getParentConfigurationCount(i); j++) { //iterar sobre as configura�oes dos pais da RVar
-					int Nij = InstanceCounting.getNij(i, j, this, dataset);
-					for(int k = 0; k < getRange(i); k++) { //iterar sobre o range da RVar	
-						int Nijk = InstanceCounting.getNijk(i, j, k, this, dataset);
-						double estimateValue = (Nijk + 0.5)/(Nij + getRange(i)*0.5);
-						estimate.setEstimate(j, k, estimateValue);
-					}			
+			estimate = new EstimateTable(getParentConfigurationCount(i), getRange(i)); //criar estimate table para cada RVar	
+			for(int j = 0; j < getParentConfigurationCount(i); j++) { //iterar sobre as configura�oes dos pais da RVar
+				int Nij = InstanceCounting.getNij(i, j, this, dataset);
+				for(int k = 0; k < getRange(i); k++) { //iterar sobre o range da RVar	
+					int Nijk = InstanceCounting.getNijk(i, j, k, this, dataset);
+					double estimateValue = (Nijk + 0.5)/(Nij + getRange(i)*0.5);
+					estimate.setEstimate(j, k, estimateValue);
 				}			
-				estimates[i] = estimate;
-			} catch (InvalidAttributeValueException e) {
-				e.printStackTrace();
-			} 	
+			}			
+			estimates[i] = estimate;
 		}
 	}
 
