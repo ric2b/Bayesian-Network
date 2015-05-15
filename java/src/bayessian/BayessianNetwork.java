@@ -39,14 +39,14 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 			varsToIndex.put(this.vars[i], i);
 		}
 		
+		// começar com o grafo vazio
+		graph = new DirectedAcyclicGraph<RandomVariable>(vars);
+		
 		// construir Bayessian Network
 		greedyHillClimbingAlgorithm(dataset, score);
 	}
 	
 	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score) {
-		
-		// começar com o grafo vazio
-		graph = new DirectedAcyclicGraph<RandomVariable>();
 		
 		// operação sobre o grafo actual que resultou no grafo com melhor score
 		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;

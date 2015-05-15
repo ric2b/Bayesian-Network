@@ -37,6 +37,13 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		}
 	}
 	
+	public DirectedAcyclicGraph(T[] ts) {
+		//criar nós a partir da collection
+		for(T t : ts) {
+			this.addNode(t);
+		}
+	}
+	
 	/**
 	 * Adiciona um novo nó ao grafo. Este novo nó é adicionado sem qualquer aresta, ou seja,
 	 * sem qualquer ligação e nenhum dos outros nós que já existam no grafo.
