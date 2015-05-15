@@ -68,8 +68,10 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 	 * @throws NullPointerException		caso src ou dest sejam null
 	 * @throws NoSuchElementException	caso src ou dest não existam no grafo
 	 */
-	public void addEdge(T src, T dest) throws NullPointerException, NoSuchElementException {
+	public boolean addEdge(T src, T dest) throws NullPointerException, NoSuchElementException {
 		edgeMap.get(getNode(dest)).add(getNode(src));
+		// adicionar teste de ciclo
+		return true;
 	}
 	
 	/**
@@ -111,6 +113,16 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 	 */
 	public void removeAllEdges(T t) throws NullPointerException, NoSuchElementException {
 		edgeMap.get(getNode(t)).clear();
+	}
+	
+	public boolean flipEdge(T src, T dest) {
+		//adicionar teste de ciclo
+		// remover aresta actual
+		removeEdge(src, dest);
+		// adicionar aresta inversa
+		addEdge(dest, src);
+		
+		return true;
 	}
 	
 	/**
@@ -170,14 +182,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		}
 		
 		return node;
-	}
-	
-	public void flipEdge(T src, T dest) {
-		//adicionar teste de ciclo
-		// remover aresta actual
-		removeEdge(src, dest);
-		// adicionar aresta inversa
-		addEdge(dest, src);
 	}
 	
 	/**

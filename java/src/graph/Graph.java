@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 public interface Graph<T> {
 	
 	public void addNode(T t);
-	public void addEdge(T t1, T t2) throws NullPointerException, NoSuchElementException;
+	public boolean addEdge(T t1, T t2) throws NullPointerException, NoSuchElementException;
 	public void removeNode(T t) throws NullPointerException, NoSuchElementException;
 	public void removeAllNodes();
 	public void removeEdge(T t1, T t2) throws NullPointerException, NoSuchElementException;
