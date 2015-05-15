@@ -156,13 +156,13 @@ public class DataFileReader {
 	}
 		
 	public static void main(String[] args) throws IOException {
-		DataFileReader reader = new DataFileReader("train-data.csv");
+		DataFileReader reader = new DataFileReader("short-train-data.csv");
 		
 		System.out.println("#Subjects: " + reader.subjectCount());
 		System.out.println("#RVars: " + reader.randomVarCount());
 		System.out.println("#TimeInstants: " + reader.timeInstantCount());
 
-		for(int i = 0; i < reader.randomVarCount(); i++) {
+		for(int i = 0; i < reader.timeInstantCount(); i++) {
 			System.out.println("TimeSlice " + i);
 			System.out.println(reader.getTimeSlice(i));
 		}
