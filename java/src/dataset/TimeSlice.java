@@ -1,6 +1,5 @@
 package dataset;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -102,32 +101,43 @@ public class TimeSlice implements Iterable<Sample> {
 	}
 	
 	public String toString() {
-		return Arrays.toString(this.timeSlice);
+		String string = "";
+		for(Sample sample : this.timeSlice) {
+			if(sample == null)
+				string += "[null]\n";
+			else
+				string += sample.toString() + '\n';
+		}
+		
+		return string;
 	}
 	
 	/**
 	 * programa para testar se o iterador está a funcionar correctamente
+	 * @throws Exception 
 	 */
-//	public static void main(String[] args) {
-//		
-//		TimeSlice slices = new TimeSlice(5);
-//		for(int i = 0; i < 5; i++) {
-//			
-//			if(i == 3) {
-//				slices.addSample(null);
-//			} else {
-//				slices.addSample(new Sample(3));
-//			}
-//			
-//		}
-//		
-//		System.out.println("array");
-//		System.out.println(slices);
-//		
-//		System.out.println("slice");
-//		for(Sample sample : slices) {
-//			System.out.println(sample);
-//		}
-//	}
+	public static void main(String[] args) throws Exception {
+		
+		TimeSlice slices = new TimeSlice(5);
+		Sample.setLength(3);
+		
+		for(int i = 0; i < 5; i++) {
+			
+			if(i == 3) {
+				slices.addSample(null);
+			} else {
+				slices.addSample(new Sample());
+			}
+			
+		}
+		
+		System.out.println("array");
+		System.out.println(slices);
+		
+		System.out.println("slice");
+		for(Sample sample : slices) {
+			System.out.println(sample);
+		}
+	}
 	
 }
