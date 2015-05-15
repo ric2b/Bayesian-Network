@@ -58,6 +58,7 @@ public class DataFileReader {
 		RandomVariable[] vars = new RandomVariable[numberOfRVars];
 		String varName = null;		// nome da variavel
 		int timeInstant = -1;		// instante de tempo da variavel
+		int instantCount = timeInstantCount();
 		
 		int[] ranges = getRanges();
 		
@@ -76,7 +77,8 @@ public class DataFileReader {
 				timeInstant = Integer.parseInt(firstLine[i].substring(indexOfUnderScore + 1, firstLine[i].length()));
 			}
 			
-			vars[i] = new StaticRandomVariable(varName, ranges[i / numberOfRVars], timeInstant);
+			int rangeIndex = i / instantCount;
+			vars[i] = new StaticRandomVariable(varName, ranges[rangeIndex], timeInstant);
 		}
 
 		return vars;
@@ -99,9 +101,15 @@ public class DataFileReader {
 			//percorrer instantes de tempo da RVar
 			for(int i = varIndex; i < firstLine.length; i += numberOfRVars) { 	
 				for(int j = 1; j <= numberOfSubjects; j++) { 					//percorrer amostras da RVar
-					int sample = Integer.parseInt(fileReader.getPosition(j, i)); 	//recolher amostra da linha j e da coluna i
-					if(sample > max) {
-						max = sample; 
+					
+					try {
+						int sample = Integer.parseInt(fileReader.getPosition(j, i)); 	//recolher amostra da linha j e da coluna i
+						if(sample > max) {
+							max = sample; 
+						}
+					}
+					catch (ArrayIndexOutOfBoundsException except) {
+						// este subject não tem mais amostras
 					}
 				}
 			}
@@ -145,18 +153,5 @@ public class DataFileReader {
 	
 		return timeSlice;	
 	}
-		
-	/*public static void main(String[] args) throws IOException {
-		TrainFileReader reader = new TrainFileReader("short-test-data.csv");
-		
-		System.out.println("#Subjects: " + reader.getSubjectsCount());
-		System.out.println("#RVars: " + reader.randomVarCount());
-		System.out.println("#TimeInstants: " + reader.getTimeInstants());
-
-		for(int k = 0; k < reader.getSubjectsCount(); k++) {
-			for(int i = 0; i < reader.randomVarCount(); i++) {
-				System.out.println(reader.getTimeSlice(0).getSample(k).getValue(i));
-			}
-		}
-	}*/
+	
 }
