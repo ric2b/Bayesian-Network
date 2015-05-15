@@ -139,5 +139,5 @@ public class TimeSlice implements Iterable<Sample> {
 			System.out.println(sample);
 		}
 	}
-	
+
 }
