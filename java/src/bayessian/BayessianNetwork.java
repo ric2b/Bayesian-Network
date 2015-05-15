@@ -57,7 +57,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 				operation.exec(graph);
 			}
 			
-			bestScore = score.getScore(dataset);
+			bestScore = score.getScore(this, dataset);
 			
 			for(int i = 0; i < vars.length; i++) {
 				for(int j = 0; j < vars.length; j++) {
@@ -70,7 +70,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 						
 						// operacao de remover aresta
 						graph.removeEdge(vars[j], vars[i]);
-						int curScore = score.getScore(dataset);
+						int curScore = score.getScore(this, dataset);
 						if(curScore > bestScore) {
 							bestScore = curScore;
 							operation = new RemoveOperation<>(vars[j], vars[i]);
@@ -80,7 +80,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 						
 						// operacao de inverter aresta
 						graph.flipEdge(vars[j], vars[i]);
-						curScore = score.getScore(dataset);
+						curScore = score.getScore(this, dataset);
 						if(curScore > bestScore) {
 							bestScore = curScore;
 							operation = new FlipOperation<>(vars[j], vars[i]);
