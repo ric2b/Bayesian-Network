@@ -12,7 +12,8 @@ public class RandomVector {
 		}
 	}
 	
-	public RandomVariable[] getRandomVector() {
+	public RandomVariable[] toArray() {
 		return vars;
 	}
+	
 }
