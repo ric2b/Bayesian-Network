@@ -97,4 +97,12 @@ public class Dataset {
 		return samplesOfTimeT.size();
 	}
 	
+	public String toString() {
+		String string = "";
+		for(Sample sample : samplesOfTimeT) {
+			string += sample.toString() + '\n';
+		}
+		return string;
+	}
+	
 }
