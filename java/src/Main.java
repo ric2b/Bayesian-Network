@@ -2,8 +2,11 @@ import input.DataFileReader;
 
 import java.util.Arrays;
 
+import score.LLScore;
+import score.Score;
 import dataset.TimeSlice;
 import dataset.TransitionDataset;
+import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
 
 public class Main {
@@ -28,7 +31,13 @@ public class Main {
 		System.out.println(Arrays.toString(vars));
 		
 		TransitionDataset dataset = new TransitionDataset(timeSlices);
-		
 		System.out.println(dataset);
+		
+		int varCount = reader.randomVarCount() / reader.timeInstantCount();
+		RandomVariable[] varsOfTandNextT = Arrays.copyOfRange(vars, 0, varCount + varCount);
+		
+		Score score = new LLScore();
+		BayessianNetwork<RandomVariable> bayessian = new BayessianNetwork<>(varsOfTandNextT, dataset, score);
+		
 	}
 }
