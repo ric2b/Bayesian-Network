@@ -58,7 +58,7 @@ public class InstanceCounting {
 		
 		for(int i = 0; i < parents.length; i++) {
 			if(BN.isFutureVar(parents[i])){ //pai da RVar que se esta a considerar e do futuro (valor corresponde ao de d)
-				jArray[i] = d[parents[i] - BN.varCountInTimeT];
+				jArray[i] = d[parents[i] - BN.varCount];
 		
 			}
 			else{ //pai da RVar que se esta a considerar e do passado - retirar valor do test data set (sample)
@@ -74,11 +74,11 @@ public class InstanceCounting {
 		
 		for(int i = 0; i < d.length-1; i++) {
 			if(BN.isFutureVar(parents[i])){ //pai da RVar e do futuro
-				if((parents[i] - BN.varCountInTimeT) == indexOfVar){ //pai da RVar e a variavel que se esta a considerar
+				if((parents[i] - BN.varCount) == indexOfVar){ //pai da RVar e a variavel que se esta a considerar
 					jArray[i] = value;
 				}
 				else{ //e um pai do futuro mas nao e a RVar
-					jArray[i] = d[parents[i] - BN.varCountInTimeT];
+					jArray[i] = d[parents[i] - BN.varCount];
 				}
 		
 			}

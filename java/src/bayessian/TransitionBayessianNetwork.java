@@ -7,26 +7,38 @@ import dataset.TransitionDataset;
 
 public class TransitionBayessianNetwork<T extends RandomVariable> extends BayessianNetwork<T>{
 	
-	int varCountInTimeT = 0; // numero de variaveis num instante de tempo
-	
 	public TransitionBayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score) {
-		super(vars, dataset, score);
-		this.varCountInTimeT = vars.length / 2;
+		super(vars, dataset, score, vars.length / 2);
 	}
 	
 	@Override
 	protected boolean addAssociation(int srcIndex, int destIndex) {
 		
-		if(srcIndex >= varCountInTimeT && destIndex < varCountInTimeT) {
+		if((srcIndex >= varCount && destIndex < varCount) ||
+				(srcIndex < varCount && destIndex < varCount)) {
 			// tentiva de ligar duas variaveis de t+1 para t
+			// ou tentativa de ligar duas vars de instante t
 			return false;
 		}
 		
 		return graph.addEdge(vars[srcIndex], vars[destIndex]);
 	}
 	
+	@Override
+	protected boolean flipAssociation(int srcIndex, int destIndex) {
+		
+		if((destIndex >= varCount && srcIndex < varCount) ||
+				(srcIndex < varCount && destIndex < varCount)) {
+			// tentiva de ligar duas variaveis de t+1 para t
+			// ou tentativa de ligar duas vars de instante t
+			return false;
+		}
+		
+		return graph.flipEdge(vars[srcIndex], vars[destIndex]);
+	}
+	
 	boolean isFutureVar(int index) {
-		return index >= varCountInTimeT;
+		return index >= varCount;
 	}
 	
 	private double calculateSingleProbability(int indexOfVar, int value, Sample sample) {
@@ -35,7 +47,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		double probability = 0;
 		double resultOfMultiplication = 0;
 		int numberOfIterations = 0;
-		int numberOfRvars = varCountInTimeT; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
+		int numberOfRvars = varCount; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
 		int[] d = new int[numberOfRvars];
 		
 		for(int i = 0; i < numberOfRvars; i++) {
@@ -96,7 +108,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		
 		int i = 0;
 		for(Sample item : dataset) {
-			futureValues[i] = calculateFutureValue(indexOfVar-varCountInTimeT, item); //subtrair numero de RVars para mapear o index de X[t+1] para X[t]
+			futureValues[i] = calculateFutureValue(indexOfVar-varCount, item); //subtrair numero de RVars para mapear o index de X[t+1] para X[t]
 			i++;
 		}
 		

@@ -22,14 +22,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	protected RandomVariable[] vars = null;
 	protected EstimateTable[] estimates = null;
 	protected Map<RandomVariable, Integer> varsToIndex = null; 
+	protected int varCount = 0; 
 	
-	/**
-	 * 
-	 * @param vars
-	 * @param dataset
-	 * @param score
-	 */
-	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score) {
+	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score, int varCount) {
+		this.varCount = varCount;
 		this.vars = Arrays.copyOf(vars, vars.length);
 		this.estimates = new EstimateTable[vars.length];	// uma tabela de estimativas por variavel aleatoria
 		
@@ -47,8 +43,8 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		fillEstimateTable(dataset);
 		//imprimir tabelas de estimativas
-		for(EstimateTable table : estimates) {
-			System.out.println(table);
+		for (int i = 0; i < estimates.length; i++) {
+			System.out.println(i + ":\n" + estimates[i]);	
 		}
 	}
 	
@@ -62,6 +58,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 			if(operation != null) {
 				operation.exec(graph);
 				System.out.println(graph);
+				System.out.println("score: " + bestScore);
 				operation = null;
 			}
 			
@@ -87,7 +84,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 						graph.addEdge(vars[j], vars[i]);
 						
 						// operacao de inverter aresta
-						if(graph.flipEdge(vars[j], vars[i])) {
+						if(flipAssociation(j, i)) {
 							curScore = score.getScore(this, dataset);
 							if(curScore > bestScore) {
 								bestScore = curScore;
@@ -119,6 +116,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	
 	protected boolean addAssociation(int srcIndex, int destIndex) {
 		return graph.addEdge(vars[srcIndex], vars[destIndex]);
+	}
+	
+	protected boolean flipAssociation(int srcIndex, int destIndex) {
+		return graph.flipEdge(vars[srcIndex], vars[destIndex]);
 	}
 	
 	/**
