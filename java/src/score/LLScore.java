@@ -14,24 +14,14 @@ public class LLScore implements Score {
 		for(int i: bayessian) { // for each node of the Network
 			int Q = bayessian.getParentConfigurationCount(i);
 			
-			if(Q == 0) {
-				int N = bayessian.getRange(i);
-				for(int k = 0; k < N; k++) {
-					int Nij = InstanceCounting.getNij(i,0, bayessian, dataset);
-					
-					if(InstanceCounting.getNijk(i,0,k, bayessian, dataset) != 0){ // otherwise it's 0, no need to add 
-						score += InstanceCounting.getNijk(i,0,k, bayessian, dataset) * Math.log((InstanceCounting.getNijk(i,0,k, bayessian, dataset)*1.0)/Nij);
-					}					
-				}
-			}
-			
 			for(int J = 0; J < Q; J++) {
 				int N = bayessian.getRange(i);
 				for(int k = 0; k < N; k++) {
 					int Nij = InstanceCounting.getNij(i,J, bayessian, dataset);
 					
 					if(InstanceCounting.getNijk(i,J,k, bayessian, dataset) != 0){ // otherwise it's 0, no need to add 
-						score += InstanceCounting.getNijk(i,J,k, bayessian, dataset) * Math.log((InstanceCounting.getNijk(i,J,k, bayessian, dataset)*1.0)/Nij);
+						score += InstanceCounting.getNijk(i,J,k, bayessian, dataset) * 
+								Math.log((InstanceCounting.getNijk(i,J,k, bayessian, dataset)*1.0)/Nij) / Math.log(2);
 					}					
 				}
 			}
