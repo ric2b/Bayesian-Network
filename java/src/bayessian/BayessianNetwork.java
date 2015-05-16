@@ -50,7 +50,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		// operação sobre o grafo actual que resultou no grafo com melhor score
 		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;
-		int bestScore = -1;		// melhor score obtido numa iteração
+		int bestScore = Integer.MIN_VALUE;		// melhor score obtido numa iteração
 		
 		do {
 			if(operation != null) {
