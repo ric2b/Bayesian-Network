@@ -44,7 +44,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		//value = valor que estamos a considerar nesse momento para a RVar que se pretende obter
 		double probability = 0;
 		double resultOfMultiplication = 0;
-		int numberOfIterations = 0;
+		int numberOfIterations = 1;
 		int numberOfRvars = varCount; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
 		int[] d = new int[numberOfRvars];
 		
