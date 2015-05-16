@@ -16,8 +16,14 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		System.out.println("Parameters: " + args[0] + args[1] + args[2] + Integer.parseInt(args[4]));
-		
+		if(args.length == 5) {
+			System.out.println("Parameters: " + args[0] + args[1] + args[2] + Integer.parseInt(args[4]));
+		}
+		else{
+			System.out.println("os parâmetros do programa devem ser dados por: <train> <test> <score> <randtest> <var>");
+			System.exit(0);
+		}
+			
 		long start = System.nanoTime();  
 		
 		//arg[0] - filename do train dataset
@@ -45,7 +51,8 @@ public class Main {
 			score = new LLScore();
 		}
 		else {
-			System.out.println("o score deve ser dado por <MDL> ou <LL>");
+			System.out.println("o score deve ser dado por: <MDL> ou <LL>");
+			System.exit(0);
 		}
 			
 		int instantCount = trainFile.timeInstantCount();
@@ -79,14 +86,25 @@ public class Main {
 		if(args[4] == null) { //var is not given - all indexes from 1 to n should be considered
 			int[][] futureValues = new int[testFile.randomVarCount()][testFile.subjectCount()];
 			for(int i = 0; i < testFile.randomVarCount(); i++) {
-				futureValues[i] = transitionBN.getFutureValues(i, new Dataset(testFile.getTimeSlice(0)));
+				futureValues[i] = transitionBN.getFutureValues(i, new Dataset(testFile.getTimeSlice(0)));			
 			}
+			for(int j = 0; j < testFile.subjectCount(); j++) { //cada coluna da matriz corresponde aos futures values das RVars para um instante de tempo
+				System.out.println("-> instance " + (j+1) + ": ");
+				for(int i = 0; i < testFile.randomVarCount(); i++) { //cada linha da matriz corresponde aos futures values de uma RVar		
+					if(i == (testFile.randomVarCount()-1)) {
+						System.out.println(futureValues[i][j]); //para a ultima RVar ja nao se imprime a virgula
+					}
+					else {
+						System.out.println(futureValues[i][j] + ", ");
+					}
+				}
+			}	
 		}
 		else {
 			int[] futureValues = new int[testFile.subjectCount()];
 			futureValues = transitionBN.getFutureValues(Integer.parseInt(args[4]), new Dataset(testFile.getTimeSlice(0)));
-			for(int i = 0; i < testFile.subjectCount(); i++) {
-				System.out.println("-> instance " + (i+1) + ": " + futureValues[i]);
+			for(int j = 0; j < testFile.subjectCount(); j++) {
+				System.out.println("-> instance " + (j+1) + ": " + futureValues[j]);
 			}
 		}	
 		
