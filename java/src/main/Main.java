@@ -16,6 +16,10 @@ public class Main {
 
 	public static void main(String[] args) {
 		
+		System.out.println("Parameters: " + args[0] + args[1] + args[2] + Integer.parseInt(args[4]));
+		
+		long start = System.nanoTime();  
+		
 		//arg[0] - filename do train dataset
 		DataFileReader trainFile = null;
 		try {
@@ -37,8 +41,11 @@ public class Main {
 		if(args[2].equals("MDL")) {
 			score = new MDLScore();
 		}
-		else {
+		else if(args[2].equals("LL")){
 			score = new LLScore();
+		}
+		else {
+			System.out.println("o score deve ser dado por <MDL> ou <LL>");
 		}
 			
 		int instantCount = trainFile.timeInstantCount();
@@ -57,19 +64,33 @@ public class Main {
 		}	
 		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(vars, dataset, score); 
 		
+		long elapsedTime = System.nanoTime() - start; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
+		System.out.println("Building DBN: " + elapsedTime);
+		
+		//System.out.println("Transition network: ");
+		
 		//arg[3] - maximum number of random restarts
 		//bonus
+		
+		start = System.nanoTime();    
+		System.out.println("Performing inference:");
 		
 		//arg[4] - var		
 		if(args[4] == null) { //var is not given - all indexes from 1 to n should be considered
 			int[][] futureValues = new int[testFile.randomVarCount()][testFile.subjectCount()];
 			for(int i = 0; i < testFile.randomVarCount(); i++) {
-				futureValues[i] = transitionBN.getFutureValues(i, new Dataset(testFile.getTimeSlice(0))); 				
+				futureValues[i] = transitionBN.getFutureValues(i, new Dataset(testFile.getTimeSlice(0)));
 			}
 		}
 		else {
 			int[] futureValues = new int[testFile.subjectCount()];
 			futureValues = transitionBN.getFutureValues(Integer.parseInt(args[4]), new Dataset(testFile.getTimeSlice(0)));
+			for(int i = 0; i < testFile.subjectCount(); i++) {
+				System.out.println("-> instance " + (i+1) + ": " + futureValues[i]);
+			}
 		}	
+		
+		elapsedTime = System.nanoTime() - start; //tempo que se demorou a inferir o modelo da DBN (sem a fase de aprendizagem do train set) 	
+		System.out.println("Infering with DBN: " + elapsedTime);
 	}
 }
