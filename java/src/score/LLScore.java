@@ -16,12 +16,18 @@ public class LLScore implements Score {
 			
 			for(int J = 0; J < Q; J++) {
 				int N = bayessian.getRange(i);
+				
+				// calcular Nijks
+				int[] Nijks = new int[bayessian.getRange(i)];
+				int Nij = 0;
 				for(int k = 0; k < N; k++) {
-					int Nij = InstanceCounting.getNij(i,J, bayessian, dataset);
-					
-					int Nijk = InstanceCounting.getNijk(i,J,k, bayessian, dataset);
-					if(Nijk != 0 && Nij != 0)
-						score += Nijk * Math.log((Nijk*1.0)/Nij) / Math.log(2);					
+					Nij += Nijks[k] = InstanceCounting.getNijk(i,J,k, bayessian, dataset);						
+				}
+				
+				// calcular score
+				for(int k = 0; k < N; k++) {
+					if(Nijks[k] != 0 && Nij != 0)
+						score += Nijks[k] * Math.log((Nijks[k]*1.0)/Nij) / Math.log(2);
 				}
 			}
 		}
