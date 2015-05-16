@@ -15,7 +15,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 	
 	protected Map<Node<T>, Collection<Node<T>>> edgeMap = new HashMap<>();;		// mapa que representa as arestas
 	protected Map<T, Node<T>> nodeMap = new HashMap<>();								// permite obter o nó para um dado T
-	protected Map<Integer, Node<T>> indexMap = new HashMap<>();						// permite obter o nó a partir de um dado indice 
 	protected int nodeCount = 0;																// numero de nós no grafo
 	
 	/**
@@ -62,7 +61,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		
 		//colocar nó nos mapas de indice e de T
 		nodeMap.put(t, node);
-		indexMap.put(nodeCount, node);
 		
 		nodeCount++;
 	}
@@ -95,7 +93,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		//remover nó de todos os mapas
 		edgeMap.remove(node);
 		nodeMap.remove(node.get());
-		indexMap.remove(node.getIndex());
 		
 		nodeCount--;
 	}
@@ -149,7 +146,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		//limpar todos os mapas
 		edgeMap.clear();
 		nodeMap.clear();
-		indexMap.clear();
 		
 		nodeCount = 0;
 	}
@@ -325,5 +321,16 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		//este método não é implementado aqui devido à sua ineficiencia
 		throw new UnsupportedOperationException(); 
 	}
-
+	
+	public String toString() {
+		
+		String string = "";
+		
+		for(Node<T> node : edgeMap.keySet()) {
+			string += node + ": " + edgeMap.get(node) + '\n'; 
+		}
+		
+		return string;
+	}
+	
 }

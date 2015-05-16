@@ -57,4 +57,9 @@ class Node<T> {
 					
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return index + ":" + t.toString();
+	}
 }
