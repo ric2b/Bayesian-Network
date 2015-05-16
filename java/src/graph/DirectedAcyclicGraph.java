@@ -322,4 +322,15 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		throw new UnsupportedOperationException(); 
 	}
 	
+	public String toString() {
+		
+		String string = "";
+		
+		for(Node<T> node : edgeMap.keySet()) {
+			string += node + ": " + edgeMap.get(node) + '\n'; 
+		}
+		
+		return string;
+	}
+	
 }
