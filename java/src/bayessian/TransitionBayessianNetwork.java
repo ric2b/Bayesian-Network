@@ -14,10 +14,9 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 	@Override
 	protected boolean addAssociation(int srcIndex, int destIndex) {
 		
-		if((srcIndex >= varCount && destIndex < varCount) ||
-				(srcIndex < varCount && destIndex < varCount)) {
-			// tentiva de ligar duas variaveis de t+1 para t
-			// ou tentativa de ligar duas vars de instante t
+		if((srcIndex >= varCount && destIndex < varCount) ||		// tentiva de ligar duas variaveis de t+1 para t
+				(srcIndex < varCount && destIndex < varCount) ||	// ou tentativa de ligar duas vars de instante t 
+				graph.getParents(vars[destIndex]).size() == BayessianNetwork.parentCount) {	// variavel ja tem 3 pais
 			return false;
 		}
 		
@@ -27,10 +26,9 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 	@Override
 	protected boolean flipAssociation(int srcIndex, int destIndex) {
 		
-		if((destIndex >= varCount && srcIndex < varCount) ||
-				(srcIndex < varCount && destIndex < varCount)) {
-			// tentiva de ligar duas variaveis de t+1 para t
-			// ou tentativa de ligar duas vars de instante t
+		if((destIndex >= varCount && srcIndex < varCount) ||		// tentiva de ligar duas variaveis de t+1 para t
+				(srcIndex < varCount && destIndex < varCount) ||		// tentativa de ligar duas vars de instante t
+				graph.getParents(vars[srcIndex]).size() == BayessianNetwork.parentCount) {	// variavel ja tem 3 pais
 			return false;
 		}
 		
