@@ -6,5 +6,5 @@ import dataset.Dataset;
 
 public interface Score {
 
-	public int getScore(BayessianNetwork<? extends RandomVariable> bayessian, Dataset dataset);
+	public double getScore(BayessianNetwork<? extends RandomVariable> bayessian, Dataset dataset);
 }
