@@ -19,10 +19,9 @@ public class LLScore implements Score {
 				for(int k = 0; k < N; k++) {
 					int Nij = InstanceCounting.getNij(i,J, bayessian, dataset);
 					
-					if(InstanceCounting.getNijk(i,J,k, bayessian, dataset) != 0){ // otherwise it's 0, no need to add 
-						score += InstanceCounting.getNijk(i,J,k, bayessian, dataset) * 
-								Math.log((InstanceCounting.getNijk(i,J,k, bayessian, dataset)*1.0)/Nij) / Math.log(2);
-					}					
+					int Nijk = InstanceCounting.getNijk(i,J,k, bayessian, dataset);
+					if(Nijk != 0 && Nij != 0)
+						score += Nijk * Math.log((Nijk*1.0)/Nij) / Math.log(2);					
 				}
 			}
 		}

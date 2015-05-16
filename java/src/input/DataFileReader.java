@@ -59,6 +59,7 @@ public class DataFileReader {
 		String varName = null;		// nome da variavel
 		int timeInstant = -1;		// instante de tempo da variavel
 		int instantCount = timeInstantCount();
+		int varInOneInstant = numberOfRVars / instantCount;
 		
 		int[] ranges = getRanges();
 		
@@ -77,7 +78,7 @@ public class DataFileReader {
 				timeInstant = Integer.parseInt(firstLine[i].substring(indexOfUnderScore + 1, firstLine[i].length()));
 			}
 			
-			int rangeIndex = i / instantCount;
+			int rangeIndex = i % varInOneInstant;
 			vars[i] = new StaticRandomVariable(varName, ranges[rangeIndex], timeInstant);
 		}
 
