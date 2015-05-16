@@ -73,18 +73,23 @@ public class InstanceCounting {
 		int[] jArray = new int[d.length-1];
 		
 		for(int i = 0; i < d.length-1; i++) {
-			if(BN.isFutureVar(parents[i])){ //pai da RVar e do futuro
-				if((parents[i] - BN.varCount) == indexOfVar){ //pai da RVar e a variavel que se esta a considerar
-					jArray[i] = value;
-				}
-				else{ //e um pai do futuro mas nao e a RVar
-					jArray[i] = d[parents[i] - BN.varCount];
-				}
-		
+			if(parents.length == 0) {
+				jArray[i] = 0;
 			}
-			else{ //pai da RVar e do passado
-				jArray[i] = sample.getValue(parents[i]);
-			}	
+			else {
+				if(BN.isFutureVar(parents[i])){ //pai da RVar e do futuro
+					if((parents[i] - BN.varCount) == indexOfVar){ //pai da RVar e a variavel que se esta a considerar
+						jArray[i] = value;
+					}
+					else{ //e um pai do futuro mas nao e a RVar
+						jArray[i] = d[parents[i] - BN.varCount];
+					}
+			
+				}
+				else{ //pai da RVar e do passado
+					jArray[i] = sample.getValue(parents[i]);
+				}
+			}
 		}
 	
 		return mapjToJ(BN.getParentRanges(l), jArray);
