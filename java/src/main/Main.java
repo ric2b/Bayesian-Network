@@ -16,15 +16,19 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		if(args.length == 5) {
+		if(args.length == 5) { //e especificada a RVar sobre a qual se pretende inferir
 			System.out.println("Parameters: " + args[0] + args[1] + args[2] + Integer.parseInt(args[4]));
 		}
+		else if(args.length == 4) { //inferir para todas as RVars
+			System.out.println("Parameters: " + args[0] + args[1] + args[2]);
+		}
 		else{
-			System.out.println("os parâmetros do programa devem ser dados por: <train> <test> <score> <randtest> <var>");
+			System.out.println("The program parameters must be given by: <train> <test> <score> <randtest> <var> to infer the random variable specified by <var>");
+			System.out.println("				     or: <train> <test> <score> <randtest> to infer all random variables.");
 			System.exit(0);
 		}
 			
-		long start = System.nanoTime();  
+		long startTime = System.nanoTime();  
 		
 		//arg[0] - filename do train dataset
 		DataFileReader trainFile = null;
@@ -51,7 +55,7 @@ public class Main {
 			score = new LLScore();
 		}
 		else {
-			System.out.println("o score deve ser dado por: <MDL> ou <LL>");
+			System.out.println("Score must be given by: <MDL> ou <LL>.");
 			System.exit(0);
 		}
 			
@@ -71,15 +75,21 @@ public class Main {
 		}	
 		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(vars, dataset, score); 
 		
-		long elapsedTime = System.nanoTime() - start; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
+		long elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
 		System.out.println("Building DBN: " + elapsedTime);
 		
-		//System.out.println("Transition network: ");
+		System.out.println("Transition network: ");
+		System.out.println("=== Inter-slice connectivity");
+		
+		System.out.println("=== Intra-slice connectivity");
+		
+		System.out.println("=== Scores");
+		
 		
 		//arg[3] - maximum number of random restarts
 		//bonus
 		
-		start = System.nanoTime();    
+		startTime = System.nanoTime();    
 		System.out.println("Performing inference:");
 		
 		//arg[4] - var		
@@ -108,7 +118,7 @@ public class Main {
 			}
 		}	
 		
-		elapsedTime = System.nanoTime() - start; //tempo que se demorou a inferir o modelo da DBN (sem a fase de aprendizagem do train set) 	
+		elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a inferir o modelo da DBN (sem a fase de aprendizagem do train set) 	
 		System.out.println("Infering with DBN: " + elapsedTime);
 	}
 }
