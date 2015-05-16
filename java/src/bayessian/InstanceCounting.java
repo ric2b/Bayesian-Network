@@ -9,12 +9,14 @@ public class InstanceCounting {
 		// 'J' is the configurations using all parents, 'j' is the configuration of a single parent
 		int j[] = new int[parentRanges.length];
 		
-		if(j.length == 1) {
+		if(j.length == 0) {
+			j = null;
+		} else if(j.length == 1) {
 			j[0] = J;
 		} else if(j.length == 2) {
 			j[0] = J % parentRanges[0];
 			j[1] = J / parentRanges[0];
-		} else {
+		} else if(j.length == 3) {
 			j[2] = J % parentRanges[2];
 			int tempValue = (J - j[2]) / parentRanges[2];
 			j[1] = tempValue % parentRanges[1];
