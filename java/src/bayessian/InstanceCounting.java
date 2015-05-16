@@ -27,7 +27,13 @@ public class InstanceCounting {
 		// 'J' is the configurations using all parents, 'j' is the configuration of a single parent
 		// j should have size 3 and if parent 1 or 2 don't exist their respective positions should have value 0
 		// j[i] and parentRanges[i] should be related to the same parent (same order for both arrays)
-		return j[2]*parentRanges[1] + j[1]*parentRanges[0] + j[0];
+		
+		int J = 0;
+		for (int i = 0; i < parentRanges.length; i++) {
+			J += j[i + 1] * parentRanges[i];
+		}
+		
+		return J;
 	}
 	
 	public static int getNijk(int i, int J, int k, BayessianNetwork<? extends RandomVariable> BN, Dataset dataset) {
