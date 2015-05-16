@@ -194,7 +194,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	 */	
 	public int[] getParentRanges(int index) {
 		Collection<RandomVariable> parents = graph.getParents(vars[index]);
-		int[] parentRanges = new int[3];
+		int[] parentRanges = new int[parents.size()];
 		
 		int i = 0;
 		for(RandomVariable parent : parents) {
