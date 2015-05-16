@@ -43,12 +43,12 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		//
 		//value = valor que estamos a considerar nesse momento para a RVar que se pretende obter
 		double probability = 0;
-		double resultOfMultiplication = 0;
+		double resultOfMultiplication = 1.0;
 		int numberOfIterations = 1;
-		int numberOfRvars = varCount; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
-		int[] d = new int[numberOfRvars];
+		int numberOfRVars = varCount; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
+		int[] d = new int[numberOfRVars];
 		
-		for(int i = 0; i < numberOfRvars; i++) {
+		for(int i = 0; i < numberOfRVars; i++) {
 			if(i != indexOfVar) {
 				numberOfIterations *= getRange(i);
 			}
@@ -57,7 +57,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		for(int n = 0; n < numberOfIterations-1; n++) {
 			int j = InstanceCounting.getjOfProbability(indexOfVar, sample, getParents(indexOfVar), d, this);
 			double thetaijk = estimates[indexOfVar].getEstimate(j, value);
-			for(int l = 0; l < numberOfRvars; l++) {
+			for(int l = 0; l < numberOfRVars; l++) {
 				double thetaljdl = 1.0;
 				if(l != indexOfVar) {
 					int jlinha = InstanceCounting.getjLinhaOfProbability(indexOfVar, value, l, sample, getParents(l), d, this);
@@ -66,13 +66,16 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 				resultOfMultiplication *= thetaljdl;
 			}
 			probability += thetaijk * resultOfMultiplication;		
-			d[0]++;
-			for(int m = 0; m < numberOfRvars; m++) {
+			d[numberOfRVars-1]++;
+			for(int m = numberOfRVars-1; m >= 0; m--) {
 				if(m == indexOfVar){
 					continue;
 				}
-				if(d[m] == getRange(m)) {
-					d[m+1]++;
+				else if(d[m] == getRange(m)) {
+					if(m == 0) { //ja nao ha mais somatorios a efectuar
+						break;
+					}
+					d[m-1]++;
 					d[m] = 0;
 				}
 				else {
