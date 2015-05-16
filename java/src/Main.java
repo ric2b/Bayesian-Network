@@ -11,7 +11,7 @@ import bayessian.RandomVariable;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
-		DataFileReader reader = new DataFileReader("short-train-data.csv");
+		DataFileReader reader = new DataFileReader("2time-train-data.csv");
 		
 		System.out.println("#Subjects: " + reader.subjectCount());
 		System.out.println("#RVars: " + reader.randomVarCount());

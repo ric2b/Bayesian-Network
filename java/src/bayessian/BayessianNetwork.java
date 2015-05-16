@@ -55,6 +55,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		do {
 			if(operation != null) {
 				operation.exec(graph);
+				System.out.println(graph);
 				operation = null;
 			}
 			
