@@ -50,7 +50,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		// operação sobre o grafo actual que resultou no grafo com melhor score
 		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;
-		int bestScore = Integer.MIN_VALUE;		// melhor score obtido numa iteração
+		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
 		
 		do {
 			if(operation != null) {
@@ -71,7 +71,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 						
 						// operacao de remover aresta
 						graph.removeEdge(vars[j], vars[i]);
-						int curScore = score.getScore(this, dataset);
+						double curScore = score.getScore(this, dataset);
 						if(curScore > bestScore) {
 							bestScore = curScore;
 							operation = new RemoveOperation<>(vars[j], vars[i]);
@@ -93,7 +93,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 					} else {
 						// não existe aresta entre j e i
 						if(addAssociation(j, i)) {	// adicionar aresta com teste
-							int curScore = score.getScore(this, dataset);
+							double curScore = score.getScore(this, dataset);
 							if(curScore > bestScore) {
 								bestScore = curScore;
 								operation = new AddOperation<>(vars[j], vars[i]);

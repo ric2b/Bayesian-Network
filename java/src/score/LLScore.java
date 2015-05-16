@@ -8,9 +8,9 @@ import bayessian.InstanceCounting;
 public class LLScore implements Score {
 
 	@Override
-	public int getScore(BayessianNetwork<? extends RandomVariable> bayessian, Dataset dataset) {
+	public double getScore(BayessianNetwork<? extends RandomVariable> bayessian, Dataset dataset) {
 		
-		int score = 0;		
+		double score = 0;		
 		for(int i: bayessian) { // for each node of the Network
 			int Q = bayessian.getParentConfigurationCount(i);
 						
@@ -27,7 +27,7 @@ public class LLScore implements Score {
 		}
 		
 		if(score == 0) {
-			return Integer.MIN_VALUE;
+			return Double.NEGATIVE_INFINITY;
 		}
 		
 		return score;
