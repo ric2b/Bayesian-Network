@@ -76,8 +76,10 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 	 * @throws NoSuchElementException	caso src ou dest não existam no grafo
 	 */
 	public boolean addEdge(T src, T dest) throws NullPointerException, NoSuchElementException {
+		if(doesItCreateCycle(this.getNode(src),this.getNode(dest))){
+			return false;
+		}
 		edgeMap.get(getNode(dest)).add(getNode(src));
-		// adicionar teste de ciclo
 		return true;
 	}
 	
@@ -239,20 +241,20 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		List<Node<T>> visitedNodes = new ArrayList<Node<T>>(); // lista dos nós já visitados
 		
 		//primeiro nó a ser "descoberto" é V (o destino da nova aresta)
-		queue.add(destination); 
-		visitedNodes.add(destination);
+		queue.add(source); 
+		visitedNodes.add(source);
 		
 		Node<T> currentNode;
 		Node<T> tmpNode;
 		while(!queue.isEmpty()){
 			
 			currentNode = queue.poll(); // vai buscar à fila o próximo nó a visitar (e remove-o da fila)
-			if(currentNode.equals(source)){ 
+			if(currentNode.equals(destination)){ 
 				return true; // se o nó actual é U, foi encontrado um caminho de V para U, a aresta (U,V) vai criar um ciclo
 			}
 			
 			visitedNodes.add(currentNode); // o nó actual é marcado como visitado
-			Iterator<Node<T>> currentNodeIterator = this.parents(currentNode); 
+			Iterator<Node<T>> currentNodeIterator = this.parents(currentNode);
 			// o iterador é usado para saber os nós vizinhos do nó actual
 			
 			while(currentNodeIterator.hasNext()){ // iterar por todos os nós vizinhos do nó actual
