@@ -128,11 +128,22 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 	public String toString() {
 		String string = "";
 		
-		System.out.println("=== Inter-slice connectivity");
+		string += "=== Inter-slice connectivity\n";
 		for(int i = varCount; i < vars.length; i++) {
 			string += vars[i].toString() + " : ";
 			for(RandomVariable var: graph.getParents(vars[i])) {
-				string += var + " ";
+				if(var.getTimeInstant() == 0)
+					string += var + " ";
+			}
+			string += '\n';
+		}
+		
+		string += "=== Intra-slice connectivity\n";
+		for(int i = varCount; i < vars.length; i++) {
+			string += vars[i].toString() + " : ";
+			for(RandomVariable var: graph.getParents(vars[i])) {
+				if(var.getTimeInstant() == 1)
+					string += var + " ";
 			}
 			string += '\n';
 		}
