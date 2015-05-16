@@ -77,6 +77,7 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		if(doesItCreateCycle(this.getNode(src),this.getNode(dest))){
 			return false;
 		}
+		
 		edgeMap.get(getNode(dest)).add(getNode(src));
 		return true;
 	}
@@ -122,7 +123,11 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 	}
 	
 	public boolean flipEdge(T src, T dest) {
-		//adicionar teste de ciclo
+		
+		if(doesItCreateCycle(this.getNode(dest),this.getNode(src))){
+			return false;
+		}
+		
 		// remover aresta actual
 		removeEdge(src, dest);
 		// adicionar aresta inversa

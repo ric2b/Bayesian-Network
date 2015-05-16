@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 
 import score.Score;
 import dataset.Dataset;
-
 import graph.DirectedAcyclicGraph;
 import graph.operation.AddOperation;
 import graph.operation.EdgeOperation;
@@ -23,6 +22,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	protected EstimateTable[] estimates = null;
 	protected Map<RandomVariable, Integer> varsToIndex = null; 
 	protected int varCount = 0; 
+	protected static int parentCount = 3;
 	
 	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score, int varCount) {
 		this.varCount = varCount;
@@ -115,10 +115,21 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	}
 	
 	protected boolean addAssociation(int srcIndex, int destIndex) {
+		
+		if(graph.getParents(vars[destIndex]).size() >= BayessianNetwork.parentCount) {
+			// variavel ja tem 3 pais
+			return false;
+		}
+		
 		return graph.addEdge(vars[srcIndex], vars[destIndex]);
 	}
 	
 	protected boolean flipAssociation(int srcIndex, int destIndex) {
+		
+		if(graph.getParents(vars[srcIndex]).size() == BayessianNetwork.parentCount) {	// variavel ja tem 3 pais
+			return false;
+		}
+		
 		return graph.flipEdge(vars[srcIndex], vars[destIndex]);
 	}
 	
