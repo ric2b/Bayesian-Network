@@ -43,9 +43,9 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		fillEstimateTable(dataset);
 		//imprimir tabelas de estimativas
-		for (int i = 0; i < estimates.length; i++) {
-			System.out.println(i + ":\n" + estimates[i]);	
-		}
+//		for (int i = 0; i < estimates.length; i++) {
+//			System.out.println(i + ":\n" + estimates[i]);	
+		//}
 	}
 	
 	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score) {
@@ -57,8 +57,8 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		do {
 			if(operation != null) {
 				operation.exec(graph);
-				System.out.println(graph);
-				System.out.println("score: " + bestScore);
+//				System.out.println(graph);
+//				System.out.println("score: " + bestScore);
 				operation = null;
 			}
 			

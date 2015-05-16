@@ -85,7 +85,7 @@ public class Main {
 		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, dataset, score); 
 		
 		long elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
-		System.out.println("Building DBN: " + elapsedTime);
+		System.out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
 		
 		System.out.println("Transition network: ");
 		System.out.println("=== Inter-slice connectivity");
@@ -128,6 +128,6 @@ public class Main {
 		}	
 		
 		elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a inferir o modelo da DBN (sem a fase de aprendizagem do train set) 	
-		System.out.println("Infering with DBN: " + elapsedTime);
+		System.out.println("Infering with DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
 	}
 }
