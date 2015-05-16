@@ -44,6 +44,12 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		// construir Bayessian Network
 		greedyHillClimbingAlgorithm(dataset, score);
+		
+		fillEstimateTable(dataset);
+		//imprimir tabelas de estimativas
+		for(EstimateTable table : estimates) {
+			System.out.println(table);
+		}
 	}
 	
 	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score) {
@@ -163,7 +169,8 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	public int getParentConfigurationCount(int index) {
 		Collection<RandomVariable> parents = graph.getParents(vars[index]);
 		if(parents.isEmpty()) {
-			return 0;
+			//configuração vazia
+			return 1;
 		}
 		
 		int count = 1;
@@ -177,8 +184,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		for(int i = 0; i < vars.length; i++) { //iterar sobre as RVars
 			EstimateTable estimate;
 			estimate = new EstimateTable(getParentConfigurationCount(i), getRange(i)); //criar estimate table para cada RVar	
+			
 			for(int j = 0; j < getParentConfigurationCount(i); j++) { //iterar sobre as configura�oes dos pais da RVar
 				int Nij = InstanceCounting.getNij(i, j, this, dataset);
+				
 				for(int k = 0; k < getRange(i); k++) { //iterar sobre o range da RVar	
 					int Nijk = InstanceCounting.getNijk(i, j, k, this, dataset);
 					double estimateValue = (Nijk + 0.5)/(Nij + getRange(i)*0.5);
