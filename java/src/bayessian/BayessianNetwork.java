@@ -276,4 +276,5 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	public BayessianIterator<Integer> iterator() {
 		return new BayessianIterator<Integer>();
 	}
+	
 }
