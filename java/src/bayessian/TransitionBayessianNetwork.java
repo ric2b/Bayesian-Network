@@ -115,4 +115,31 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		
 		return futureValues;
 	}
+	
+//	=== Inter-slice connectivity
+//	name of node 1 at time-slice t + 1 : name of the parents of node 1 at time-slice t
+//	name of node 2 at time-slice t + 1 : name of the parents of node 2 at time-slice t
+//	. . . . . .
+//	name of node n at time-slice t + 1 : name of the parents of node n at time-slice t
+//	=== Intra-slice connectivity
+//	name of node 1 at time-slice t + 1 : name of the parents of node 1 at time-slice t + 1
+//	name of node 2 at time-slice t + 1 : name of the parents of node 2 at time-slice t + 1
+//	. . . . . .
+//	name of node n at time-slice t + 1 : name of the parents of node n at time-slice t + 1
+	
+	public String toString() {
+		String string = "";
+		
+		System.out.println("=== Inter-slice connectivity");
+		for(int i = varCount; i < vars.length; i++) {
+			string += vars[i].toString() + " : ";
+			for(RandomVariable var: graph.getParents(vars[i])) {
+				string += var + " ";
+			}
+			string += '\n';
+		}
+		
+		return string;
+	}
+	
 }
