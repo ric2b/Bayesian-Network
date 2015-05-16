@@ -2,9 +2,11 @@ package dataset;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-public class Dataset {
+public class Dataset implements Iterable<Sample> {
 	
 	protected List<Sample> samplesOfTimeT = new ArrayList<>();	// amostras de um único instante temporal t
 	
@@ -105,4 +107,35 @@ public class Dataset {
 		return string;
 	}
 	
+	protected class SampleIterator implements Iterator<Sample> {
+		
+		private int position = 0;
+			
+		@Override
+		public boolean hasNext() {
+			return position < Dataset.this.samplesOfTimeT.size();
+		}
+
+		@Override
+		public Sample next() {
+			
+			if(!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			
+			return Dataset.this.samplesOfTimeT.get(position++);
+		}
+
+		@Override
+		public void remove() {
+			Dataset.this.samplesOfTimeT.remove(position - 1);
+		}
+		
+	}
+
+	@Override
+	public Iterator<Sample> iterator() {
+		return new SampleIterator();
+	}
+
 }
