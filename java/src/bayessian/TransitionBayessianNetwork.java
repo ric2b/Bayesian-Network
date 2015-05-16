@@ -30,7 +30,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 	}
 	
 	private double calculateSingleProbability(int indexOfVar, int value, Sample sample) {
-		//index = index of X[t+1] do qual queremos saber o valor mais provavel
+		//
 		//value = valor que estamos a considerar nesse momento para a RVar que se pretende obter
 		double probability = 0;
 		double resultOfMultiplication = 0;
@@ -50,7 +50,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 			for(int l = 0; l < numberOfRvars; l++) {
 				double thetaljdl = 1.0;
 				if(l != indexOfVar) {
-					int jlinha = InstanceCounting.getjLinhaOfProbability(indexOfVar, value, l, d);
+					int jlinha = InstanceCounting.getjLinhaOfProbability(indexOfVar, value, l, sample, getParents(l), d, this);
 					thetaljdl = estimates[l].getEstimate(jlinha, d[l]);
 				}
 				resultOfMultiplication *= thetaljdl;
@@ -90,12 +90,13 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 	}
 	
 	public int[] getFutureValues(int indexOfVar, Dataset dataset) {
+		//indexOfVar = index of X[t+1] do qual queremos saber o valor mais provavel
 		
 		int[] futureValues = new int[dataset.size()];
 		
 		int i = 0;
 		for(Sample item : dataset) {
-			futureValues[i] = calculateFutureValue(indexOfVar, item);
+			futureValues[i] = calculateFutureValue(indexOfVar-varCountInTimeT, item); //subtrair numero de RVars para mapear o index de X[t+1] para X[t]
 			i++;
 		}
 		
