@@ -71,10 +71,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 				if(m == indexOfVar){
 					continue;
 				}
-				else if(d[m] == getRange(m)) {
-					if(m == 0) { //ja nao ha mais somatorios a efectuar
-						break;
-					}
+				if(d[m] == getRange(m) && m != 0) {
 					d[m-1]++;
 					d[m] = 0;
 				}
