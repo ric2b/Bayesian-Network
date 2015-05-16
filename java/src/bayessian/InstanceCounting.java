@@ -1,6 +1,7 @@
 package bayessian;
 
 import dataset.Dataset;
+import dataset.Sample;
 
 public class InstanceCounting {
 
@@ -37,5 +38,21 @@ public class InstanceCounting {
 		}
 		
 		return Nij;
+	}
+	
+	public static int getjOfProbability(int indexOfVar, Sample sample, int[] parents, int[] d, TransitionBayessianNetwork<? extends RandomVariable> BN) {
+		int[] jArray = new int[parents.length];
+		
+		for(int i = 0; i < parents.length; i++) {
+			if(BN.isFutureVar(parents[i])){ //pai da RVar que se esta a considerar e do futuro (valor corresponde ao de d)
+				jArray[i] = d[parents[i] - BN.varCountInTimeT];
+		
+			}
+			else{ //pai da RVar que se esta a considerar e do passado - retirar valor do test data set (sample)
+				jArray[i] = sample.getValue(parents[i]);
+			}
+		}
+	
+		return mapjToJ(parents, jArray);
 	}
 }

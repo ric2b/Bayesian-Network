@@ -1,9 +1,11 @@
 package bayessian;
 
 import score.Score;
+import dataset.Dataset;
+import dataset.Sample;
 import dataset.TransitionDataset;
 
-public class TransitionBayessianNetwork<T> extends BayessianNetwork<RandomVariable>{
+public class TransitionBayessianNetwork<T extends RandomVariable> extends BayessianNetwork<T>{
 	
 	int varCountInTimeT = 0; // numero de variaveis num instante de tempo
 	
@@ -23,13 +25,17 @@ public class TransitionBayessianNetwork<T> extends BayessianNetwork<RandomVariab
 		return graph.addEdge(vars[srcIndex], vars[destIndex]);
 	}
 	
-	private double calculateSingleProbability(int indexOfVar, int value) {
+	boolean isFutureVar(int index) {
+		return index >= varCountInTimeT;
+	}
+	
+	private double calculateSingleProbability(int indexOfVar, int value, Sample sample) {
 		//index = index of X[t+1] do qual queremos saber o valor mais provavel
 		//value = valor que estamos a considerar nesse momento para a RVar que se pretende obter
 		double probability = 0;
 		int numberOfIterations = 0;
 		int numberOfRvars = varCountInTimeT; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
-		int[] d = new int[numberOfRvars - 1];
+		int[] d = new int[numberOfRvars];
 		
 		for(int i = 0; i < numberOfRvars; i++) {
 			if(i != indexOfVar) {
@@ -39,8 +45,9 @@ public class TransitionBayessianNetwork<T> extends BayessianNetwork<RandomVariab
 		
 		for(int n = 0; n < numberOfIterations-1; n++) {
 			//calculos
-			//int j = 
-			estimates[indexOfVar].getEstimate(j, value);
+			int j = InstanceCounting.getjOfProbability(indexOfVar, sample, getParents(indexOfVar), d, this);
+			double tetaijk = estimates[indexOfVar].getEstimate(j, value);
+			
 			d[0]++;
 			for(int m = 0; m < numberOfRvars-1; m++) {
 				if(m == indexOfVar){
@@ -58,19 +65,32 @@ public class TransitionBayessianNetwork<T> extends BayessianNetwork<RandomVariab
 		return probability;
 	}
 	
-	public int calculateFutureValue(int indexOfVar) {
+	private int calculateFutureValue(int indexOfVar, Sample sample) {
 		
 		double maxProbability = 0;
 		double probability = 0;
 		int futureValue = 0;
 		
 		for(int m = 0; m < getRange(indexOfVar); m++) {
-			probability = calculateSingleProbability(indexOfVar, m);
+			probability = calculateSingleProbability(indexOfVar, m, sample);
 			if(probability > maxProbability) {
 				maxProbability = probability;
 				futureValue = m;
 			}
 		}
 		return futureValue;
+	}
+	
+	public int[] getFutureValues(int indexOfVar, Dataset dataset) {
+		
+		int[] futureValues = new int[dataset.size()];
+		
+		int i = 0;
+		for(Sample item : dataset) {
+			futureValues[i] = calculateFutureValue(indexOfVar, item);
+			i++;
+		}
+		
+		return futureValues;
 	}
 }
