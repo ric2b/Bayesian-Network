@@ -22,4 +22,8 @@ public class DynamicBayessianNetwork<T> extends BayessianNetwork<RandomVariable>
 		
 		return graph.addEdge(vars[srcIndex], vars[destIndex]);
 	}
+	
+	private boolean isFutureVar(int index) {
+		return index >= varCountInTimeT;
+	}
 }
