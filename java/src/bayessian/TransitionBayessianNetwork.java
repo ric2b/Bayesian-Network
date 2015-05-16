@@ -33,6 +33,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		//index = index of X[t+1] do qual queremos saber o valor mais provavel
 		//value = valor que estamos a considerar nesse momento para a RVar que se pretende obter
 		double probability = 0;
+		double resultOfMultiplication = 0;
 		int numberOfIterations = 0;
 		int numberOfRvars = varCountInTimeT; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
 		int[] d = new int[numberOfRvars];
@@ -44,12 +45,19 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		}
 		
 		for(int n = 0; n < numberOfIterations-1; n++) {
-			//calculos
 			int j = InstanceCounting.getjOfProbability(indexOfVar, sample, getParents(indexOfVar), d, this);
-			double tetaijk = estimates[indexOfVar].getEstimate(j, value);
-			
+			double thetaijk = estimates[indexOfVar].getEstimate(j, value);
+			for(int l = 0; l < numberOfRvars; l++) {
+				double thetaljdl = 1.0;
+				if(l != indexOfVar) {
+					int jlinha = InstanceCounting.getjLinhaOfProbability(indexOfVar, value, l, d);
+					thetaljdl = estimates[l].getEstimate(jlinha, d[l]);
+				}
+				resultOfMultiplication *= thetaljdl;
+			}
+			probability += thetaijk * resultOfMultiplication;		
 			d[0]++;
-			for(int m = 0; m < numberOfRvars-1; m++) {
+			for(int m = 0; m < numberOfRvars; m++) {
 				if(m == indexOfVar){
 					continue;
 				}
