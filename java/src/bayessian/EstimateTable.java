@@ -1,5 +1,7 @@
 package bayessian;
 
+import java.util.Arrays;
+
 public class EstimateTable {
 	
 	private double estimates[][] = null;
@@ -39,5 +41,14 @@ public class EstimateTable {
 	
 	public double[][] getEstimates() {
 		return this.estimates;
+	}
+	
+	public String toString() {
+		String string = "";
+		for(double[] row : estimates) {
+			string += Arrays.toString(row) + '\n';
+		}
+		
+		return string;
 	}
 }
