@@ -36,7 +36,7 @@ public class TransitionDataset extends Dataset {
 		int value = 0;
 		
 		if(index >= Sample.length()) {
-			value = this.samplesOfTimeNextT.get(sample).getValue(index);
+			value = this.samplesOfTimeNextT.get(sample).getValue(index - Sample.length());
 		} else {
 			value = this.samplesOfTimeT.get(sample).getValue(index);
 		}
