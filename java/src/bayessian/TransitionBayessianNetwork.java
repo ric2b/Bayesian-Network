@@ -96,7 +96,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		
 		int i = 0;
 		for(Sample item : dataset) {
-			futureValues[i] = calculateFutureValue(indexOfVar-varCountInTimeT, item); //subtrair numero de RVars para mapear o index de X[t+1] para X[t]
+			futureValues[i] = calculateFutureValue(indexOfVar-varCountInTimeT-1, item); //subtrair numero de RVars para mapear o index de X[t+1] para X[t]
 			i++;
 		}
 		
