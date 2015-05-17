@@ -29,15 +29,20 @@ public class InstanceCounting {
 	public static int mapjToJ(int[] parentRanges, int[] j){ 
 		// 'J' is the configurations using all parents, 'j' is the configuration of a single parent
 		// j[i] and parentRanges[i] should be related to the same parent (same order for both arrays)
-		int[] r = new int[3];
-		int[] jtmp = new int[3];
 		
-		for(int i=0; i<parentRanges.length; i++){
-			r[i] = parentRanges[i];
-			jtmp[i] = j[i];
+		int J = 0;
+		
+		for(int i=0; i < (j.length); i++) {
+			int rangeMult = 1;
+			
+			for(int k=0; k < i; k++) {
+				rangeMult *= parentRanges[k];
+			}
+			
+			J += j[i] * rangeMult;
 		}
 		
-		return jtmp[0] + jtmp[1]*r[0] + jtmp[2]*r[1];
+		return J;
 	}
 	
 	public static int getNijk(int i, int J, int k, BayessianNetwork<? extends RandomVariable> BN, Dataset dataset) {
