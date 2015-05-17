@@ -7,6 +7,10 @@ import dataset.TransitionDataset;
 
 public class TransitionBayessianNetwork<T extends RandomVariable> extends BayessianNetwork<T>{
 	
+	public TransitionBayessianNetwork(RandomVariable[] vars, Dataset dataset) {
+		super(vars, dataset);
+	}
+	
 	public TransitionBayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score) {
 		super(vars, dataset, score, vars.length / 2);
 	}
@@ -54,7 +58,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 			}
 		}
 		
-		for(int n = 0; n < numberOfIterations-1; n++) {
+		for(int n = 0; n < numberOfIterations; n++) {
 			int j = InstanceCounting.getjOfProbability(indexOfVar, sample, getParents(indexOfVar), d, this);
 			if(j != 0) {
 				int a = 1;

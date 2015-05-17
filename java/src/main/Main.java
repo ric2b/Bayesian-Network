@@ -82,7 +82,9 @@ public class Main {
 		} catch (Exception except) {
 			System.out.println(except.getMessage());
 		}	
-		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, dataset, score); 
+		
+//		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, dataset, score); 
+		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, dataset);
 		
 		long elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
 		System.out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
