@@ -164,7 +164,11 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 				if(var.getTimeInstant() == 1)
 					string += var + " ";
 			}
-			string += '\n';
+			if(i == vars.length - 1) {
+				return string;
+			} else {
+				string += '\n';
+			}		
 		}
 		
 		return string;

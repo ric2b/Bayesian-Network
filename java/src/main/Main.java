@@ -3,7 +3,6 @@ package main;
 import java.io.IOException;
 import java.util.Arrays;
 
-import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
 import bayessian.TransitionBayessianNetwork;
 import dataset.Dataset;
@@ -90,13 +89,12 @@ public class Main {
 		System.out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
 		
 		System.out.println("Transition network: ");
-		System.out.println("=== Inter-slice connectivity");
-		
-		System.out.println("=== Intra-slice connectivity");
+		System.out.println(transitionBN); 
 		
 		System.out.println("=== Scores");
-		
-		
+		System.out.println("LL Score: " + (new LLScore()).getScore(transitionBN, dataset));
+		System.out.println("MDL Score: " + (new MDLScore()).getScore(transitionBN, dataset));
+				
 		//arg[3] - maximum number of random restarts
 		//bonus
 		

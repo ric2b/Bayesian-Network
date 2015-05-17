@@ -132,10 +132,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 			}
 			
 			
-		} while(operation != null);
-		
-		System.out.println("Score: " + bestScore);
-		
+		} while(operation != null);		
 	}
 	
 	protected boolean addAssociation(int srcIndex, int destIndex) {
