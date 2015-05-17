@@ -7,6 +7,10 @@ import dataset.TransitionDataset;
 
 public class TransitionBayessianNetwork<T extends RandomVariable> extends BayessianNetwork<T>{
 	
+	public TransitionBayessianNetwork(RandomVariable[] vars, Dataset dataset) {
+		super(vars, dataset);
+	}
+	
 	public TransitionBayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score) {
 		super(vars, dataset, score, vars.length / 2);
 	}
@@ -43,36 +47,47 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		//
 		//value = valor que estamos a considerar nesse momento para a RVar que se pretende obter
 		double probability = 0;
-		double resultOfMultiplication = 0;
+		double resultOfMultiplication = 1.0;
 		int numberOfIterations = 1;
-		int numberOfRvars = varCount; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
-		int[] d = new int[numberOfRvars];
+		int numberOfRVars = varCount; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
+		int[] d = new int[numberOfRVars];
 		
-		for(int i = 0; i < numberOfRvars; i++) {
+		for(int i = 0; i < numberOfRVars; i++) {
 			if(i != indexOfVar) {
 				numberOfIterations *= getRange(i);
 			}
 		}
 		
-		for(int n = 0; n < numberOfIterations-1; n++) {
-			int j = InstanceCounting.getjOfProbability(indexOfVar, sample, getParents(indexOfVar), d, this);
-			double thetaijk = estimates[indexOfVar].getEstimate(j, value);
-			for(int l = 0; l < numberOfRvars; l++) {
+		for(int n = 0; n < numberOfIterations; n++) {
+			int j = InstanceCounting.getjOfProbability(indexOfVar, sample, getParents(indexOfVar + varCount), d, this);
+			if(j != 0) {
+				int a = 1;
+			}
+			double thetaijk = estimates[indexOfVar + varCount].getEstimate(j, value);
+			for(int l = 0; l < numberOfRVars; l++) {
 				double thetaljdl = 1.0;
 				if(l != indexOfVar) {
-					int jlinha = InstanceCounting.getjLinhaOfProbability(indexOfVar, value, l, sample, getParents(l), d, this);
-					thetaljdl = estimates[l].getEstimate(jlinha, d[l]);
+					int jlinha = InstanceCounting.getjLinhaOfProbability(indexOfVar, value, l, sample, getParents(l + varCount), d, this);
+					if(jlinha != 0) {
+						int a = 1;
+					}
+					thetaljdl = estimates[l + varCount].getEstimate(jlinha, d[l]);
 				}
 				resultOfMultiplication *= thetaljdl;
 			}
 			probability += thetaijk * resultOfMultiplication;		
-			d[0]++;
-			for(int m = 0; m < numberOfRvars; m++) {
+			d[numberOfRVars-1]++;
+			for(int m = numberOfRVars-1; m > 0; m--) {
 				if(m == indexOfVar){
 					continue;
 				}
 				if(d[m] == getRange(m)) {
-					d[m+1]++;
+					
+					if((m - 1) == indexOfVar && (m - 2) >= 0) {
+						d[m - 2]++;
+					} else {
+						d[m - 1]++;
+					}				
 					d[m] = 0;
 				}
 				else {
@@ -101,6 +116,10 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 	
 	public int[] getFutureValues(int indexOfVar, Dataset dataset) {
 		//indexOfVar = index of X[t+1] do qual queremos saber o valor mais provavel
+		
+		if(indexOfVar <= varCount || indexOfVar > vars.length) {
+			throw new IllegalArgumentException("o numero da variavel a calcular não está correcto");
+		}
 		
 		int[] futureValues = new int[dataset.size()];
 		
@@ -145,7 +164,11 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 				if(var.getTimeInstant() == 1)
 					string += var + " ";
 			}
-			string += '\n';
+			if(i == vars.length - 1) {
+				return string;
+			} else {
+				string += '\n';
+			}		
 		}
 		
 		return string;
