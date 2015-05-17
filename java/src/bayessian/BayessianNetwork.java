@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 import score.Score;
 import dataset.Dataset;
@@ -42,10 +43,6 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		greedyHillClimbingAlgorithm(dataset, score);
 		
 		fillEstimateTable(dataset);
-		//imprimir tabelas de estimativas
-		for (int i = 0; i < estimates.length; i++) {
-			System.out.println(i + ":\n" + estimates[i]);	
-		}
 	}
 	
 	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score) {
@@ -57,8 +54,6 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		do {
 			if(operation != null) {
 				operation.exec(graph);
-				System.out.println(graph);
-				System.out.println("score: " + bestScore);
 				operation = null;
 			}
 			
@@ -131,6 +126,34 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		}
 		
 		return graph.flipEdge(vars[srcIndex], vars[destIndex]);
+	}
+	
+	private static Random randomOperation = new Random();
+	private static Random randomOperationCount = new Random();
+	
+	protected void randomlyRestartGraph() {
+		int operToDo = randomOperation.nextInt(2);
+		int numberOfRandomIterations = (randomOperationCount.nextInt(vars.length*2))+2;
+		Random randomSource = new Random(); 
+		Random randomDestiny = new Random();
+		
+		switch(operToDo) {
+			case 0: //add				
+				for(int i = 0; i < numberOfRandomIterations; i++) {
+					addAssociation(randomSource.nextInt(vars.length), randomDestiny.nextInt(vars.length));
+				}
+				break;
+			case 1: //flip
+				for(int i = 0; i < numberOfRandomIterations; i++) {
+					flipAssociation(randomSource.nextInt(vars.length), randomDestiny.nextInt(vars.length));
+				}
+				break;
+			case 2: //remove
+				
+				break;
+			default:
+				break;
+		}
 	}
 	
 	/**
