@@ -132,6 +132,16 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		return parents.remove(getNode(src));
 	}	
 	
+	public void removeAllEdges() {
+		Set<Map.Entry<Node<T>, Collection<Node<T>>>> entries = edgeMap.entrySet();
+		
+		for(Map.Entry<Node<T>, Collection<Node<T>>> entry : entries) {
+			entry.getValue().clear();
+		}
+		
+		edgeCount = 0;
+	}
+	
 	/**
 	 * Remove todas as arestas existentes no grafo que tenham ligação com o nó t. Caso t não exista no grafo,
 	 * não é feita qualquer alteração ao mesmo.
@@ -140,8 +150,9 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 	 * @throws NoSuchElementException	caso t não exista no grafo
 	 */
 	public void removeAllEdges(T t) throws NullPointerException, NoSuchElementException {
-		edgeMap.get(getNode(t)).clear();
-		edgeCount = 0;
+		Collection<Node<T>> parents = edgeMap.get(getNode(t));
+		edgeCount -= parents.size();
+		parents.clear();
 	}
 	
 	public boolean flipEdge(T src, T dest) {
@@ -365,17 +376,18 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		return string;
 	}
 	
-	public List<T> getEdges() {
-		List<T> edges = new ArrayList<>(edgeCount);
+	@Override
+	public void getEdges(List<? super T> srcNodes, List<? super T> destNodes) {
 		Set<Map.Entry<Node<T>, Collection<Node<T>>>> entries = edgeMap.entrySet();
 		
 		for(Map.Entry<Node<T>, Collection<Node<T>>> entry : entries) {
 			for(Node<T> node : entry.getValue()) {
-				edges.add(node.get());
+				srcNodes.add(entry.getKey().get());
+				destNodes.add(node.get());
 			}
 		}
 		
-		return edges;
+		return;
 	}
 	
 }
