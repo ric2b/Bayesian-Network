@@ -12,6 +12,11 @@ public class CSVFileReader {
 	private int columnCount = 0;					//numero de colunas de dados
 	private int size = 0;							//numero de posicoes com dados do ficheiro
 	
+	/**
+	 * Method to open and read the CSV file
+	 * @param pathname pathname for the CSV file to be read
+	 * @throws IOException exception thrown if an I/O error occurs
+	 */
 	public CSVFileReader(String pathname) throws IOException {
 		
 		BufferedReader reader = new BufferedReader(new FileReader(pathname));
@@ -36,6 +41,9 @@ public class CSVFileReader {
 	    reader.close();
 	}
 	
+	/**
+	 * @return
+	 */
 	public String[] readLine() {
 		String[] line = null;
 		
