@@ -382,8 +382,8 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		
 		for(Map.Entry<Node<T>, Collection<Node<T>>> entry : entries) {
 			for(Node<T> node : entry.getValue()) {
-				srcNodes.add(entry.getKey().get());
-				destNodes.add(node.get());
+				destNodes.add(entry.getKey().get());
+				srcNodes.add(node.get());
 			}
 		}
 		
