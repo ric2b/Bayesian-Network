@@ -51,61 +51,67 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;
 		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
 		
-		do {
-			if(operation != null) {
-				operation.exec(graph);
-				operation = null;
-			}
-			
-			bestScore = score.getScore(this, dataset);
-			
-			for(int i = 0; i < vars.length; i++) {
-				for(int j = 0; j < vars.length; j++) {
-					if(i == j) {
-						// um nó não se pode ligar a si próprio
-						continue;
-					}
-					
-					if(graph.getParents(vars[i]).contains(vars[j])) {	// testar se j é pai de i
-						
-						// operacao de remover aresta
-						graph.removeEdge(vars[j], vars[i]);
-						double curScore = score.getScore(this, dataset);
-						if(curScore > bestScore) {
-							bestScore = curScore;
-							operation = new RemoveOperation<>(vars[j], vars[i]);
-						}
-						// restaurar grafo
-						graph.addEdge(vars[j], vars[i]);
-						
-						// operacao de inverter aresta
-						if(flipAssociation(j, i)) {
-							curScore = score.getScore(this, dataset);
-							if(curScore > bestScore) {
-								bestScore = curScore;
-								operation = new FlipOperation<>(vars[j], vars[i]);
-							}
-							//restaurar grafo
-							graph.flipEdge(vars[i], vars[j]);
+		for(int randomItr = 0; randomItr < 3; randomItr++) {
+			do {
+				if(operation != null) {
+					operation.exec(graph);
+					operation = null;
+				}
+				
+				bestScore = score.getScore(this, dataset);
+				
+				System.out.println(graph);
+				System.out.println("Score: " + bestScore);
+				
+				for(int i = 0; i < vars.length; i++) {
+					for(int j = 0; j < vars.length; j++) {
+						if(i == j) {
+							// um nó não se pode ligar a si próprio
+							continue;
 						}
 						
-					} else {
-						// não existe aresta entre j e i
-						if(addAssociation(j, i)) {	// adicionar aresta com teste
+						if(graph.getParents(vars[i]).contains(vars[j])) {	// testar se j é pai de i
+							
+							// operacao de remover aresta
+							graph.removeEdge(vars[j], vars[i]);
 							double curScore = score.getScore(this, dataset);
 							if(curScore > bestScore) {
 								bestScore = curScore;
-								operation = new AddOperation<>(vars[j], vars[i]);
+								operation = new RemoveOperation<>(vars[j], vars[i]);
 							}
-							//restaurar grafo
-							graph.removeEdge(vars[j], vars[i]);
+							// restaurar grafo
+							graph.addEdge(vars[j], vars[i]);
+							
+							// operacao de inverter aresta
+							if(flipAssociation(j, i)) {
+								curScore = score.getScore(this, dataset);
+								if(curScore > bestScore) {
+									bestScore = curScore;
+									operation = new FlipOperation<>(vars[j], vars[i]);
+								}
+								//restaurar grafo
+								graph.flipEdge(vars[i], vars[j]);
+							}
+							
+						} else {
+							// não existe aresta entre j e i
+							if(addAssociation(j, i)) {	// adicionar aresta com teste
+								double curScore = score.getScore(this, dataset);
+								if(curScore > bestScore) {
+									bestScore = curScore;
+									operation = new AddOperation<>(vars[j], vars[i]);
+								}
+								//restaurar grafo
+								graph.removeEdge(vars[j], vars[i]);
+							}
 						}
 					}
 				}
-			}
+				
+			} while(operation != null);
 			
-			
-		} while(operation != null);
+			this.randomlyRestartGraph();
+		}
 		
 	}
 	
@@ -138,21 +144,27 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		for (int i = 0; i < numberOfRandomIterations; i++) {
 			int operToDo = randomOperation.nextInt(2);
+
+			int src = randomSource.nextInt(vars.length);
+			int dest = randomDestiny.nextInt(vars.length);
 			
 			switch(operToDo) {
 			case 0: //add
-				addAssociation(randomSource.nextInt(vars.length - 1), randomDestiny.nextInt(vars.length - 1));
+				if(!addAssociation(src, dest)) {
+					i--; // operação não conta
+				}
 				break;
-			case 1: //flip
-				flipAssociation(randomSource.nextInt(vars.length - 1), randomDestiny.nextInt(vars.length - 1));
-				break;
-			case 2: //remove
-				graph.removeEdge(vars[randomSource.nextInt(vars.length - 1)], 
-						vars[randomDestiny.nextInt(vars.length - 1)]);
+			case 1: //remove
+				if(!graph.removeEdge(vars[src], vars[dest])) {
+					i--; // operação não conta
+				}
 				break;
 			default:
 				break;
 			}
+			
+//			System.out.println("Random:");
+//			System.out.println(graph);
 		}
 		
 	}
