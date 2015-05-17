@@ -59,7 +59,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		}
 		
 		for(int n = 0; n < numberOfIterations; n++) {
-			int j = InstanceCounting.getjOfProbability(indexOfVar, sample, getParents(indexOfVar), d, this);
+			int j = InstanceCounting.getjOfProbability(indexOfVar, sample, getParents(indexOfVar + varCount), d, this);
 			if(j != 0) {
 				int a = 1;
 			}
@@ -67,7 +67,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 			for(int l = 0; l < numberOfRVars; l++) {
 				double thetaljdl = 1.0;
 				if(l != indexOfVar) {
-					int jlinha = InstanceCounting.getjLinhaOfProbability(indexOfVar, value, l, sample, getParents(l+varCount), d, this);
+					int jlinha = InstanceCounting.getjLinhaOfProbability(indexOfVar, value, l, sample, getParents(l + varCount), d, this);
 					if(jlinha != 0) {
 						int a = 1;
 					}
@@ -77,13 +77,18 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 			}
 			probability += thetaijk * resultOfMultiplication;		
 			d[numberOfRVars-1]++;
-			for(int m = numberOfRVars-2; m >= 0; m--) {
+			for(int m = numberOfRVars-1; m > 0; m--) {
 				if(m == indexOfVar){
 					continue;
 				}
-				if(d[m+1] == getRange(m+1)) {
-					d[m]++;
-					d[m+1] = 0;
+				if(d[m] == getRange(m)) {
+					
+					if((m - 1) == indexOfVar && (m - 2) >= 0) {
+						d[m - 2]++;
+					} else {
+						d[m - 1]++;
+					}				
+					d[m] = 0;
 				}
 				else {
 					break;

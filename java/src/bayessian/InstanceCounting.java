@@ -67,7 +67,7 @@ public class InstanceCounting {
 			}
 		}
 	
-		return mapjToJ(BN.getParentRanges(indexOfVar), jArray);
+		return mapjToJ(BN.getParentRanges(indexOfVar + BN.varCount), jArray);
 	}
 	
 	public static int getjLinhaOfProbability(int indexOfVar, int value, int l, Sample sample, int[] parents, int[] d, TransitionBayessianNetwork<? extends RandomVariable> BN) {
