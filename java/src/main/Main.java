@@ -116,8 +116,8 @@ public class Main {
 		//arg[4] - var		
 		if(allVars == true) { //var is not given - all indexes from 1 to n should be considered
 			int[][] futureValues = new int[testFile.randomVarCount()][testFile.subjectCount()];
-			for(int i = 0; i < testFile.randomVarCount(); i++) {
-				futureValues[i] = transitionBN.getFutureValues(i, new Dataset(testFile.getTimeSlice(0)));			
+			for(int i = varCount + 1; i < (varCount * 2); i++) {
+				futureValues[i - varCount - 1] = transitionBN.getFutureValues(i, new Dataset(testFile.getTimeSlice(0)));			
 			}
 			for(int j = 0; j < testFile.subjectCount(); j++) { //cada coluna da matriz corresponde aos futures values das RVars para um instante de tempo
 				System.out.println("-> instance " + (j+1) + ": ");
@@ -126,7 +126,7 @@ public class Main {
 						System.out.println(futureValues[i][j]); //para a ultima RVar ja nao se imprime a virgula
 					}
 					else {
-						System.out.println(futureValues[i][j] + ", ");
+						System.out.print(futureValues[i][j] + ", ");
 					}
 				}
 			}	
