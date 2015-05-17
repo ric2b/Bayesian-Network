@@ -122,7 +122,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		//indexOfVar = index of X[t+1] do qual queremos saber o valor mais provavel
 		
 		if(indexOfVar <= varCount || indexOfVar > vars.length) {
-			throw new IllegalArgumentException("o numero da variavel a calcular não está correcto");
+			throw new IllegalArgumentException("o numero da variavel a calcular nï¿½o estï¿½ correcto");
 		}
 		
 		int[] futureValues = new int[dataset.size()];
@@ -138,9 +138,8 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 	}
 	
 	public String toString() {
-		String string = "";
+		String string = "=== Inter-slice connectivity\n";
 		
-		string += "=== Inter-slice connectivity\n";
 		for(int i = varCount; i < vars.length; i++) {
 			string += vars[i].toString() + " : ";
 			for(RandomVariable var: graph.getParents(vars[i])) {
@@ -157,11 +156,10 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 				if(var.getTimeInstant() == 1)
 					string += var + " ";
 			}
-			if(i == vars.length - 1) {
-				return string;
-			} else {
+			
+			if(i != vars.length - 1) {
 				string += '\n';
-			}		
+			}	
 		}
 		
 		return string;

@@ -366,4 +366,21 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		return new BayessianIterator<Integer>();
 	}
 	
+	public String toString() {
+		String string = "=== Structure connectivity\n";
+		
+		for(int i = 0; i < vars.length; i++) {
+			string += vars[i].toString() + " : ";
+			for(RandomVariable var: graph.getParents(vars[i])) {
+				string += var + " ";
+			}
+			
+			if(i != vars.length - 1) {
+				string += '\n';
+			}
+		}
+		
+		return string;
+	}
+	
 }
