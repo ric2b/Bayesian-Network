@@ -1,11 +1,14 @@
 package bayessian;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 import score.Score;
 import dataset.Dataset;
@@ -34,7 +37,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		for(int i = 0; i < this.vars.length; i++) {
 			varsToIndex.put(this.vars[i], i);
 		}
-		// come�ar com o grafo vazio
+		// come�ar com o grafo vazio
 		graph = new DirectedAcyclicGraph<RandomVariable>(this.vars);
 		
 		this.graph.addEdge(this.vars[0], this.vars[4]);
@@ -64,75 +67,105 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		greedyHillClimbingAlgorithm(dataset, score);
 		
 		fillEstimateTable(dataset);
-		//imprimir tabelas de estimativas
-//		for (int i = 0; i < estimates.length; i++) {
-//			System.out.println(i + ":\n" + estimates[i]);	
-		//}
 	}
 	
 	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score) {
 		
 		// operação sobre o grafo actual que resultou no grafo com melhor score
 		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;
-		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
+
+		List<RandomVariable> srcNodesOfBestGraph = new ArrayList<>();
+		List<RandomVariable> destNodesOfBestGraph = new ArrayList<>();
 		
-		do {
-			if(operation != null) {
-				operation.exec(graph);
-//				System.out.println(graph);
-//				System.out.println("score: " + bestScore);
-				operation = null;
-			}
-			
-			bestScore = score.getScore(this, dataset);
-			
-			for(int i = 0; i < vars.length; i++) {
-				for(int j = 0; j < vars.length; j++) {
-					if(i == j) {
-						// um nó não se pode ligar a si próprio
-						continue;
-					}
-					
-					if(graph.getParents(vars[i]).contains(vars[j])) {	// testar se j é pai de i
-						
-						// operacao de remover aresta
-						graph.removeEdge(vars[j], vars[i]);
-						double curScore = score.getScore(this, dataset);
-						if(curScore > bestScore) {
-							bestScore = curScore;
-							operation = new RemoveOperation<>(vars[j], vars[i]);
-						}
-						// restaurar grafo
-						graph.addEdge(vars[j], vars[i]);
-						
-						// operacao de inverter aresta
-						if(flipAssociation(j, i)) {
-							curScore = score.getScore(this, dataset);
-							if(curScore > bestScore) {
-								bestScore = curScore;
-								operation = new FlipOperation<>(vars[j], vars[i]);
-							}
-							//restaurar grafo
-							graph.flipEdge(vars[i], vars[j]);
+		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido em todos os random restarts
+		
+		for(int randomItr = 0; randomItr < 6; randomItr++) {
+			double randomBestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
+			do {
+				if(operation != null) {
+					operation.exec(graph);
+					operation = null;
+				}
+				
+				randomBestScore = score.getScore(this, dataset);
+				
+				System.out.println(graph);
+				System.out.println("Score: " + randomBestScore);
+				
+				for(int i = 0; i < vars.length; i++) {
+					for(int j = 0; j < vars.length; j++) {
+						if(i == j) {
+							// um nó não se pode ligar a si próprio
+							continue;
 						}
 						
-					} else {
-						// não existe aresta entre j e i
-						if(addAssociation(j, i)) {	// adicionar aresta com teste
-							double curScore = score.getScore(this, dataset);
-							if(curScore > bestScore) {
-								bestScore = curScore;
-								operation = new AddOperation<>(vars[j], vars[i]);
-							}
-							//restaurar grafo
+						if(graph.getParents(vars[i]).contains(vars[j])) {	// testar se j é pai de i
+							
+							// operacao de remover aresta
 							graph.removeEdge(vars[j], vars[i]);
+							double curScore = score.getScore(this, dataset);
+							if(curScore > randomBestScore) {
+								randomBestScore = curScore;
+								operation = new RemoveOperation<>(vars[j], vars[i]);
+							}
+							// restaurar grafo
+							graph.addEdge(vars[j], vars[i]);
+							
+							// operacao de inverter aresta
+							if(flipAssociation(j, i)) {
+								curScore = score.getScore(this, dataset);
+								if(curScore > randomBestScore) {
+									randomBestScore = curScore;
+									operation = new FlipOperation<>(vars[j], vars[i]);
+								}
+								//restaurar grafo
+								graph.flipEdge(vars[i], vars[j]);
+							}
+							
+						} else {
+							// não existe aresta entre j e i
+							if(addAssociation(j, i)) {	// adicionar aresta com teste
+								double curScore = score.getScore(this, dataset);
+								if(curScore > randomBestScore) {
+									randomBestScore = curScore;
+									operation = new AddOperation<>(vars[j], vars[i]);
+								}
+								//restaurar grafo
+								graph.removeEdge(vars[j], vars[i]);
+							}
 						}
 					}
 				}
+				
+			} while(operation != null);
+			
+			if(randomBestScore > bestScore) {
+				bestScore = randomBestScore;
+				srcNodesOfBestGraph.clear();
+				destNodesOfBestGraph.clear();
+				this.graph.getEdges(srcNodesOfBestGraph, destNodesOfBestGraph);
+				System.out.println("Arestas best src");
+				System.out.println(srcNodesOfBestGraph);
+				System.out.println("Arestas best dest");
+				System.out.println(destNodesOfBestGraph);
 			}
-			
-			
-		} while(operation != null);		
+	
+			System.out.println("restart");
+			this.randomlyRestartGraph();
+		}
+		
+		this.graph.removeAllEdges();
+		System.out.println("removidas arestas:");
+		System.out.println(this.graph);
+		
+		System.out.println("Arestas src");
+		System.out.println(srcNodesOfBestGraph);
+		System.out.println("Arestas dest");
+		System.out.println(destNodesOfBestGraph);
+		this.graph.addEdge(srcNodesOfBestGraph, destNodesOfBestGraph);
+		System.out.println("adicionadas arestas:");
+		System.out.println(this.graph);
+		
 	}
 	
 	protected boolean addAssociation(int srcIndex, int destIndex) {
@@ -152,6 +185,41 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		}
 		
 		return graph.flipEdge(vars[srcIndex], vars[destIndex]);
+	}
+	
+	private static Random randomOperation = new Random();
+	private static Random randomOperationCount = new Random();
+	private static Random randomSource = new Random(); 
+	private static Random randomDestiny = new Random();
+	
+	protected void randomlyRestartGraph() {
+		int numberOfRandomIterations = (randomOperationCount.nextInt(vars.length*2)) + 2;
+		
+		for (int i = 0; i < numberOfRandomIterations; i++) {
+			int operToDo = randomOperation.nextInt(2);
+
+			int src = randomSource.nextInt(vars.length);
+			int dest = randomDestiny.nextInt(vars.length);
+			
+			switch(operToDo) {
+			case 0: //add
+				if(!addAssociation(src, dest)) {
+					i--; // operação não conta
+				}
+				break;
+			case 1: //remove
+				if(!graph.removeEdge(vars[src], vars[dest])) {
+					i--; // operação não conta
+				}
+				break;
+			default:
+				break;
+			}
+			
+//			System.out.println("Random:");
+//			System.out.println(graph);
+		}
+		
 	}
 	
 	/**
