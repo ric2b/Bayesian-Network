@@ -1,9 +1,11 @@
 package bayessian;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -49,19 +51,24 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		// operação sobre o grafo actual que resultou no grafo com melhor score
 		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;
-		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
 		
-		for(int randomItr = 0; randomItr < 3; randomItr++) {
+		List<RandomVariable> srcNodesOfBestGraph = new ArrayList<>();
+		List<RandomVariable> destNodesOfBestGraph = new ArrayList<>();
+		
+		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido em todos os random restarts
+		
+		for(int randomItr = 0; randomItr < 6; randomItr++) {
+			double randomBestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
 			do {
 				if(operation != null) {
 					operation.exec(graph);
 					operation = null;
 				}
 				
-				bestScore = score.getScore(this, dataset);
+				randomBestScore = score.getScore(this, dataset);
 				
 				System.out.println(graph);
-				System.out.println("Score: " + bestScore);
+				System.out.println("Score: " + randomBestScore);
 				
 				for(int i = 0; i < vars.length; i++) {
 					for(int j = 0; j < vars.length; j++) {
@@ -75,8 +82,8 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 							// operacao de remover aresta
 							graph.removeEdge(vars[j], vars[i]);
 							double curScore = score.getScore(this, dataset);
-							if(curScore > bestScore) {
-								bestScore = curScore;
+							if(curScore > randomBestScore) {
+								randomBestScore = curScore;
 								operation = new RemoveOperation<>(vars[j], vars[i]);
 							}
 							// restaurar grafo
@@ -85,8 +92,8 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 							// operacao de inverter aresta
 							if(flipAssociation(j, i)) {
 								curScore = score.getScore(this, dataset);
-								if(curScore > bestScore) {
-									bestScore = curScore;
+								if(curScore > randomBestScore) {
+									randomBestScore = curScore;
 									operation = new FlipOperation<>(vars[j], vars[i]);
 								}
 								//restaurar grafo
@@ -97,8 +104,8 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 							// não existe aresta entre j e i
 							if(addAssociation(j, i)) {	// adicionar aresta com teste
 								double curScore = score.getScore(this, dataset);
-								if(curScore > bestScore) {
-									bestScore = curScore;
+								if(curScore > randomBestScore) {
+									randomBestScore = curScore;
 									operation = new AddOperation<>(vars[j], vars[i]);
 								}
 								//restaurar grafo
@@ -110,8 +117,32 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 				
 			} while(operation != null);
 			
+			if(randomBestScore > bestScore) {
+				bestScore = randomBestScore;
+				srcNodesOfBestGraph.clear();
+				destNodesOfBestGraph.clear();
+				this.graph.getEdges(srcNodesOfBestGraph, destNodesOfBestGraph);
+				System.out.println("Arestas best src");
+				System.out.println(srcNodesOfBestGraph);
+				System.out.println("Arestas best dest");
+				System.out.println(destNodesOfBestGraph);
+			}
+			
+			System.out.println("restart");
 			this.randomlyRestartGraph();
 		}
+		
+		this.graph.removeAllEdges();
+		System.out.println("removidas arestas:");
+		System.out.println(this.graph);
+		
+		System.out.println("Arestas src");
+		System.out.println(srcNodesOfBestGraph);
+		System.out.println("Arestas dest");
+		System.out.println(destNodesOfBestGraph);
+		this.graph.addEdge(srcNodesOfBestGraph, destNodesOfBestGraph);
+		System.out.println("adicionadas arestas:");
+		System.out.println(this.graph);
 		
 	}
 	
