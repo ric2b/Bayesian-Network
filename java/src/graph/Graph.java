@@ -18,11 +18,14 @@ public interface Graph<T> {
 	
 	public void addNode(T t);
 	public boolean addEdge(T t1, T t2) throws NullPointerException, NoSuchElementException;
+	public int addEdge(List<? extends T> srcNodes, List<? extends T> destNodes);
 	public void removeNode(T t) throws NullPointerException, NoSuchElementException;
 	public void removeAllNodes();
-	public void removeEdge(T t1, T t2) throws NullPointerException, NoSuchElementException;
+	public boolean removeEdge(T t1, T t2) throws NullPointerException, NoSuchElementException;
 	public void removeAllEdges(T t) throws NullPointerException, NoSuchElementException;
 	public int nodeCount();
+	public int edgeCount();
 	public List<T> getNodes();
+	public List<T> getEdges();
 	
 }
