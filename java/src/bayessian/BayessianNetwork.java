@@ -130,30 +130,31 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	
 	private static Random randomOperation = new Random();
 	private static Random randomOperationCount = new Random();
+	private static Random randomSource = new Random(); 
+	private static Random randomDestiny = new Random();
 	
 	protected void randomlyRestartGraph() {
-		int operToDo = randomOperation.nextInt(2);
-		int numberOfRandomIterations = (randomOperationCount.nextInt(vars.length*2))+2;
-		Random randomSource = new Random(); 
-		Random randomDestiny = new Random();
+		int numberOfRandomIterations = (randomOperationCount.nextInt(vars.length*2)) + 2;
 		
-		switch(operToDo) {
-			case 0: //add				
-				for(int i = 0; i < numberOfRandomIterations; i++) {
-					addAssociation(randomSource.nextInt(vars.length), randomDestiny.nextInt(vars.length));
-				}
+		for (int i = 0; i < numberOfRandomIterations; i++) {
+			int operToDo = randomOperation.nextInt(2);
+			
+			switch(operToDo) {
+			case 0: //add
+				addAssociation(randomSource.nextInt(vars.length - 1), randomDestiny.nextInt(vars.length - 1));
 				break;
 			case 1: //flip
-				for(int i = 0; i < numberOfRandomIterations; i++) {
-					flipAssociation(randomSource.nextInt(vars.length), randomDestiny.nextInt(vars.length));
-				}
+				flipAssociation(randomSource.nextInt(vars.length - 1), randomDestiny.nextInt(vars.length - 1));
 				break;
 			case 2: //remove
-				
+				graph.removeEdge(vars[randomSource.nextInt(vars.length - 1)], 
+						vars[randomDestiny.nextInt(vars.length - 1)]);
 				break;
 			default:
 				break;
+			}
 		}
+		
 	}
 	
 	/**
