@@ -63,7 +63,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 			if(j != 0) {
 				int a = 1;
 			}
-			double thetaijk = estimates[indexOfVar].getEstimate(j, value);
+			double thetaijk = estimates[indexOfVar + varCount].getEstimate(j, value);
 			for(int l = 0; l < numberOfRVars; l++) {
 				double thetaljdl = 1.0;
 				if(l != indexOfVar) {
@@ -71,7 +71,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 					if(jlinha != 0) {
 						int a = 1;
 					}
-					thetaljdl = estimates[l].getEstimate(jlinha, d[l]);
+					thetaljdl = estimates[l + varCount].getEstimate(jlinha, d[l]);
 				}
 				resultOfMultiplication *= thetaljdl;
 			}
