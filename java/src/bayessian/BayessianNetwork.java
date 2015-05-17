@@ -49,7 +49,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		fillEstimateTable(dataset);
 	}
 	
-	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score, int varCount) {
+	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score, int varCount, int numberOfRandomRestarts) {
 		this.varCount = varCount;
 		this.vars = Arrays.copyOf(vars, vars.length);
 		this.estimates = new EstimateTable[vars.length];	// uma tabela de estimativas por variavel aleatoria
@@ -64,12 +64,12 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		graph = new DirectedAcyclicGraph<RandomVariable>(vars);
 		
 		// construir Bayessian Network
-		greedyHillClimbingAlgorithm(dataset, score);
+		greedyHillClimbingAlgorithm(dataset, score, numberOfRandomRestarts);
 		
 		fillEstimateTable(dataset);
 	}
 	
-	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score) {
+	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score, int numberOfRandomRestarts) {
 		
 		// operação sobre o grafo actual que resultou no grafo com melhor score
 		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;
@@ -79,7 +79,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido em todos os random restarts
 		
-		for(int randomItr = 0; randomItr < 6; randomItr++) {
+		for(int randomItr = 0; randomItr < numberOfRandomRestarts+1; randomItr++) {
 			double randomBestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
 			do {
 				if(operation != null) {
@@ -139,33 +139,36 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 				
 			} while(operation != null);
 			
-			if(randomBestScore > bestScore) {
-				bestScore = randomBestScore;
-				srcNodesOfBestGraph.clear();
-				destNodesOfBestGraph.clear();
-				this.graph.getEdges(srcNodesOfBestGraph, destNodesOfBestGraph);
-				System.out.println("Arestas best src");
-				System.out.println(srcNodesOfBestGraph);
-				System.out.println("Arestas best dest");
-				System.out.println(destNodesOfBestGraph);
-			}
-	
-			System.out.println("restart");
-			this.randomlyRestartGraph();
+			if(numberOfRandomRestarts > 0) {
+				if(randomBestScore > bestScore) {
+					bestScore = randomBestScore;
+					srcNodesOfBestGraph.clear();
+					destNodesOfBestGraph.clear();
+					this.graph.getEdges(srcNodesOfBestGraph, destNodesOfBestGraph);
+					System.out.println("Arestas best src");
+					System.out.println(srcNodesOfBestGraph);
+					System.out.println("Arestas best dest");
+					System.out.println(destNodesOfBestGraph);
+				}
+		
+				System.out.println("restart");
+				this.randomlyRestartGraph();
+			}	
 		}
 		
-		this.graph.removeAllEdges();
-		System.out.println("removidas arestas:");
-		System.out.println(this.graph);
-		
-		System.out.println("Arestas src");
-		System.out.println(srcNodesOfBestGraph);
-		System.out.println("Arestas dest");
-		System.out.println(destNodesOfBestGraph);
-		this.graph.addEdge(srcNodesOfBestGraph, destNodesOfBestGraph);
-		System.out.println("adicionadas arestas:");
-		System.out.println(this.graph);
-		
+		if(numberOfRandomRestarts > 0) {
+			this.graph.removeAllEdges();
+			System.out.println("removidas arestas:");
+			System.out.println(this.graph);
+			
+			System.out.println("Arestas src");
+			System.out.println(srcNodesOfBestGraph);
+			System.out.println("Arestas dest");
+			System.out.println(destNodesOfBestGraph);
+			this.graph.addEdge(srcNodesOfBestGraph, destNodesOfBestGraph);
+			System.out.println("adicionadas arestas:");
+			System.out.println(this.graph);
+		}	
 	}
 	
 	protected boolean addAssociation(int srcIndex, int destIndex) {

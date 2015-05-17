@@ -11,8 +11,8 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		super(vars, dataset);
 	}
 	
-	public TransitionBayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score) {
-		super(vars, dataset, score, vars.length / 2);
+	public TransitionBayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score, int numberOfRandomRestarts) {
+		super(vars, dataset, score, vars.length / 2, numberOfRandomRestarts);
 	}
 	
 	@Override

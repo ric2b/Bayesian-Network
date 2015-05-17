@@ -39,7 +39,7 @@ public class TestMain {
 		RandomVariable[] varsOfTandNextT = Arrays.copyOfRange(vars, 0, varCount + varCount);
 		
 		Score score = new LLScore();
-		BayessianNetwork<RandomVariable> bayessian = new TransitionBayessianNetwork<>(varsOfTandNextT, dataset, score);
+		//BayessianNetwork<RandomVariable> bayessian = new TransitionBayessianNetwork<>(varsOfTandNextT, dataset, score);
 		
 	}
 }
