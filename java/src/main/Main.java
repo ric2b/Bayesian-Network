@@ -84,6 +84,7 @@ public class Main {
 		
 		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, dataset, score); 
 		//TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, dataset);
+		//o de baixo força o grafo do quadro
 		
 		long elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
 		System.out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");

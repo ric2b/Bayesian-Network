@@ -24,6 +24,28 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	protected int varCount = 0; 
 	protected static int parentCount = 3;
 	
+	// TODO Apagar este constructor
+	public BayessianNetwork(RandomVariable[] vars, Dataset dataset) {
+		this.varCount = vars.length / 2;
+		this.vars = Arrays.copyOf(vars, vars.length);
+		this.estimates = new EstimateTable[vars.length];	// uma tabela de estimativas por variavel aleatoria
+		// construir mapa de indices
+		this.varsToIndex = new HashMap<>(this.vars.length);
+		for(int i = 0; i < this.vars.length; i++) {
+			varsToIndex.put(this.vars[i], i);
+		}
+		// começar com o grafo vazio
+		graph = new DirectedAcyclicGraph<RandomVariable>(this.vars);
+		
+		this.graph.addEdge(this.vars[0], this.vars[4]);
+		this.graph.addEdge(this.vars[3], this.vars[4]);
+		this.graph.addEdge(this.vars[1], this.vars[4]);
+		this.graph.addEdge(this.vars[3], this.vars[5]);
+		this.graph.addEdge(this.vars[4], this.vars[5]);
+		
+		fillEstimateTable(dataset);
+	}
+	
 	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score, int varCount) {
 		this.varCount = varCount;
 		this.vars = Arrays.copyOf(vars, vars.length);

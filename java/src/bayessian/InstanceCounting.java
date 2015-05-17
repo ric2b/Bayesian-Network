@@ -68,16 +68,21 @@ public class InstanceCounting {
 	}
 	
 	public static int getjOfProbability(int indexOfVar, Sample sample, int[] parents, int[] d, TransitionBayessianNetwork<? extends RandomVariable> BN) {
+		
+		if(parents.length == 0) {
+			// configuracao vazia
+			return 0;
+		} 
+		
 		int[] jArray = new int[parents.length];
 		
-		int j = 0;
-		for(int i = jArray.length - 1; i >= 0; i--) {
-			if(BN.isFutureVar(parents[j])){ //pai da RVar que se esta a considerar e do futuro (valor corresponde ao de d)
-				jArray[i] = d[parents[j] - BN.varCount];
+		for(int i = 0; i < jArray.length; i++) {
+			if(BN.isFutureVar(parents[i])){ //pai da RVar que se esta a considerar e do futuro (valor corresponde ao de d)
+				jArray[i] = d[parents[i] - BN.varCount];
 		
 			}
 			else{ //pai da RVar que se esta a considerar e do passado - retirar valor do test data set (sample)
-				jArray[i] = sample.getValue(parents[j]);
+				jArray[i] = sample.getValue(parents[i]);
 			}
 		}
 	
@@ -93,22 +98,19 @@ public class InstanceCounting {
 		
 		int[] jArray = new int[parents.length];
 		
-		int j = 0;
-		for(int i = jArray.length - 1; i >= 0; i--) {
-			if(BN.isFutureVar(parents[j])){ //pai da RVar e do futuro
-				if((parents[j] - BN.varCount) == indexOfVar){ //pai da RVar e a variavel que se esta a considerar
+		for(int i = 0; i < jArray.length; i++) {
+			if(BN.isFutureVar(parents[i])){ //pai da RVar e do futuro
+				if((parents[i] - BN.varCount) == indexOfVar){ //pai da RVar e a variavel que se esta a considerar
 					jArray[i] = value;
 				}
 				else{ //e um pai do futuro mas nao e a RVar
-					jArray[i] = d[parents[j] - BN.varCount];
+					jArray[i] = d[parents[i] - BN.varCount];
 				}
 		
 			}
 			else{ //pai da RVar e do passado
-				jArray[i] = sample.getValue(parents[j]);
-			}
-			
-			j++;
+				jArray[i] = sample.getValue(parents[i]);
+			}			
 		}
 	
 		return mapjToJ(BN.getParentRanges(l+BN.varCount), jArray);

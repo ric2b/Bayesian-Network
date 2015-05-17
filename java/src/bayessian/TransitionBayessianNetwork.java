@@ -7,6 +7,10 @@ import dataset.TransitionDataset;
 
 public class TransitionBayessianNetwork<T extends RandomVariable> extends BayessianNetwork<T>{
 	
+	public TransitionBayessianNetwork(RandomVariable[] vars, Dataset dataset) {
+		super(vars, dataset);
+	}
+	
 	public TransitionBayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score) {
 		super(vars, dataset, score, vars.length / 2);
 	}
@@ -43,7 +47,6 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		//
 		//value = valor que estamos a considerar nesse momento para a RVar que se pretende obter
 		double probability = 0;
-		double resultOfMultiplication = 1.0;
 		int numberOfIterations = 1;
 		int numberOfRVars = varCount; //dividir por 2 porque metade do array sao variaveis do passado e metade do array sao variaveis do futuro
 		int[] d = new int[numberOfRVars];
@@ -57,6 +60,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		for(int n = 0; n < numberOfIterations; n++) {
 			int j = InstanceCounting.getjOfProbability(indexOfVar, sample, getParents(indexOfVar + varCount), d, this);
 			double thetaijk = estimates[indexOfVar + varCount].getEstimate(j, value);
+			double resultOfMultiplication = 1.0;
 			for(int l = 0; l < numberOfRVars; l++) {
 				double thetaljdl = 1.0;
 				if(l != indexOfVar) {
@@ -64,8 +68,10 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 					thetaljdl = estimates[l + varCount].getEstimate(jlinha, d[l]);
 				}
 				resultOfMultiplication *= thetaljdl;
-			}
-			probability += thetaijk * resultOfMultiplication;		
+			}	
+			probability += thetaijk * resultOfMultiplication;	
+			//System.out.println("probababilidade parcial: " + (thetaijk * resultOfMultiplication));
+			//System.out.println("probabilidade: " + probability);
 			d[numberOfRVars-1]++;
 			for(int m = numberOfRVars-1; m > 0; m--) {
 				if(m == indexOfVar){
@@ -85,6 +91,9 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 				}
 			}
 		}
+		
+		//System.out.println("probabilidades :" +  probability);
+		
 		return probability;
 	}
 	
@@ -93,14 +102,19 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		double maxProbability = 0;
 		double probability = 0;
 		int futureValue = 0;
+		double sum = 0;
 		
 		for(int m = 0; m < getRange(indexOfVar); m++) {
 			probability = calculateSingleProbability(indexOfVar, m, sample);
+			sum += probability;
 			if(probability > maxProbability) {
 				maxProbability = probability;
 				futureValue = m;
 			}
 		}
+		
+		//System.out.println("soma das probabilidades: " + sum);
+		
 		return futureValue;
 	}
 	
