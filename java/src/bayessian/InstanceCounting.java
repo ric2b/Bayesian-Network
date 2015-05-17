@@ -8,19 +8,27 @@ public class InstanceCounting {
 	public static int[] mapJToj(int[] parentRanges, int J){ 
 		// 'J' is the configurations using all parents, 'j' is the configuration of a single parent
 		int j[] = new int[parentRanges.length];
+		int jtmp = J;
+		int multtmp;// = 1;
 		
-		if(j.length == 0) {
-			j = null;
-		} else if(j.length == 1) {
-			j[0] = J;
-		} else if(j.length == 2) {
-			j[0] = J % parentRanges[0];
-			j[1] = J / parentRanges[0];
-		} else if(j.length == 3) {
-			j[2] = J % parentRanges[2];
-			int tempValue = (J - j[2]) / parentRanges[2];
-			j[1] = tempValue % parentRanges[1];
-			j[0] = (tempValue - j[1]) / parentRanges[1];
+		for(int i = (j.length-1); i >= 0; i--) {
+			
+			// cálculo de j'[i]
+			if(i != j.length-1) {
+				multtmp = 1;
+				for(int k = 0; k <= i; k++) {
+					multtmp *= parentRanges[k];
+				}
+				jtmp %= multtmp;
+			}
+			// jtmp é j'[i]
+			
+			multtmp=1;
+			for(int k = 0; k < i; k++) {
+				multtmp *= parentRanges[k];
+			}
+
+			j[i] = jtmp / multtmp; 
 		}
 		
 		return j;
