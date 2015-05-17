@@ -3,6 +3,7 @@ package main;
 import java.io.IOException;
 import java.util.Arrays;
 
+import bayessian.BayessianNetwork;
 import bayessian.RandomVariable;
 import bayessian.TransitionBayessianNetwork;
 import dataset.Dataset;
@@ -71,20 +72,30 @@ public class Main {
 			timeSlices[i] = trainFile.getTimeSlice(i);
 		}
 		
+		// todas as vars dadas
 		RandomVariable[] vars = trainFile.getRVars();
+		
+		// vars de tempo zero
 		int varCount = trainFile.randomVarCount() / trainFile.timeInstantCount();
+		RandomVariable[] varsOfTime0 = Arrays.copyOfRange(vars, 0, varCount);
+
+		Dataset datasetOfTime0 = new Dataset(timeSlices[0]);
+		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length);
+		
+		System.out.println(BNOfTime0);
+		
 		RandomVariable[] varsOfTandNextT = Arrays.copyOfRange(vars, 0, varCount + varCount);
 		
-		TransitionDataset dataset = null;
+		TransitionDataset transitionDataset = null;
 		try {
-			dataset = new TransitionDataset(timeSlices);
+			transitionDataset = new TransitionDataset(timeSlices);
 		} catch (Exception except) {
 			System.out.println(except.getMessage());
 		}	
 		
-		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, dataset, score); 
-		//TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, dataset);
-		//o de baixo força o grafo do quadro
+		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset, score); 
+		//TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset);
+		//o de baixo forï¿½a o grafo do quadro
 		
 		long elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
 		System.out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
@@ -93,8 +104,8 @@ public class Main {
 		System.out.println(transitionBN); 
 		
 		System.out.println("=== Scores");
-		System.out.println("LL Score: " + (new LLScore()).getScore(transitionBN, dataset));
-		System.out.println("MDL Score: " + (new MDLScore()).getScore(transitionBN, dataset));
+		System.out.println("LL Score: " + (new LLScore()).getScore(transitionBN, transitionDataset));
+		System.out.println("MDL Score: " + (new MDLScore()).getScore(transitionBN, transitionDataset));
 				
 		//arg[3] - maximum number of random restarts
 		//bonus
