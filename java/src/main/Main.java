@@ -16,11 +16,13 @@ import input.DataFileReader;
 
 public class Main {
 		
-	public static TransitionBayessianNetwork<RandomVariable> buildDBN(String traindataset, String scoreArg, int randtest, String fileOutput, boolean toFile) {
+	public static TransitionBayessianNetwork<RandomVariable> buildDBN(String traindataset, String scoreArg, int randtest, SaveToFile out) {
 	
 		long startTime = System.nanoTime();  
-	
-		SaveToFile out = new SaveToFile(fileOutput);
+		boolean toFile = false;
+				
+		if(out != null)
+			toFile = true;
 		
 		//arg[0] - filename do train dataset
 		DataFileReader trainFile = null;
@@ -89,11 +91,14 @@ public class Main {
 		return transitionBN;
 	}
 	
-	public static void infereValue(String testdataset, boolean allVars, String varToInfere, TransitionBayessianNetwork<RandomVariable> transitionBN, String fileOutput, boolean toFile) {
+	public static void infereValue(String testdataset, boolean allVars, String varToInfere, TransitionBayessianNetwork<RandomVariable> transitionBN, SaveToFile out) {
 		
 		long startTime = System.nanoTime();   
 		
-		SaveToFile out = new SaveToFile(fileOutput);
+		boolean toFile = false;
+		
+		if(out != null)
+			toFile = true;
 		
 		//arg[1] - filename do test dataset
 		DataFileReader testFile = null;
@@ -141,12 +146,15 @@ public class Main {
 		boolean allVars = false;
 		boolean toFile = true;
 		String varToInfere = null;
+		
+		SaveToFile out = null;
 		String outputFile = "";
 		
 		for(String arg: args) {
 			outputFile += arg + ' ';
 		}
-		SaveToFile out = new SaveToFile(outputFile);
+		if(toFile)
+			out = new SaveToFile(outputFile);
 		
 		if(args.length == 5) { //e especificada a RVar sobre a qual se pretende inferir
 			out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4], toFile);		
@@ -162,8 +170,8 @@ public class Main {
 			System.exit(0);
 		}
 		
-		TransitionBayessianNetwork<RandomVariable> transitionBN = buildDBN(args[0], args[2], Integer.parseInt(args[3]), outputFile, toFile);
-		infereValue(args[1], allVars, varToInfere, transitionBN, outputFile, toFile);
+		TransitionBayessianNetwork<RandomVariable> transitionBN = buildDBN(args[0], args[2], Integer.parseInt(args[3]), out);
+		infereValue(args[1], allVars, varToInfere, transitionBN, out);
 		
 		out.close();
 	}
