@@ -20,6 +20,8 @@ public class Main {
 		
 		boolean allVars = false;
 		
+		long startTime = System.nanoTime();  
+		
 		if(args.length == 5) { //e especificada a RVar sobre a qual se pretende inferir
 			System.out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + Integer.parseInt(args[4]));		
 		}
@@ -32,9 +34,7 @@ public class Main {
 			System.out.println("				     or: <train> <test> <score> <randtest> to infer all random variables.");
 			System.exit(0);
 		}
-			
-		long startTime = System.nanoTime();  
-		
+	
 		//arg[0] - filename do train dataset
 		DataFileReader trainFile = null;
 		try {
@@ -74,16 +74,7 @@ public class Main {
 		
 		// todas as vars dadas
 		RandomVariable[] vars = trainFile.getRVars();
-		
-		// vars de tempo zero
 		int varCount = trainFile.randomVarCount() / trainFile.timeInstantCount();
-		RandomVariable[] varsOfTime0 = Arrays.copyOfRange(vars, 0, varCount);
-
-		Dataset datasetOfTime0 = new Dataset(timeSlices[0]);
-		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length, Integer.parseInt(args[3]));
-		
-		System.out.println(BNOfTime0);
-		
 		RandomVariable[] varsOfTandNextT = Arrays.copyOfRange(vars, 0, varCount + varCount);
 		
 		TransitionDataset transitionDataset = null;
@@ -100,9 +91,19 @@ public class Main {
 		long elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
 		System.out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
 		
+		// vars de tempo zero
+		RandomVariable[] varsOfTime0 = Arrays.copyOfRange(vars, 0, varCount);
+		Dataset datasetOfTime0 = new Dataset(timeSlices[0]);
+		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length, Integer.parseInt(args[3]));
+		
+		System.out.println("Initial network: ");
+		System.out.println(BNOfTime0);
+		System.out.println("=== Scores");
+		System.out.println("LL Score: " + (new LLScore()).getScore(BNOfTime0, datasetOfTime0));
+		System.out.println("MDL Score: " + (new MDLScore()).getScore(BNOfTime0, datasetOfTime0));
+			
 		System.out.println("Transition network: ");
 		System.out.println(transitionBN); 
-		
 		System.out.println("=== Scores");
 		System.out.println("LL Score: " + (new LLScore()).getScore(transitionBN, transitionDataset));
 		System.out.println("MDL Score: " + (new MDLScore()).getScore(transitionBN, transitionDataset));
