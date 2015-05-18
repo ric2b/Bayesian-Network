@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import bayessian.BayessianNetwork;
+import bayessian.MaximumCriterion;
 import bayessian.RandomVariable;
+import bayessian.RestartCriterion;
+import bayessian.StopCriterion;
 import bayessian.TransitionBayessianNetwork;
 import dataset.Dataset;
 import dataset.TimeSlice;
@@ -67,17 +70,34 @@ public class Main {
 			out.println(except.getMessage(), toFile);
 		}	
 		
-		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset, score, randtest); 
+		StopCriterion transitionCriterion = null;
+		
+		if(randtest > 0) {
+			transitionCriterion = new RestartCriterion(randtest);
+		} else {
+			transitionCriterion = new MaximumCriterion();
+		}
+		
+		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset, score, transitionCriterion); 
 		//TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset);
 		//o de baixo forca o grafo do quadro
 		
 		elapsedTimeBN = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
 		out.println("Building DBN: " + elapsedTimeBN*Math.pow(10, -9) + " seconds", toFile);
 		
+		
+		StopCriterion B0Criterion = null;
+		
+		if(randtest > 0) {
+			B0Criterion = new RestartCriterion(randtest);
+		} else {
+			B0Criterion = new MaximumCriterion();
+		}
+		
 		// vars de tempo zero
 		RandomVariable[] varsOfTime0 = Arrays.copyOfRange(vars, 0, varCount);
 		Dataset datasetOfTime0 = new Dataset(timeSlices[0]);
-		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length, randtest);
+		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length, B0Criterion);
 		
 		out.println("Initial network: ", toFile);
 		out.println(BNOfTime0.toString(), toFile);
