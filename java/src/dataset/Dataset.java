@@ -88,6 +88,34 @@ public class Dataset implements Iterable<Sample> {
 		return count;
 	}
 	
+	public int[] getAllCounts(int indexI, int range, int[] indexes, int[] values) {
+		// o numero de amostras em cada conjunto de amostras é igual
+		int sampleCount = samplesOfTimeT.size();
+		
+		int[] Nijk = new int[range];
+		
+		for(int i = 0; i < sampleCount; i++) {
+			boolean toCount = true;	// indica se esta linha de amostras é para contar como uma combinação
+			
+			for(int k = 0; k < range; k++) {
+				for(int j = 0; j < indexes.length; j++) {
+					if(values[j] != getValue(indexes[j], i)) {
+						// esta linha não contem a configuração dos pais correcta
+						toCount = false;
+						break;
+					}
+				}
+				
+				if(toCount && k == getValue(indexI, i)) {
+					// linha cumpriu a configuração dos pais e o valor da variavel
+					Nijk[k]++;
+				}
+			}
+		}
+		
+		return Nijk;
+	}
+	
 	protected int getValue(int index, int sample) {
 		return this.samplesOfTimeT.get(sample).getValue(index);
 	}
