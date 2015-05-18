@@ -6,24 +6,14 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.ImageIcon;
 import java.awt.Font;
-import javax.swing.SwingConstants;
-import java.awt.GridLayout;
-import javax.swing.BoxLayout;
-//import com.jgoodies.forms.layout.FormLayout;
-//import com.jgoodies.forms.layout.ColumnSpec;
-//import com.jgoodies.forms.layout.RowSpec;
 import java.awt.Dimension;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import java.awt.Color;
 import java.awt.SystemColor;
 import javax.swing.JRadioButton;
-import javax.swing.JToggleButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Component;
@@ -32,14 +22,11 @@ import javax.swing.JProgressBar;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
-import javax.swing.JFileChooser;
 import bayessian.RandomVariable;
 import bayessian.TransitionBayessianNetwork;
 import java.io.File;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;    
 
 public class GUI {
 
@@ -158,7 +145,7 @@ public class GUI {
 		separator.setBounds(-19, 189, 403, 2);
 		frame.getContentPane().add(separator);
 		
-		JSpinner spinner = new JSpinner();
+		final JSpinner spinner = new JSpinner();
 		spinner.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
 		spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
 		spinner.setBounds(304, 58, 43, 18);
@@ -258,7 +245,7 @@ public class GUI {
 		frame.getContentPane().add(txtTestFile);
 		
 		JButton button = new JButton("open");
-		JFileChooser fileChooserTest = new JFileChooser();
+		final JFileChooser fileChooserTest = new JFileChooser();
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -277,7 +264,7 @@ public class GUI {
 		frame.getContentPane().add(button);
 		
 		JButton button_1 = new JButton("open");
-		JFileChooser fileChooserTrain = new JFileChooser();
+		final JFileChooser fileChooserTrain = new JFileChooser();
 		button_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

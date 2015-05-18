@@ -453,37 +453,4 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		return cloneDag;
 	}
 	
-	public static void main(String[] args) {
-		DirectedAcyclicGraph<String> dag1 = new DirectedAcyclicGraph<>();
-		DirectedAcyclicGraph<String> dag2 = new DirectedAcyclicGraph<>();
-		
-		dag1.addNode("A");
-		dag1.addNode("B");
-		dag1.addNode("C");
-		
-		dag2.addNode("A");
-		dag2.addNode("B");
-		
-		dag1.addEdge("A", "B");
-		dag2.addEdge("A", "B");
-		
-		DirectedAcyclicGraph<Integer> dagClone  = (DirectedAcyclicGraph<Integer>) dag1.clone();
-		
-		dag1.addEdge("C", "A");
-		
-		if(dag1.equals(dagClone)) {
-			System.out.println("equal");
-		} else {
-			System.out.println("not equal");
-		}
-	}
-	
-//	public static void main(String[] args) {
-//		HashMap<Integer, Integer> map = new HashMap<>();
-//		map.put(0, 1);
-//		
-//		HashMap<Integer, Integer> mapClone = new HashMap<>(map);
-//		
-//		map.put(0, 2);
-//	}
 }
