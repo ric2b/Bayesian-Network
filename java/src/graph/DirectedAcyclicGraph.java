@@ -407,7 +407,7 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		if (!(obj instanceof DirectedAcyclicGraph))
 			return false;
 		
-		DirectedAcyclicGraph other = (DirectedAcyclicGraph) obj;
+		DirectedAcyclicGraph<?> other = (DirectedAcyclicGraph<?>) obj;
 		
 		if (edgeCount != other.edgeCount)
 			return false;

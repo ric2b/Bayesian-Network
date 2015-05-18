@@ -85,7 +85,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		List<RandomVariable> srcNodesOfBestGraph = new ArrayList<>();
 		List<RandomVariable> destNodesOfBestGraph = new ArrayList<>();
 		
-		Set<Integer> tabuList = new HashSet<>();
+		Set<DirectedAcyclicGraph<RandomVariable>> tabuList = new HashSet<>();
 		
 		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido em todos os random restarts
 		
@@ -126,7 +126,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 									operation = new RemoveOperation<>(vars[j], vars[i]);
 									
 									//adicionar grafo à tabu list
-									tabuList.add(this.graph.hashCode());
+									tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
 									System.out.println("added to tabu");
 								}
 							} else {
@@ -148,7 +148,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 										operation = new FlipOperation<>(vars[j], vars[i]);
 										
 										//adicionar grafo à tabu list
-										tabuList.add(this.graph.hashCode());
+										tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
 										System.out.println("added to tabu");
 									}
 								} else {
@@ -172,7 +172,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 										operation = new AddOperation<>(vars[j], vars[i]);
 										
 										//adicionar grafo à tabu list
-										tabuList.add(this.graph.hashCode());
+										tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
 										System.out.println("added to tabu");
 									}
 								} else {
