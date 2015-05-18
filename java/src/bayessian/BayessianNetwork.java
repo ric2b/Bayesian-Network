@@ -1,15 +1,12 @@
 package bayessian;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.Set;
 
 import score.Score;
@@ -29,7 +26,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	protected int varCount = 0; 
 	protected static int parentCount = 3;
 	
-	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score, int varCount, int numberOfRandomRestarts) {
+	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score, int varCount, StopCriterion criterion) {
 		this.varCount = varCount;
 		this.vars = Arrays.copyOf(vars, vars.length);
 		this.estimates = new EstimateTable[vars.length];	// uma tabela de estimativas por variavel aleatoria
@@ -44,17 +41,16 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		graph = new DirectedAcyclicGraph<RandomVariable>(vars);
 		
 		// construir Bayessian Network
-		greedyHillClimbingAlgorithm(dataset, score, numberOfRandomRestarts);
+		greedyHillClimbingAlgorithm(dataset, score, criterion);
 		
 		fillEstimateTable(dataset);
 	}
 	
-	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score, int numberOfRandomRestarts) {
+	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score, StopCriterion criterion) {
 		
 		// operação sobre o grafo actual que resultou no grafo com melhor score
 		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;
 		Set<DirectedAcyclicGraph<RandomVariable>> tabuList = new HashSet<>();
-		StopCriterion criterion = new RestartCriterion(5);
 		
 		double randomBestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
 		do {
