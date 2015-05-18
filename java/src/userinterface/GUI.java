@@ -21,6 +21,8 @@ import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
 
+
+
 //import com.jgoodies.forms.layout.FormLayout;
 //import com.jgoodies.forms.layout.ColumnSpec;
 //import com.jgoodies.forms.layout.RowSpec;
@@ -46,6 +48,9 @@ import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.JFileChooser;
 
+import bayessian.RandomVariable;
+import bayessian.TransitionBayessianNetwork;
+
 import java.io.File;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -69,11 +74,14 @@ public class GUI {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
 	
-	private static boolean build;
 	private static boolean LL;
+	private static boolean allVars;
 	private static boolean MDL;
 	
 	private JButton btnStart;
+	private JSpinner spinner_1;
+	
+	TransitionBayessianNetwork<RandomVariable> transitionBN = null;
 
 	/**
 	 * Launch the application.
@@ -81,6 +89,7 @@ public class GUI {
 	public static void main(String[] args) {
 		LL = true;
 		MDL = false;
+		allVars = true;
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Throwable e) {
@@ -103,7 +112,16 @@ public class GUI {
 	 */
 	public GUI() {
 		btnStart = new JButton("start");
-		btnStart.setEnabled(false);
+		btnStart.setEnabled(false);	
+		txtSeconds = new JTextField();
+		txtSeconds.setBorder(null);
+		txtSeconds.setVisible(false);
+		spinner_1 = new JSpinner();
+		spinner_1.setEnabled(false);
+		textField_1 = new JTextField();
+		textField_1.setText("filename.csv");
+		textField_2 = new JTextField();
+		textField_2.setText("filename.csv");
 		initialize();
 	}
 
@@ -123,6 +141,11 @@ public class GUI {
 		
 		JRadioButton rdbtnLl = new JRadioButton("LL");
 		rdbtnLl.setSelected(true);
+		buttonGroup.add(rdbtnLl);
+		rdbtnLl.setToolTipText("log-likelyhood scoring");
+		rdbtnLl.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
+		rdbtnLl.setRequestFocusEnabled(false);
+		rdbtnLl.setBounds(75, 56, 43, 23);
 		rdbtnLl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -130,14 +153,14 @@ public class GUI {
 				MDL = false;
 			}
 		});
-		buttonGroup.add(rdbtnLl);
-		rdbtnLl.setToolTipText("log-likelyhood scoring");
-		rdbtnLl.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
-		rdbtnLl.setRequestFocusEnabled(false);
-		rdbtnLl.setBounds(75, 56, 43, 23);
 		frame.getContentPane().add(rdbtnLl);
 		
 		JRadioButton rdbtnMdl = new JRadioButton("MDL");
+		buttonGroup.add(rdbtnMdl);
+		rdbtnMdl.setToolTipText("minimum description length scoring");
+		rdbtnMdl.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
+		rdbtnMdl.setRequestFocusEnabled(false);
+		rdbtnMdl.setBounds(120, 56, 55, 23);
 		rdbtnMdl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -145,11 +168,6 @@ public class GUI {
 				MDL = true;
 			}
 		});
-		buttonGroup.add(rdbtnMdl);
-		rdbtnMdl.setToolTipText("minimum description length scoring");
-		rdbtnMdl.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
-		rdbtnMdl.setRequestFocusEnabled(false);
-		rdbtnMdl.setBounds(120, 56, 55, 23);
 		frame.getContentPane().add(rdbtnMdl);
 		
 		JSeparator separator = new JSeparator();
@@ -170,10 +188,15 @@ public class GUI {
 		rdbtnTodas.setRequestFocusEnabled(false);
 		rdbtnTodas.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
 		rdbtnTodas.setBounds(94, 236, 100, 23);
+		rdbtnTodas.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				spinner_1.setEnabled(false);
+				allVars = true;
+			}
+		});
 		frame.getContentPane().add(rdbtnTodas);
 		
-		JSpinner spinner_1 = new JSpinner();
-		spinner_1.setEnabled(false);
 		spinner_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
 		spinner_1.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		spinner_1.setBounds(172, 265, 43, 18);
@@ -197,6 +220,13 @@ public class GUI {
 		rdbtnEscolher.setRequestFocusEnabled(false);
 		rdbtnEscolher.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
 		rdbtnEscolher.setBounds(94, 261, 83, 23);
+		rdbtnTodas.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				spinner_1.setEnabled(true);
+				allVars = false;
+			}
+		});
 		frame.getContentPane().add(rdbtnEscolher);
 		
 		txtInferir = new JTextField();
@@ -280,12 +310,6 @@ public class GUI {
 		button_1.setBounds(286, 14, 61, 22);
 		frame.getContentPane().add(button_1);
 		
-		btnStart.setToolTipText("start the inference computation");
-		btnStart.setRequestFocusEnabled(false);
-		btnStart.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
-		btnStart.setBounds(152, 347, 79, 38);
-		frame.getContentPane().add(btnStart);
-		
 		JButton btnBuild = new JButton("build");
 		btnBuild.setToolTipText("build the bayesian network");
 		btnBuild.setDebugGraphicsOptions(DebugGraphics.NONE_OPTION);
@@ -295,23 +319,55 @@ public class GUI {
 		btnBuild.setBounds(152, 140, 79, 38);
 		btnBuild.setActionCommand("enable");
 		btnBuild.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) { 
+			public void actionPerformed(ActionEvent e) {
+					SaveToFile out = null;	
+					boolean toFile = true;
+					if(toFile)
+						out = new SaveToFile("transitionBN.out");
+					
 					if(LL == true) {
-						System.out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue());	
-						Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue(), "outFile", false);			
+						out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue(), toFile);	
+						transitionBN = Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue(), out);			
 					}
 					else if(MDL == true) {
-						System.out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue());
-						Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue(), "outFile", false);	
+						out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue(), toFile);
+						transitionBN = Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue(), out);	
 					}
 					if ("enable".equals(e.getActionCommand())) {
 						btnStart.setEnabled(true);
+						txtSeconds.setVisible(true);
+						txtSeconds.setText(Double.toString((Main.elapsedTimeBN/1000000)*Math.pow(10, -9)));
 				    } else {
 				    	btnStart.setEnabled(false);
 				    }
+					
+					out.close();
 			} 
 		});
 		frame.getContentPane().add(btnBuild);
+		
+		btnStart.setToolTipText("start the inference computation");
+		btnStart.setRequestFocusEnabled(false);
+		btnStart.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
+		btnStart.setBounds(152, 347, 79, 38);
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					SaveToFile out = null;	
+					boolean toFile = true;
+					if(toFile)
+						out = new SaveToFile("inferedValues.out");	
+					if(allVars == true) {
+						Main.infereValue(textField_1.getText(), true, 0, transitionBN, out);		
+					}
+					else {
+						Main.infereValue(textField_1.getText(), false, (Integer)spinner_1.getValue(), transitionBN, out);	
+					}
+					txtSeconds_1.setVisible(true);
+					txtSeconds_1.setText(String.format("%s",  Main.elapsedTimeInfere*Math.pow(10, -9)));					
+					out.close();
+			} 
+		});
+		frame.getContentPane().add(btnStart);
 		
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setValue(30);
@@ -347,8 +403,6 @@ public class GUI {
 		textField.setBounds(185, 303, 79, 20);
 		frame.getContentPane().add(textField);
 		
-		textField_2 = new JTextField();
-		textField_2.setText("filename.csv");
 		textField_2.setOpaque(false);
 		textField_2.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
 		textField_2.setEditable(false);
@@ -357,8 +411,7 @@ public class GUI {
 		textField_2.setBounds(89, 15, 189, 20);
 		frame.getContentPane().add(textField_2);
 		
-		textField_1 = new JTextField();
-		textField_1.setText("filename.csv");
+
 		textField_1.setOpaque(false);
 		textField_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
 		textField_1.setEditable(false);
@@ -367,9 +420,6 @@ public class GUI {
 		textField_1.setBounds(90, 201, 189, 20);
 		frame.getContentPane().add(textField_1);
 		
-		txtSeconds = new JTextField();
-		txtSeconds.setVisible(false);
-		txtSeconds.setText("6 seconds");
 		txtSeconds.setOpaque(false);
 		txtSeconds.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
 		txtSeconds.setEditable(false);
