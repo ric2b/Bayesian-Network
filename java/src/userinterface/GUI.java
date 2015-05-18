@@ -6,51 +6,35 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
 import javax.swing.ImageIcon;
-
 import java.awt.Font;
-
 import javax.swing.SwingConstants;
-
 import java.awt.GridLayout;
-
 import javax.swing.BoxLayout;
-
-
-
 //import com.jgoodies.forms.layout.FormLayout;
 //import com.jgoodies.forms.layout.ColumnSpec;
 //import com.jgoodies.forms.layout.RowSpec;
 import java.awt.Dimension;
-
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-
 import java.awt.Color;
 import java.awt.SystemColor;
-
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-
 import java.awt.Component;
-
 import javax.swing.DebugGraphics;
 import javax.swing.JProgressBar;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.JFileChooser;
-
 import bayessian.RandomVariable;
 import bayessian.TransitionBayessianNetwork;
-
 import java.io.File;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -220,7 +204,7 @@ public class GUI {
 		rdbtnEscolher.setRequestFocusEnabled(false);
 		rdbtnEscolher.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
 		rdbtnEscolher.setBounds(94, 261, 83, 23);
-		rdbtnTodas.addMouseListener(new MouseAdapter() {
+		rdbtnEscolher.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				spinner_1.setEnabled(true);
@@ -411,7 +395,6 @@ public class GUI {
 		textField_2.setBounds(89, 15, 189, 20);
 		frame.getContentPane().add(textField_2);
 		
-
 		textField_1.setOpaque(false);
 		textField_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
 		textField_1.setEditable(false);
@@ -433,6 +416,7 @@ public class GUI {
 		txtSeconds_1.setText("2 seconds");
 		txtSeconds_1.setOpaque(false);
 		txtSeconds_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
+		txtSeconds_1.setBorder(null);
 		txtSeconds_1.setEditable(false);
 		txtSeconds_1.setColumns(10);
 		txtSeconds_1.setBackground(SystemColor.activeCaptionBorder);
