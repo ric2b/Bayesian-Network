@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
 
-public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
+public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Cloneable {
 	
 	protected Map<Node<T>, Collection<Node<T>>> edgeMap = new HashMap<>();;		// mapa que representa as arestas
 	protected Map<T, Node<T>> nodeMap = new HashMap<>();								// permite obter o nó para um dado T
@@ -422,6 +422,18 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 			return false;
 		
 		return true;
+	}
+	
+	@Override @SuppressWarnings("unchecked")
+	public Object clone() {
+		
+		DirectedAcyclicGraph<T> cloneDag = new DirectedAcyclicGraph<>();
+		cloneDag.edgeCount = this.edgeCount;
+		cloneDag.nodeCount = this.nodeCount;
+		cloneDag.edgeMap = (Map<Node<T>, Collection<Node<T>>>) ((HashMap<Node<T>, Collection<Node<T>>>) this.edgeMap).clone();
+		cloneDag.nodeMap = (Map<T, Node<T>>) ((HashMap<T, Node<T>>) this.nodeMap).clone();
+		
+		return cloneDag;
 	}
 	
 }
