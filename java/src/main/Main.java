@@ -16,14 +16,14 @@ import input.DataFileReader;
 
 public class Main {
 	
-	public static TransitionBayessianNetwork<RandomVariable> buildDBN(String[] args) {
+	public static TransitionBayessianNetwork<RandomVariable> buildDBN(String traindataset, String scoreArg, String randtest) {
 	
 		long startTime = System.nanoTime();  
 	
 		//arg[0] - filename do train dataset
 		DataFileReader trainFile = null;
 		try {
-			trainFile = new DataFileReader(args[0]);
+			trainFile = new DataFileReader(traindataset);
 		} catch (IOException except) {
 			System.out.println(except.getMessage());
 			System.exit(0);
@@ -31,10 +31,10 @@ public class Main {
 		
 		//arg[2] - score (MDL ou LL)
 		Score score = null;
-		if(args[2].equals("MDL")) {
+		if(scoreArg.equals("MDL")) {
 			score = new MDLScore();
 		}
-		else if(args[2].equals("LL")){
+		else if(scoreArg.equals("LL")){
 			score = new LLScore();
 		}
 		else {
@@ -60,7 +60,7 @@ public class Main {
 			System.out.println(except.getMessage());
 		}	
 		
-		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset, score, Integer.parseInt(args[3])); 
+		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset, score, Integer.parseInt(randtest)); 
 		//TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset);
 		//o de baixo forca o grafo do quadro
 		
@@ -70,7 +70,7 @@ public class Main {
 		// vars de tempo zero
 		RandomVariable[] varsOfTime0 = Arrays.copyOfRange(vars, 0, varCount);
 		Dataset datasetOfTime0 = new Dataset(timeSlices[0]);
-		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length, Integer.parseInt(args[3]));
+		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length, Integer.parseInt(randtest));
 		
 		System.out.println("Initial network: ");
 		System.out.println(BNOfTime0);
@@ -151,7 +151,7 @@ public class Main {
 			System.exit(0);
 		}
 		
-		TransitionBayessianNetwork<RandomVariable> transitionBN = buildDBN(args);
+		TransitionBayessianNetwork<RandomVariable> transitionBN = buildDBN(args[0], args[2], args[3]);
 		infereValue(args[1], allVars, varToInfere, transitionBN);
 	}
 }
