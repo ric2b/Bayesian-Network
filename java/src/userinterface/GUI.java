@@ -72,12 +72,13 @@ public class GUI {
 	private static boolean build;
 	private static boolean LL;
 	private static boolean MDL;
+	
+	private JButton btnStart;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		build = false;
 		LL = true;
 		MDL = false;
 		try {
@@ -271,56 +272,45 @@ public class GUI {
 			      }
 			}
 		});
-		
 		button_1.setToolTipText("select the csv file for training");
 		button_1.setRequestFocusEnabled(false);
 		button_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
 		button_1.setBounds(286, 14, 61, 22);
 		frame.getContentPane().add(button_1);
 		
+		btnStart = new JButton("start");
+		btnStart.setToolTipText("start the inference computation");
+		btnStart.setRequestFocusEnabled(false);
+		btnStart.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
+		btnStart.setBounds(152, 347, 79, 38);
+		frame.getContentPane().add(btnStart);
+		
 		JButton btnBuild = new JButton("build");
-		btnBuild.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(LL == true) {
-					System.out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue());	
-					Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue());			
-				}
-				else {
-					System.out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue());
-					Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue());
-				}
-				btnBuild.setActionCommand("enable");
-			}
-		});
 		btnBuild.setToolTipText("build the bayesian network");
 		btnBuild.setDebugGraphicsOptions(DebugGraphics.NONE_OPTION);
 		btnBuild.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnBuild.setRequestFocusEnabled(false);
-		btnBuild.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 		btnBuild.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
 		btnBuild.setBounds(152, 140, 79, 38);
-		frame.getContentPane().add(btnBuild);
-		
-		JButton btnStart = new JButton("start");
-		btnStart.setEnabled(false);
-		btnStart.setToolTipText("start the inference computation");
-		btnStart.setRequestFocusEnabled(false);
-		btnStart.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if ("enable".equals(e.getActionCommand())) {
-			        btnStart.setEnabled(true);
-			    } else {
-			    	btnStart.setEnabled(false);
-			    }
-			}
+		btnBuild.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { 
+					if(LL == true) {
+						System.out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue());	
+						Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue());			
+					}
+					else if(MDL == true) {
+						System.out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue());
+						Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue());
+					}
+					btnBuild.setActionCommand("enable");
+					if ("enable".equals(e.getActionCommand())) {
+						btnStart.setEnabled(true);
+				    } else {
+				    	btnStart.setEnabled(false);
+				    }
+			} 
 		});
-		btnStart.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
-		btnStart.setBounds(152, 347, 79, 38);
-		frame.getContentPane().add(btnStart);
+		frame.getContentPane().add(btnBuild);
 		
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setValue(30);
