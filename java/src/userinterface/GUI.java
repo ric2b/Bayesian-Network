@@ -1,39 +1,56 @@
 package userinterface;
 
+import main.*;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.ImageIcon;
+
 import java.awt.Font;
+
 import javax.swing.SwingConstants;
+
 import java.awt.GridLayout;
+
 import javax.swing.BoxLayout;
+
 //import com.jgoodies.forms.layout.FormLayout;
 //import com.jgoodies.forms.layout.ColumnSpec;
 //import com.jgoodies.forms.layout.RowSpec;
 import java.awt.Dimension;
+
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+
 import java.awt.Color;
 import java.awt.SystemColor;
+
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+
 import java.awt.Component;
+
 import javax.swing.DebugGraphics;
 import javax.swing.JProgressBar;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.JFileChooser;
+
 import java.io.File;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;    
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;    
 
 public class GUI {
 
@@ -51,11 +68,18 @@ public class GUI {
 	private JTextField txtSeconds_1;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
+	
+	private static boolean build;
+	private static boolean LL;
+	private static boolean MDL;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		build = false;
+		LL = true;
+		MDL = false;
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Throwable e) {
@@ -84,6 +108,7 @@ public class GUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+				
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
@@ -95,6 +120,13 @@ public class GUI {
 		
 		JRadioButton rdbtnLl = new JRadioButton("LL");
 		rdbtnLl.setSelected(true);
+		rdbtnLl.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				LL = true;
+				MDL = false;
+			}
+		});
 		buttonGroup.add(rdbtnLl);
 		rdbtnLl.setToolTipText("log-likelyhood scoring");
 		rdbtnLl.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
@@ -103,6 +135,13 @@ public class GUI {
 		frame.getContentPane().add(rdbtnLl);
 		
 		JRadioButton rdbtnMdl = new JRadioButton("MDL");
+		rdbtnMdl.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				LL = false;
+				MDL = true;
+			}
+		});
 		buttonGroup.add(rdbtnMdl);
 		rdbtnMdl.setToolTipText("minimum description length scoring");
 		rdbtnMdl.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
@@ -116,7 +155,7 @@ public class GUI {
 		
 		JSpinner spinner = new JSpinner();
 		spinner.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
-		spinner.setModel(new SpinnerNumberModel(new Integer(10), new Integer(0), null, new Integer(1)));
+		spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
 		spinner.setBounds(304, 58, 43, 18);
 		frame.getContentPane().add(spinner);
 		
@@ -136,18 +175,6 @@ public class GUI {
 		spinner_1.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		spinner_1.setBounds(172, 265, 43, 18);
 		frame.getContentPane().add(spinner_1);
-		
-		JButton btnStart = new JButton("start");
-		btnStart.setEnabled(false);
-		btnStart.setToolTipText("start the inference computation");
-		btnStart.setRequestFocusEnabled(false);
-		btnStart.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		btnStart.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
-		btnStart.setBounds(152, 347, 79, 38);
-		frame.getContentPane().add(btnStart);
 		
 		txtRandomRestarts = new JTextField();
 		txtRandomRestarts.setOpaque(false);
@@ -213,7 +240,59 @@ public class GUI {
 		txtTestFile.setBounds(29, 196, 55, 29);
 		frame.getContentPane().add(txtTestFile);
 		
+		JButton button = new JButton("open");
+		JFileChooser fileChooserTest = new JFileChooser();
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				fileChooserTest.setCurrentDirectory(new File(System.getProperty("user.home")));
+			      int rVal = fileChooserTest.showOpenDialog(fileChooserTest);
+			      if (rVal == JFileChooser.APPROVE_OPTION) {
+			        textField_1.setText(fileChooserTest.getSelectedFile().getName());
+			      }
+			}
+		});
+		
+		button.setToolTipText("select the csv file for testing");
+		button.setRequestFocusEnabled(false);
+		button.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
+		button.setBounds(287, 200, 61, 22);
+		frame.getContentPane().add(button);
+		
+		JButton button_1 = new JButton("open");
+		JFileChooser fileChooserTrain = new JFileChooser();
+		button_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				fileChooserTrain.setCurrentDirectory(new File(System.getProperty("user.home")));
+			      int rVal = fileChooserTrain.showOpenDialog(fileChooserTrain);
+			      if (rVal == JFileChooser.APPROVE_OPTION) {
+			    	  textField_2.setText(fileChooserTrain.getSelectedFile().getName());
+			      }
+			}
+		});
+		
+		button_1.setToolTipText("select the csv file for training");
+		button_1.setRequestFocusEnabled(false);
+		button_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
+		button_1.setBounds(286, 14, 61, 22);
+		frame.getContentPane().add(button_1);
+		
 		JButton btnBuild = new JButton("build");
+		btnBuild.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(LL == true) {
+					System.out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue());	
+					Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue());			
+				}
+				else {
+					System.out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue());
+					Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue());
+				}
+				btnBuild.setActionCommand("enable");
+			}
+		});
 		btnBuild.setToolTipText("build the bayesian network");
 		btnBuild.setDebugGraphicsOptions(DebugGraphics.NONE_OPTION);
 		btnBuild.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -225,6 +304,23 @@ public class GUI {
 		btnBuild.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
 		btnBuild.setBounds(152, 140, 79, 38);
 		frame.getContentPane().add(btnBuild);
+		
+		JButton btnStart = new JButton("start");
+		btnStart.setEnabled(false);
+		btnStart.setToolTipText("start the inference computation");
+		btnStart.setRequestFocusEnabled(false);
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if ("enable".equals(e.getActionCommand())) {
+			        btnStart.setEnabled(true);
+			    } else {
+			    	btnStart.setEnabled(false);
+			    }
+			}
+		});
+		btnStart.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
+		btnStart.setBounds(152, 347, 79, 38);
+		frame.getContentPane().add(btnStart);
 		
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setValue(30);
@@ -270,27 +366,6 @@ public class GUI {
 		textField_2.setBounds(89, 15, 189, 20);
 		frame.getContentPane().add(textField_2);
 		
-		JButton button_1 = new JButton("open");
-		button_1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				JFileChooser fileChooserTrain = new JFileChooser();
-				fileChooserTrain.setCurrentDirectory(new File(System.getProperty("user.home")));
-			      // Demonstrate "Open" dialog:
-			      int rVal = fileChooserTrain.showOpenDialog(fileChooserTrain);
-			      if (rVal == JFileChooser.APPROVE_OPTION) {
-			        //filename.setText(c.getSelectedFile().getName());
-			        //dir.setText(c.getCurrentDirectory().toString());
-			      }
-			}
-		});
-		
-		button_1.setToolTipText("select the csv file for training");
-		button_1.setRequestFocusEnabled(false);
-		button_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
-		button_1.setBounds(286, 14, 61, 22);
-		frame.getContentPane().add(button_1);
-		
 		textField_1 = new JTextField();
 		textField_1.setText("filename.csv");
 		textField_1.setOpaque(false);
@@ -300,27 +375,6 @@ public class GUI {
 		textField_1.setBackground(SystemColor.activeCaptionBorder);
 		textField_1.setBounds(90, 201, 189, 20);
 		frame.getContentPane().add(textField_1);
-		
-		JButton button = new JButton("open");
-		button.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				JFileChooser fileChooserTest = new JFileChooser();
-				fileChooserTest.setCurrentDirectory(new File(System.getProperty("user.home")));
-			      // Demonstrate "Open" dialog:
-			      int rVal = fileChooserTest.showOpenDialog(fileChooserTest);
-			      if (rVal == JFileChooser.APPROVE_OPTION) {
-			        //filename.setText(c.getSelectedFile().getName());
-			        //dir.setText(c.getCurrentDirectory().toString());
-			      }
-			}
-		});
-		
-		button.setToolTipText("select the csv file for testing");
-		button.setRequestFocusEnabled(false);
-		button.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
-		button.setBounds(287, 200, 61, 22);
-		frame.getContentPane().add(button);
 		
 		txtSeconds = new JTextField();
 		txtSeconds.setVisible(false);
