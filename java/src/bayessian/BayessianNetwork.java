@@ -62,6 +62,12 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 			varsToIndex.put(this.vars[i], i);
 		}
 		
+		System.out.println("Vars");
+		System.out.println(Arrays.toString(vars));
+
+		System.out.println("Dataset");
+		System.out.println(dataset);
+		
 		// começar com o grafo vazio
 		graph = new DirectedAcyclicGraph<RandomVariable>(vars);
 		
@@ -83,7 +89,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido em todos os random restarts
 		
-		for(int randomItr = 0; randomItr < 50; randomItr++) {
+		for(int randomItr = 0; randomItr < 1; randomItr++) {
 			double randomBestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
 			do {
 				if(operation != null) {
@@ -107,34 +113,48 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 							
 							// operacao de remover aresta
 							graph.removeEdge(vars[j], vars[i]);
+							System.out.println("rm:" + j + "->" + i);
 							
 							int graphHash = this.graph.hashCode();
 							if(!tabuList.contains(graphHash)) { // ignorar grafo se já estiver na tabu list
 								double curScore = score.getScore(this, dataset);
+								
+								System.out.println("tabu not contains");
 								if(curScore > randomBestScore) {
+									
 									randomBestScore = curScore;
 									operation = new RemoveOperation<>(vars[j], vars[i]);
 									
 									//adicionar grafo à tabu list
 									tabuList.add(this.graph.hashCode());
+									System.out.println("added to tabu");
 								}
+							} else {
+								System.out.println("tabu contains");
 							}
+							
 							// restaurar grafo
 							graph.addEdge(vars[j], vars[i]);
 							
 							// operacao de inverter aresta
 							if(flipAssociation(j, i)) {
+								System.out.println("flip:" + j + "->" + i);
 								graphHash = this.graph.hashCode();
 								if(!tabuList.contains(graphHash)) { // ignorar grafo se já estiver na tabu list
 									double curScore = score.getScore(this, dataset);
+									System.out.println("tabu not contains");
 									if(curScore > randomBestScore) {
 										randomBestScore = curScore;
 										operation = new FlipOperation<>(vars[j], vars[i]);
 										
 										//adicionar grafo à tabu list
 										tabuList.add(this.graph.hashCode());
+										System.out.println("added to tabu");
 									}
+								} else {
+									System.out.println("tabu contains");
 								}
+								
 								//restaurar grafo
 								graph.flipEdge(vars[i], vars[j]);
 							}
@@ -142,8 +162,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 						} else {
 							// não existe aresta entre j e i
 							if(addAssociation(j, i)) {	// adicionar aresta com teste
+								System.out.println("add:" + j + "->" + i);
 								int graphHash = this.graph.hashCode();
 								if(!tabuList.contains(graphHash)) { // ignorar grafo se já estiver na tabu list
+									System.out.println("tabu not contains");
 									double curScore = score.getScore(this, dataset);
 									if(curScore > randomBestScore) {
 										randomBestScore = curScore;
@@ -151,7 +173,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 										
 										//adicionar grafo à tabu list
 										tabuList.add(this.graph.hashCode());
+										System.out.println("added to tabu");
 									}
+								} else {
+									System.out.println("tabu contains");
 								}
 								
 								//restaurar grafo
