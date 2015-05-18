@@ -27,6 +27,7 @@ import javax.swing.SpinnerNumberModel;
 import java.awt.Component;
 import javax.swing.DebugGraphics;
 import javax.swing.JProgressBar;
+import javax.swing.ButtonGroup;
 
 public class GUI {
 
@@ -42,6 +43,8 @@ public class GUI {
 	private JTextField textField_1;
 	private JTextField txtSeconds;
 	private JTextField txtSeconds_1;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
 
 	/**
 	 * Launch the application.
@@ -71,13 +74,15 @@ public class GUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setResizable(false);
 		frame.getContentPane().setFont(new Font("Segoe UI Light", Font.PLAIN, 12));
 		frame.setLocationByPlatform(true);
-		frame.setMaximumSize(new Dimension(400, 410));
-		frame.setMinimumSize(new Dimension(400, 435));
+		frame.setMaximumSize(new Dimension(390, 435));
+		frame.setMinimumSize(new Dimension(390, 425));
 		frame.getContentPane().setLayout(null);
 		
 		JRadioButton rdbtnLl = new JRadioButton("LL");
+		buttonGroup.add(rdbtnLl);
 		rdbtnLl.setToolTipText("log-likelyhood scoring");
 		rdbtnLl.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
 		rdbtnLl.setRequestFocusEnabled(false);
@@ -85,6 +90,7 @@ public class GUI {
 		frame.getContentPane().add(rdbtnLl);
 		
 		JRadioButton rdbtnMdl = new JRadioButton("MDL");
+		buttonGroup.add(rdbtnMdl);
 		rdbtnMdl.setToolTipText("minimum description length scoring");
 		rdbtnMdl.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
 		rdbtnMdl.setRequestFocusEnabled(false);
@@ -102,6 +108,7 @@ public class GUI {
 		frame.getContentPane().add(spinner);
 		
 		JRadioButton rdbtnTodas = new JRadioButton("all variables");
+		buttonGroup_1.add(rdbtnTodas);
 		rdbtnTodas.setToolTipText("infer about all random variables");
 		rdbtnTodas.setOpaque(false);
 		rdbtnTodas.setRequestFocusEnabled(false);
@@ -110,12 +117,14 @@ public class GUI {
 		frame.getContentPane().add(rdbtnTodas);
 		
 		JSpinner spinner_1 = new JSpinner();
+		spinner_1.setEnabled(false);
 		spinner_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
 		spinner_1.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		spinner_1.setBounds(172, 265, 43, 18);
 		frame.getContentPane().add(spinner_1);
 		
 		JButton btnStart = new JButton("start");
+		btnStart.setEnabled(false);
 		btnStart.setToolTipText("start the inference computation");
 		btnStart.setRequestFocusEnabled(false);
 		btnStart.addActionListener(new ActionListener() {
@@ -138,6 +147,7 @@ public class GUI {
 		frame.getContentPane().add(txtRandomRestarts);
 		
 		JRadioButton rdbtnEscolher = new JRadioButton("choose:");
+		buttonGroup_1.add(rdbtnEscolher);
 		rdbtnEscolher.setToolTipText("infer about a specific random variable");
 		rdbtnEscolher.setOpaque(false);
 		rdbtnEscolher.setRequestFocusEnabled(false);
@@ -269,6 +279,7 @@ public class GUI {
 		frame.getContentPane().add(button);
 		
 		txtSeconds = new JTextField();
+		txtSeconds.setVisible(false);
 		txtSeconds.setText("6 seconds");
 		txtSeconds.setOpaque(false);
 		txtSeconds.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
@@ -279,6 +290,7 @@ public class GUI {
 		frame.getContentPane().add(txtSeconds);
 		
 		txtSeconds_1 = new JTextField();
+		txtSeconds_1.setVisible(false);
 		txtSeconds_1.setText("2 seconds");
 		txtSeconds_1.setOpaque(false);
 		txtSeconds_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 14));
