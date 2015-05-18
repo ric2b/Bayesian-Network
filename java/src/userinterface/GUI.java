@@ -28,6 +28,8 @@ import java.awt.Component;
 import javax.swing.DebugGraphics;
 import javax.swing.JProgressBar;
 import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
+import javax.swing.UIManager;
 
 public class GUI {
 
@@ -50,6 +52,11 @@ public class GUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -74,6 +81,7 @@ public class GUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.getContentPane().setFont(new Font("Segoe UI Light", Font.PLAIN, 12));
 		frame.setLocationByPlatform(true);
@@ -82,6 +90,7 @@ public class GUI {
 		frame.getContentPane().setLayout(null);
 		
 		JRadioButton rdbtnLl = new JRadioButton("LL");
+		rdbtnLl.setSelected(true);
 		buttonGroup.add(rdbtnLl);
 		rdbtnLl.setToolTipText("log-likelyhood scoring");
 		rdbtnLl.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
@@ -108,6 +117,7 @@ public class GUI {
 		frame.getContentPane().add(spinner);
 		
 		JRadioButton rdbtnTodas = new JRadioButton("all variables");
+		rdbtnTodas.setSelected(true);
 		buttonGroup_1.add(rdbtnTodas);
 		rdbtnTodas.setToolTipText("infer about all random variables");
 		rdbtnTodas.setOpaque(false);
@@ -218,6 +228,7 @@ public class GUI {
 		frame.getContentPane().add(progressBar);
 		
 		txtTotalTime = new JTextField();
+		txtTotalTime.setToolTipText("time to calculate (seconds)");
 		txtTotalTime.setText("total time: ");
 		txtTotalTime.setRequestFocusEnabled(false);
 		txtTotalTime.setOpaque(false);
@@ -234,6 +245,7 @@ public class GUI {
 		frame.getContentPane().add(progressBar_1);
 		
 		textField = new JTextField();
+		textField.setToolTipText("time to calculate (seconds)");
 		textField.setText("total time: ");
 		textField.setRequestFocusEnabled(false);
 		textField.setOpaque(false);
