@@ -43,6 +43,10 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		return index >= varCount;
 	}
 	
+	public int getVarCount () {
+		return varCount;
+	}
+	
 	private double calculateSingleProbability(int indexOfVar, int value, Sample sample) {
 		//
 		//value = valor que estamos a considerar nesse momento para a RVar que se pretende obter
