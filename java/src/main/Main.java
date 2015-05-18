@@ -16,7 +16,10 @@ import input.DataFileReader;
 
 public class Main {
 	
-	public static TransitionBayessianNetwork<RandomVariable> buildDBN(String traindataset, String scoreArg, String randtest) {
+	private static final boolean toFile = true;
+	static SaveToFile out = null;
+	
+	public static TransitionBayessianNetwork<RandomVariable> buildDBN(String traindataset, String scoreArg, int randtest) {
 	
 		long startTime = System.nanoTime();  
 	
@@ -25,7 +28,7 @@ public class Main {
 		try {
 			trainFile = new DataFileReader(traindataset);
 		} catch (IOException except) {
-			System.out.println(except.getMessage());
+			out.println(except.getMessage(), toFile);
 			System.exit(0);
 		}
 		
@@ -38,7 +41,7 @@ public class Main {
 			score = new LLScore();
 		}
 		else {
-			System.out.println("Score must be given by: <MDL> ou <LL>.");
+			out.println("Score must be given by: <MDL> ou <LL>.", toFile);
 			System.exit(0);
 		}
 			
@@ -57,32 +60,32 @@ public class Main {
 		try {
 			transitionDataset = new TransitionDataset(timeSlices);
 		} catch (Exception except) {
-			System.out.println(except.getMessage());
+			out.println(except.getMessage(), toFile);
 		}	
 		
-		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset, score, Integer.parseInt(randtest)); 
+		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset, score, randtest); 
 		//TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset);
 		//o de baixo forca o grafo do quadro
 		
 		long elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
-		System.out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
+		out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds", toFile);
 		
 		// vars de tempo zero
 		RandomVariable[] varsOfTime0 = Arrays.copyOfRange(vars, 0, varCount);
 		Dataset datasetOfTime0 = new Dataset(timeSlices[0]);
-		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length, Integer.parseInt(randtest));
+		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length, randtest);
 		
-		System.out.println("Initial network: ");
-		System.out.println(BNOfTime0);
-		System.out.println("=== Scores");
-		System.out.println("LL Score: " + (new LLScore()).getScore(BNOfTime0, datasetOfTime0));
-		System.out.println("MDL Score: " + (new MDLScore()).getScore(BNOfTime0, datasetOfTime0));
+		out.println("Initial network: ", toFile);
+		out.println(BNOfTime0.toString(), toFile);
+		out.println("=== Scores", toFile);
+		out.println("LL Score: " + (new LLScore()).getScore(BNOfTime0, datasetOfTime0), toFile);
+		out.println("MDL Score: " + (new MDLScore()).getScore(BNOfTime0, datasetOfTime0), toFile);
 			
-		System.out.println("Transition network: ");
-		System.out.println(transitionBN); 
-		System.out.println("=== Scores");
-		System.out.println("LL Score: " + (new LLScore()).getScore(transitionBN, transitionDataset));
-		System.out.println("MDL Score: " + (new MDLScore()).getScore(transitionBN, transitionDataset));	
+		out.println("Transition network: ", toFile);
+		out.println(transitionBN.toString(), toFile); 
+		out.println("=== Scores", toFile);
+		out.println("LL Score: " + (new LLScore()).getScore(transitionBN, transitionDataset), toFile);
+		out.println("MDL Score: " + (new MDLScore()).getScore(transitionBN, transitionDataset), toFile);	
 		
 		return transitionBN;
 	}
@@ -96,11 +99,11 @@ public class Main {
 		try {
 			testFile = new DataFileReader(testdataset);
 		} catch (IOException except) {
-			System.out.println(except.getMessage());
+			out.println(except.getMessage(), toFile);
 			System.exit(0);
 		}
 		
-		System.out.println("Performing inference:");
+		out.println("Performing inference:", toFile);
 		
 		//arg[4] - var		
 		if(allVars == true) { //var is not given - all indexes from 1 to n should be considered
@@ -109,13 +112,13 @@ public class Main {
 				futureValues[i - transitionBN.getVarCount() - 1] = transitionBN.getFutureValues(i, new Dataset(testFile.getTimeSlice(0)));			
 			}
 			for(int j = 0; j < testFile.subjectCount(); j++) { //cada coluna da matriz corresponde aos futures values das RVars para um instante de tempo
-				System.out.println("-> instance " + (j+1) + ": ");
+				out.println("-> instance " + (j+1) + ": ", toFile);
 				for(int i = 0; i < testFile.randomVarCount(); i++) { //cada linha da matriz corresponde aos futures values de uma RVar		
 					if(i == (testFile.randomVarCount()-1)) {
-						System.out.println(futureValues[i][j]); //para a ultima RVar ja nao se imprime a virgula
+						out.println(String.valueOf(futureValues[i][j]), toFile); //para a ultima RVar ja nao se imprime a virgula
 					}
 					else {
-						System.out.print(futureValues[i][j] + ", ");
+						out.print(futureValues[i][j] + ", ", toFile);
 					}
 				}
 			}	
@@ -124,12 +127,12 @@ public class Main {
 			int[] futureValues = new int[testFile.subjectCount()];
 			futureValues = transitionBN.getFutureValues(Integer.parseInt(varToInfere), new Dataset(testFile.getTimeSlice(0)));
 			for(int j = 0; j < testFile.subjectCount(); j++) {
-				System.out.println("-> instance " + (j+1) + ": " + futureValues[j]);
+				out.println("-> instance " + (j+1) + ": " + futureValues[j], toFile);
 			}
 		}	
 		
 		long elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a inferir o modelo da DBN (sem a fase de aprendizagem do train set) 	
-		System.out.println("Infering with DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
+		out.println("Infering with DBN: " + elapsedTime*Math.pow(10, -9) + " seconds", toFile);
 	}
 	
 	public static void main(String[] args) {
@@ -137,21 +140,28 @@ public class Main {
 		boolean allVars = false;
 		String varToInfere = null;
 		
+		String name="";
+		for(int i=0; i<args.length; i++) name += args[i] + ' ';
+		
+		out = new SaveToFile(name);
+		
 		if(args.length == 5) { //e especificada a RVar sobre a qual se pretende inferir
-			System.out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + Integer.parseInt(args[4]));		
+			out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4], toFile);		
 			varToInfere = args[4];
 		}
 		else if(args.length == 4) { //inferir para todas as RVars
 			allVars = true;
-			System.out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2]);
+			out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3], toFile);
 		}
 		else{
-			System.out.println("The program parameters must be given by: <train> <test> <score> <randtest> <var> to infer the random variable specified by <var>");
-			System.out.println("				     or: <train> <test> <score> <randtest> to infer all random variables.");
+			out.println("The program parameters must be given by: <train> <test> <score> <randtest> <var> to infer the random variable specified by <var>", toFile);
+			out.println("				     or: <train> <test> <score> <randtest> to infer all random variables.", toFile);
 			System.exit(0);
 		}
 		
-		TransitionBayessianNetwork<RandomVariable> transitionBN = buildDBN(args[0], args[2], args[3]);
+		TransitionBayessianNetwork<RandomVariable> transitionBN = buildDBN(args[0], args[2], Integer.parseInt(args[3]));
 		infereValue(args[1], allVars, varToInfere, transitionBN);
+		
+		out.close();
 	}
 }
