@@ -61,7 +61,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido em todos os random restarts
 		
-		for(int randomItr = 0; randomItr < 10; randomItr++) {
+		for(int randomItr = 0; randomItr < 6; randomItr++) {
 			double randomBestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
 			do {
 				if(operation != null) {
@@ -70,9 +70,6 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 				}
 				
 				randomBestScore = score.getScore(this, dataset);
-				
-				System.out.println(graph);
-				System.out.println("Score: " + randomBestScore);
 				
 				for(int i = 0; i < vars.length; i++) {
 					for(int j = 0; j < vars.length; j++) {
@@ -95,10 +92,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 									
 									//adicionar grafo à tabu list
 									tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
+									System.out.println("Score: " + randomBestScore);
 								}
-							} else {
-								System.out.println("contains");
 							}
+							
 							// restaurar grafo
 							graph.addEdge(vars[j], vars[i]);
 							
@@ -113,10 +110,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 										
 										//adicionar grafo à tabu list
 										tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
+										System.out.println("Score: " + randomBestScore);
 									}
-								} else {
-									System.out.println("contains");
 								}
+								
 								//restaurar grafo
 								graph.flipEdge(vars[i], vars[j]);
 							}
@@ -133,9 +130,8 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 										
 										//adicionar grafo à tabu list
 										tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
+										System.out.println("Score: " + randomBestScore);
 									}
-								} else {
-									System.out.println("contains");
 								}
 								
 								//restaurar grafo
@@ -152,27 +148,27 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 				srcNodesOfBestGraph.clear();
 				destNodesOfBestGraph.clear();
 				this.graph.getEdges(srcNodesOfBestGraph, destNodesOfBestGraph);
-				System.out.println("Arestas best src");
-				System.out.println(srcNodesOfBestGraph);
-				System.out.println("Arestas best dest");
-				System.out.println(destNodesOfBestGraph);
+//				System.out.println("Arestas best src");
+//				System.out.println(srcNodesOfBestGraph);
+//				System.out.println("Arestas best dest");
+//				System.out.println(destNodesOfBestGraph);
 			}
 	
-			System.out.println("restart");
+			System.out.println("restart : " + randomItr);
 			this.randomlyRestartGraph();
 		}
 		
 		this.graph.removeAllEdges();
-		System.out.println("removidas arestas:");
-		System.out.println(this.graph);
+//		System.out.println("removidas arestas:");
+//		System.out.println(this.graph);
 		
-		System.out.println("Arestas src");
-		System.out.println(srcNodesOfBestGraph);
-		System.out.println("Arestas dest");
-		System.out.println(destNodesOfBestGraph);
+//		System.out.println("Arestas src");
+//		System.out.println(srcNodesOfBestGraph);
+//		System.out.println("Arestas dest");
+//		System.out.println(destNodesOfBestGraph);
 		this.graph.addEdge(srcNodesOfBestGraph, destNodesOfBestGraph);
-		System.out.println("adicionadas arestas:");
-		System.out.println(this.graph);
+//		System.out.println("adicionadas arestas:");
+//		System.out.println(this.graph);
 		
 	}
 	
