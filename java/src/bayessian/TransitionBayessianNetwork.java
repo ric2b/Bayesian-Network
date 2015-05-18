@@ -7,10 +7,6 @@ import dataset.TransitionDataset;
 
 public class TransitionBayessianNetwork<T extends RandomVariable> extends BayessianNetwork<T>{
 	
-	public TransitionBayessianNetwork(RandomVariable[] vars, Dataset dataset) {
-		super(vars, dataset);
-	}
-	
 	public TransitionBayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score) {
 		super(vars, dataset, score, vars.length / 2);
 	}
