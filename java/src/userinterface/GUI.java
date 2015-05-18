@@ -30,6 +30,10 @@ import javax.swing.JProgressBar;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
+import javax.swing.JFileChooser;
+import java.io.File;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;    
 
 public class GUI {
 
@@ -267,7 +271,21 @@ public class GUI {
 		frame.getContentPane().add(textField_2);
 		
 		JButton button_1 = new JButton("open");
-		button_1.setToolTipText("select the csv file for testing");
+		button_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFileChooser fileChooserTrain = new JFileChooser();
+				fileChooserTrain.setCurrentDirectory(new File(System.getProperty("user.home")));
+			      // Demonstrate "Open" dialog:
+			      int rVal = fileChooserTrain.showOpenDialog(fileChooserTrain);
+			      if (rVal == JFileChooser.APPROVE_OPTION) {
+			        //filename.setText(c.getSelectedFile().getName());
+			        //dir.setText(c.getCurrentDirectory().toString());
+			      }
+			}
+		});
+		
+		button_1.setToolTipText("select the csv file for training");
 		button_1.setRequestFocusEnabled(false);
 		button_1.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
 		button_1.setBounds(286, 14, 61, 22);
@@ -284,6 +302,20 @@ public class GUI {
 		frame.getContentPane().add(textField_1);
 		
 		JButton button = new JButton("open");
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFileChooser fileChooserTest = new JFileChooser();
+				fileChooserTest.setCurrentDirectory(new File(System.getProperty("user.home")));
+			      // Demonstrate "Open" dialog:
+			      int rVal = fileChooserTest.showOpenDialog(fileChooserTest);
+			      if (rVal == JFileChooser.APPROVE_OPTION) {
+			        //filename.setText(c.getSelectedFile().getName());
+			        //dir.setText(c.getCurrentDirectory().toString());
+			      }
+			}
+		});
+		
 		button.setToolTipText("select the csv file for testing");
 		button.setRequestFocusEnabled(false);
 		button.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
