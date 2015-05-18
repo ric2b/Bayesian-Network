@@ -6,11 +6,7 @@ import dataset.Sample;
 import dataset.TransitionDataset;
 
 public class TransitionBayessianNetwork<T extends RandomVariable> extends BayessianNetwork<T>{
-	
-	public TransitionBayessianNetwork(RandomVariable[] vars, Dataset dataset) {
-		super(vars, dataset);
-	}
-	
+
 	public TransitionBayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score, int numberOfRandomRestarts) {
 		super(vars, dataset, score, vars.length / 2, numberOfRandomRestarts);
 	}
@@ -106,11 +102,9 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		double maxProbability = 0;
 		double probability = 0;
 		int futureValue = 0;
-		double sum = 0;
 		
 		for(int m = 0; m < getRange(indexOfVar); m++) {
 			probability = calculateSingleProbability(indexOfVar, m, sample);
-			sum += probability;
 			if(probability > maxProbability) {
 				maxProbability = probability;
 				futureValue = m;
