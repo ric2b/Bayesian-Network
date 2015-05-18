@@ -102,11 +102,9 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		double maxProbability = 0;
 		double probability = 0;
 		int futureValue = 0;
-		double sum = 0;
 		
 		for(int m = 0; m < getRange(indexOfVar); m++) {
 			probability = calculateSingleProbability(indexOfVar, m, sample);
-			sum += probability;
 			if(probability > maxProbability) {
 				maxProbability = probability;
 				futureValue = m;
