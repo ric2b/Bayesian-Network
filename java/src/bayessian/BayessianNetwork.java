@@ -53,124 +53,86 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		
 		// operação sobre o grafo actual que resultou no grafo com melhor score
 		EdgeOperation<DirectedAcyclicGraph<RandomVariable>, RandomVariable> operation = null;
-
-		List<RandomVariable> srcNodesOfBestGraph = new ArrayList<>();
-		List<RandomVariable> destNodesOfBestGraph = new ArrayList<>();
-		
 		Set<DirectedAcyclicGraph<RandomVariable>> tabuList = new HashSet<>();
+		StopCriterion criterion = new RestartCriterion(5);
 		
-		double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido em todos os random restarts
-		
-		for(int randomItr = 0; randomItr < numberOfRandomRestarts+1; randomItr++) {
+		double randomBestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
+		do {
+			if(operation != null) {
+				operation.exec(graph);
+				operation = null;
+			}
 			
-			double randomBestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido numa iteração
-			do {
-				if(operation != null) {
-					operation.exec(graph);
-					operation = null;
-				}
-				
-				randomBestScore = score.getScore(this, dataset);
-				
+			randomBestScore = score.getScore(this, dataset);
+			
 //				System.out.println(graph);
 //				System.out.println("Score: " + randomBestScore);
-				
-				for(int i = 0; i < vars.length; i++) {
-					for(int j = 0; j < vars.length; j++) {
-						if(i == j) {
-							// um nó não se pode ligar a si próprio
-							continue;
+			
+			for(int i = 0; i < vars.length; i++) {
+				for(int j = 0; j < vars.length; j++) {
+					if(i == j) {
+						// um nó não se pode ligar a si próprio
+						continue;
+					}
+					
+					if(graph.getParents(vars[i]).contains(vars[j])) {	// testar se j é pai de i
+						
+						// operacao de remover aresta
+						graph.removeEdge(vars[j], vars[i]);
+						
+						if(!tabuList.contains(this.graph)) { // ignorar grafo se já estiver na tabu list
+							double curScore = score.getScore(this, dataset);
+							if(curScore > randomBestScore) {
+								randomBestScore = curScore;
+								operation = new RemoveOperation<>(vars[j], vars[i]);
+								
+								//adicionar grafo à tabu list
+								tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
+							}
 						}
 						
-						if(graph.getParents(vars[i]).contains(vars[j])) {	// testar se j é pai de i
-							
-							// operacao de remover aresta
-							graph.removeEdge(vars[j], vars[i]);
-							
+						// restaurar grafo
+						graph.addEdge(vars[j], vars[i]);
+						
+						// operacao de inverter aresta
+						if(flipAssociation(j, i)) {
 							if(!tabuList.contains(this.graph)) { // ignorar grafo se já estiver na tabu list
 								double curScore = score.getScore(this, dataset);
 								if(curScore > randomBestScore) {
 									randomBestScore = curScore;
-									operation = new RemoveOperation<>(vars[j], vars[i]);
+									operation = new FlipOperation<>(vars[j], vars[i]);
 									
 									//adicionar grafo à tabu list
 									tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
 								}
 							}
 							
-							// restaurar grafo
-							graph.addEdge(vars[j], vars[i]);
-							
-							// operacao de inverter aresta
-							if(flipAssociation(j, i)) {
-								if(!tabuList.contains(this.graph)) { // ignorar grafo se já estiver na tabu list
-									double curScore = score.getScore(this, dataset);
-									if(curScore > randomBestScore) {
-										randomBestScore = curScore;
-										operation = new FlipOperation<>(vars[j], vars[i]);
-										
-										//adicionar grafo à tabu list
-										tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
-									}
+							//restaurar grafo
+							graph.flipEdge(vars[i], vars[j]);
+						}
+						
+					} else {
+						// não existe aresta entre j e i
+						if(addAssociation(j, i)) {	// adicionar aresta com teste
+							if(!tabuList.contains(this.graph)) { // ignorar grafo se já estiver na tabu list
+								double curScore = score.getScore(this, dataset);
+								if(curScore > randomBestScore) {
+									randomBestScore = curScore;
+									operation = new AddOperation<>(vars[j], vars[i]);
+									
+									//adicionar grafo à tabu list
+									tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
 								}
-								
-								//restaurar grafo
-								graph.flipEdge(vars[i], vars[j]);
 							}
 							
-						} else {
-							// não existe aresta entre j e i
-							if(addAssociation(j, i)) {	// adicionar aresta com teste
-								if(!tabuList.contains(this.graph)) { // ignorar grafo se já estiver na tabu list
-									double curScore = score.getScore(this, dataset);
-									if(curScore > randomBestScore) {
-										randomBestScore = curScore;
-										operation = new AddOperation<>(vars[j], vars[i]);
-										
-										//adicionar grafo à tabu list
-										tabuList.add((DirectedAcyclicGraph<RandomVariable>) this.graph.clone());
-									}
-								}
-								
-								//restaurar grafo
-								graph.removeEdge(vars[j], vars[i]);
-							}
+							//restaurar grafo
+							graph.removeEdge(vars[j], vars[i]);
 						}
 					}
 				}
-				
-			} while(operation != null);
+			}
 			
-			if(numberOfRandomRestarts > 0) {
-				if(randomBestScore > bestScore) {
-					bestScore = randomBestScore;
-					srcNodesOfBestGraph.clear();
-					destNodesOfBestGraph.clear();
-					this.graph.getEdges(srcNodesOfBestGraph, destNodesOfBestGraph);
-//					System.out.println("Arestas best src");
-//					System.out.println(srcNodesOfBestGraph);
-//					System.out.println("Arestas best dest");
-//					System.out.println(destNodesOfBestGraph);
-				}
-		
-//				System.out.println("restart");
-				this.randomlyRestartGraph();
-			}	
-		}
-		
-		if(numberOfRandomRestarts > 0) {
-			this.graph.removeAllEdges();
-//			System.out.println("removidas arestas:");
-//			System.out.println(this.graph);
-//			
-//			System.out.println("Arestas src");
-//			System.out.println(srcNodesOfBestGraph);
-//			System.out.println("Arestas dest");
-//			System.out.println(destNodesOfBestGraph);
-			this.graph.addEdge(srcNodesOfBestGraph, destNodesOfBestGraph);
-//			System.out.println("adicionadas arestas:");
-//			System.out.println(this.graph);
-		}	
+		} while(!criterion.toStop(this, randomBestScore, operation));	
 	}
 	
 	protected boolean addAssociation(int srcIndex, int destIndex) {
@@ -190,41 +152,6 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		}
 		
 		return graph.flipEdge(vars[srcIndex], vars[destIndex]);
-	}
-	
-	private static Random randomOperation = new Random();
-	private static Random randomOperationCount = new Random();
-	private static Random randomSource = new Random(); 
-	private static Random randomDestiny = new Random();
-	
-	protected void randomlyRestartGraph() {
-		int numberOfRandomIterations = (randomOperationCount.nextInt(vars.length*2)) + 2;
-		
-		for (int i = 0; i < numberOfRandomIterations; i++) {
-			int operToDo = randomOperation.nextInt(2);
-
-			int src = randomSource.nextInt(vars.length);
-			int dest = randomDestiny.nextInt(vars.length);
-			
-			switch(operToDo) {
-			case 0: //add
-				if(!addAssociation(src, dest)) {
-					i--; // operação não conta
-				}
-				break;
-			case 1: //remove
-				if(!graph.removeEdge(vars[src], vars[dest])) {
-					i--; // operação não conta
-				}
-				break;
-			default:
-				break;
-			}
-			
-//			System.out.println("Random:");
-//			System.out.println(graph);
-		}
-		
 	}
 	
 	/**
