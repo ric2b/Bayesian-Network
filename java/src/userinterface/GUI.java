@@ -102,6 +102,8 @@ public class GUI {
 	 * Create the application.
 	 */
 	public GUI() {
+		btnStart = new JButton("start");
+		btnStart.setEnabled(false);
 		initialize();
 	}
 
@@ -278,7 +280,6 @@ public class GUI {
 		button_1.setBounds(286, 14, 61, 22);
 		frame.getContentPane().add(button_1);
 		
-		btnStart = new JButton("start");
 		btnStart.setToolTipText("start the inference computation");
 		btnStart.setRequestFocusEnabled(false);
 		btnStart.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
@@ -292,17 +293,17 @@ public class GUI {
 		btnBuild.setRequestFocusEnabled(false);
 		btnBuild.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 16));
 		btnBuild.setBounds(152, 140, 79, 38);
+		btnBuild.setActionCommand("enable");
 		btnBuild.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { 
 					if(LL == true) {
 						System.out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue());	
-						Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue());			
+						Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue(), "outFile", false);			
 					}
 					else if(MDL == true) {
 						System.out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue());
-						Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue());
+						Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue(), "outFile", false);	
 					}
-					btnBuild.setActionCommand("enable");
 					if ("enable".equals(e.getActionCommand())) {
 						btnStart.setEnabled(true);
 				    } else {
