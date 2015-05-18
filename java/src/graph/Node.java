@@ -28,38 +28,64 @@ class Node<T> {
 		this.t = t;
 	}
 
+//	@Override
+//	public int hashCode() {
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result + index;
+//		return result;
+//	}
+//
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj) {
+//			return true;
+//		}
+//		
+//		/*
+//		 * Nota: o operador 'instanceof' retorna false caso o primeiro operando seja null
+//		 */
+//		
+//		if(!(obj instanceof Node)) {
+//			return false;
+//		}
+//		
+//		//considerar apenas o indice
+//		Node<?> other = (Node<?>) obj;
+//		if (index != other.index)
+//			return false;
+//		
+//					
+//		return true;
+//	}
+	
+	@Override
+	public String toString() {
+		return index + ":" + t.toString();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + index;
+		result = prime * result + ((t == null) ? 0 : t.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		
-		/*
-		 * Nota: o operador 'instanceof' retorna false caso o primeiro operando seja null
-		 */
-		
-		if(!(obj instanceof Node)) {
+		if (obj == null)
 			return false;
-		}
-		
-		//considerar apenas o indice
+		if (getClass() != obj.getClass())
+			return false;
 		Node<?> other = (Node<?>) obj;
-		if (index != other.index)
+		if (t == null) {
+			if (other.t != null)
+				return false;
+		} else if (!t.equals(other.t))
 			return false;
-					
 		return true;
-	}
-	
-	@Override
-	public String toString() {
-		return index + ":" + t.toString();
 	}
 }

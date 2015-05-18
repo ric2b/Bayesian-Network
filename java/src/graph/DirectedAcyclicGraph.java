@@ -80,9 +80,8 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 			return false;
 		}
 		
-		edgeMap.get(getNode(dest)).add(getNode(src));
 		edgeCount++;
-		return true;
+		return edgeMap.get(getNode(dest)).add(getNode(src));
 	}
 	
 	@Override
@@ -160,13 +159,8 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		if(doesItCreateCycle(this.getNode(dest),this.getNode(src))){
 			return false;
 		}
-		
-		// remover aresta actual
-		removeEdge(src, dest);
-		// adicionar aresta inversa
-		addEdge(dest, src);
-		
-		return true;
+
+		return removeEdge(src, dest) && addEdge(dest, src);
 	}
 	
 	/**
@@ -402,6 +396,11 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 
 	@Override
 	public boolean equals(Object obj) {
+//		System.out.println("Obj");
+//		System.out.println(obj);
+//		System.out.println("This");
+//		System.out.println(this);
+		
 		if (this == obj)
 			return true;
 		if (!(obj instanceof DirectedAcyclicGraph))
@@ -418,22 +417,73 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		if (edgeMap == null) {
 			if (other.edgeMap != null)
 				return false;
-		} else if (!edgeMap.equals(other.edgeMap))
-			return false;
+//		} else if (!edgeMap.equals(other.edgeMap))
+//			return false;
+		} else {
+			Set<Map.Entry<Node<T>, Collection<Node<T>>>> entries = edgeMap.entrySet();
+			
+			// iterar por cada entrada do edgeMap do objecto actual
+			for(Map.Entry<Node<T>, Collection<Node<T>>> entry : entries) {
+				// obter conjunto de pais para cada entrada
+				Collection<?> parents = other.edgeMap.get(entry.getKey());
+				if(parents == null)
+					return false;
+				
+				// comparar conjunto de pais
+				if(!parents.equals(entry.getValue())) {
+					return false;
+				}
+			}
+		}
 		
 		return true;
 	}
 	
-	@Override @SuppressWarnings("unchecked")
 	public Object clone() {
 		
-		DirectedAcyclicGraph<T> cloneDag = new DirectedAcyclicGraph<>();
-		cloneDag.edgeCount = this.edgeCount;
-		cloneDag.nodeCount = this.nodeCount;
-		cloneDag.edgeMap = (Map<Node<T>, Collection<Node<T>>>) ((HashMap<Node<T>, Collection<Node<T>>>) this.edgeMap).clone();
-		cloneDag.nodeMap = (Map<T, Node<T>>) ((HashMap<T, Node<T>>) this.nodeMap).clone();
+		DirectedAcyclicGraph<T> cloneDag = new DirectedAcyclicGraph<>(this.getNodes());
+		
+		Set<Map.Entry<Node<T>, Collection<Node<T>>>> entries = edgeMap.entrySet();
+		for(Map.Entry<Node<T>, Collection<Node<T>>> entry : entries) {
+			for(Node<T> node : entry.getValue()) {
+				cloneDag.addEdge(node.t, entry.getKey().t);
+			}
+		}
 		
 		return cloneDag;
 	}
 	
+	public static void main(String[] args) {
+		DirectedAcyclicGraph<String> dag1 = new DirectedAcyclicGraph<>();
+		DirectedAcyclicGraph<String> dag2 = new DirectedAcyclicGraph<>();
+		
+		dag1.addNode("A");
+		dag1.addNode("B");
+		dag1.addNode("C");
+		
+		dag2.addNode("A");
+		dag2.addNode("B");
+		
+		dag1.addEdge("A", "B");
+		dag2.addEdge("A", "B");
+		
+		DirectedAcyclicGraph<Integer> dagClone  = (DirectedAcyclicGraph<Integer>) dag1.clone();
+		
+		dag1.addEdge("C", "A");
+		
+		if(dag1.equals(dagClone)) {
+			System.out.println("equal");
+		} else {
+			System.out.println("not equal");
+		}
+	}
+	
+//	public static void main(String[] args) {
+//		HashMap<Integer, Integer> map = new HashMap<>();
+//		map.put(0, 1);
+//		
+//		HashMap<Integer, Integer> mapClone = new HashMap<>(map);
+//		
+//		map.put(0, 2);
+//	}
 }
