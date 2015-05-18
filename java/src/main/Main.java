@@ -19,19 +19,22 @@ public class Main {
 	public static void main(String[] args) {
 		
 		boolean allVars = false;
+		boolean printToFile = true;
+		
+		SaveToFile out = new SaveToFile(args[0]+' '+args[1]+' '+args[2]+' '+args[3]);
 		
 		long startTime = System.nanoTime();  
 		
 		if(args.length == 5) { //e especificada a RVar sobre a qual se pretende inferir
-			System.out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + Integer.parseInt(args[4]));		
+			out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4], printToFile);		
 		}
 		else if(args.length == 4) { //inferir para todas as RVars
-			System.out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2]);
+			out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3], printToFile);
 			allVars = true;
 		}
 		else{
-			System.out.println("The program parameters must be given by: <train> <test> <score> <randtest> <var> to infer the random variable specified by <var>");
-			System.out.println("				     or: <train> <test> <score> <randtest> to infer all random variables.");
+			out.println("The program parameters must be given by: <train> <test> <score> <randtest> <var> to infer the random variable specified by <var>", printToFile);
+			out.println("				     or: <train> <test> <score> <randtest> to infer all random variables.", printToFile);
 			System.exit(0);
 		}
 	
@@ -40,7 +43,7 @@ public class Main {
 		try {
 			trainFile = new DataFileReader(args[0]);
 		} catch (IOException except) {
-			System.out.println(except.getMessage());
+			out.println(except.getMessage(), printToFile);
 			System.exit(0);
 		}
 		
@@ -49,7 +52,7 @@ public class Main {
 		try {
 			testFile = new DataFileReader(args[1]);
 		} catch (IOException except) {
-			System.out.println(except.getMessage());
+			out.println(except.getMessage(), printToFile);
 			System.exit(0);
 		}
 		
@@ -62,7 +65,7 @@ public class Main {
 			score = new LLScore();
 		}
 		else {
-			System.out.println("Score must be given by: <MDL> ou <LL>.");
+			out.println("Score must be given by: <MDL> ou <LL>.", printToFile);
 			System.exit(0);
 		}
 			
@@ -71,7 +74,7 @@ public class Main {
 		for(int i = 0; i < instantCount; i++) {
 			timeSlices[i] = trainFile.getTimeSlice(i);
 		}
-		
+						
 		// todas as vars dadas
 		RandomVariable[] vars = trainFile.getRVars();
 		int varCount = trainFile.randomVarCount() / trainFile.timeInstantCount();
@@ -81,7 +84,7 @@ public class Main {
 		try {
 			transitionDataset = new TransitionDataset(timeSlices);
 		} catch (Exception except) {
-			System.out.println(except.getMessage());
+			out.println(except.getMessage(), printToFile);
 		}	
 		
 		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset, score, Integer.parseInt(args[3])); 
@@ -89,27 +92,27 @@ public class Main {
 		//o de baixo for�a o grafo do quadro
 		
 		long elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
-		System.out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
+		out.println("Building DBN: " + elapsedTime*Math.pow(10, -9) + " seconds", printToFile);
 		
 		// vars de tempo zero
 		RandomVariable[] varsOfTime0 = Arrays.copyOfRange(vars, 0, varCount);
 		Dataset datasetOfTime0 = new Dataset(timeSlices[0]);
 		BayessianNetwork<RandomVariable> BNOfTime0 = new BayessianNetwork<>(varsOfTime0, datasetOfTime0, score, varsOfTime0.length, Integer.parseInt(args[3]));
 		
-		System.out.println("Initial network: ");
-		System.out.println(BNOfTime0);
-		System.out.println("=== Scores");
-		System.out.println("LL Score: " + (new LLScore()).getScore(BNOfTime0, datasetOfTime0));
-		System.out.println("MDL Score: " + (new MDLScore()).getScore(BNOfTime0, datasetOfTime0));
+		out.println("Initial network: ", printToFile);
+		out.println(BNOfTime0.toString(), printToFile);
+		out.println("=== Scores", printToFile);
+		out.println("LL Score: " + (new LLScore()).getScore(BNOfTime0, datasetOfTime0), printToFile);
+		out.println("MDL Score: " + (new MDLScore()).getScore(BNOfTime0, datasetOfTime0), printToFile);
 			
-		System.out.println("Transition network: ");
-		System.out.println(transitionBN); 
-		System.out.println("=== Scores");
-		System.out.println("LL Score: " + (new LLScore()).getScore(transitionBN, transitionDataset));
-		System.out.println("MDL Score: " + (new MDLScore()).getScore(transitionBN, transitionDataset));
+		out.println("Transition network: ", printToFile);
+		out.println(transitionBN.toString(), printToFile); 
+		out.println("=== Scores", printToFile);
+		out.println("LL Score: " + (new LLScore()).getScore(transitionBN, transitionDataset), printToFile);
+		out.println("MDL Score: " + (new MDLScore()).getScore(transitionBN, transitionDataset), printToFile);
 		
 		startTime = System.nanoTime();    
-		System.out.println("Performing inference:");
+		out.println("Performing inference:", printToFile);
 		
 		//arg[4] - var		
 		if(allVars == true) { //var is not given - all indexes from 1 to n should be considered
@@ -118,13 +121,13 @@ public class Main {
 				futureValues[i - varCount - 1] = transitionBN.getFutureValues(i, new Dataset(testFile.getTimeSlice(0)));			
 			}
 			for(int j = 0; j < testFile.subjectCount(); j++) { //cada coluna da matriz corresponde aos futures values das RVars para um instante de tempo
-				System.out.println("-> instance " + (j+1) + ": ");
+				out.print("-> instance " + (j+1) + ": ", printToFile);
 				for(int i = 0; i < testFile.randomVarCount(); i++) { //cada linha da matriz corresponde aos futures values de uma RVar		
 					if(i == (testFile.randomVarCount()-1)) {
-						System.out.println(futureValues[i][j]); //para a ultima RVar ja nao se imprime a virgula
+						out.println(String.valueOf(futureValues[i][j]), printToFile); //para a ultima RVar ja nao se imprime a virgula
 					}
 					else {
-						System.out.print(futureValues[i][j] + ", ");
+						out.print(String.valueOf(futureValues[i][j]) + ", ", printToFile);
 					}
 				}
 			}	
@@ -133,11 +136,13 @@ public class Main {
 			int[] futureValues = new int[testFile.subjectCount()];
 			futureValues = transitionBN.getFutureValues(Integer.parseInt(args[4]), new Dataset(testFile.getTimeSlice(0)));
 			for(int j = 0; j < testFile.subjectCount(); j++) {
-				System.out.println("-> instance " + (j+1) + ": " + futureValues[j]);
+				out.print("-> instance " + (j+1) + ": " + futureValues[j], printToFile);
 			}
 		}	
 		
 		elapsedTime = System.nanoTime() - startTime; //tempo que se demorou a inferir o modelo da DBN (sem a fase de aprendizagem do train set) 	
-		System.out.println("Infering with DBN: " + elapsedTime*Math.pow(10, -9) + " seconds");
+		out.println("Infering with DBN: " + elapsedTime*Math.pow(10, -9) + " seconds", printToFile);
+		
+		out.close();
 	}
 }

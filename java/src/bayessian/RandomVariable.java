@@ -64,7 +64,7 @@ public abstract class RandomVariable implements Iterable<Integer> {
 	}
 	
 	public String toString() {
-		return "(" + name + "," + timeInstant + "," + range + ")"; 
+		return name; 
 	}
 	
 }
