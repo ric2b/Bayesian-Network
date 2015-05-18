@@ -389,5 +389,39 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T> {
 		
 		return;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + edgeCount;
+		result = prime * result + nodeCount;
+		result = prime * result + ((edgeMap == null) ? 0 : edgeMap.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof DirectedAcyclicGraph))
+			return false;
+		
+		DirectedAcyclicGraph other = (DirectedAcyclicGraph) obj;
+		
+		if (edgeCount != other.edgeCount)
+			return false;
+		
+		if (nodeCount != other.nodeCount)
+			return false;
+		
+		if (edgeMap == null) {
+			if (other.edgeMap != null)
+				return false;
+		} else if (!edgeMap.equals(other.edgeMap))
+			return false;
+		
+		return true;
+	}
 	
 }
