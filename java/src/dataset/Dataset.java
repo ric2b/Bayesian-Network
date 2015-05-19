@@ -15,15 +15,15 @@ public class Dataset implements Iterable<Sample> {
 	protected List<Sample> samplesOfTimeT = new ArrayList<>();	// amostras de um único instante temporal t
 	
 	/**
-	 * O constructor sem argumentos cria um dataset vazio
+	 * Creates an empty dataset
 	 */
 	public Dataset() {
 		;// nada para fazer mas este método deve existir
 	}
 	
 	/**
-	 * O costructor recebe um array de samples e adiciona todas à lista de amostras do dataset 
-	 * @param samples	array de amostras a adicionar ao dataset
+	 * Constructs a dataset initialized with the samples of the given array. 
+	 * @param samples	array of samples to add to the dataset
 	 */
 	public Dataset(Sample[] samples) {
 		// adicionar todas as amostras à lista de amostras
@@ -37,17 +37,16 @@ public class Dataset implements Iterable<Sample> {
 	}
 	
 	/**
-	 * O costructor recebe uma coleção de samples e adiciona todas à lista de amostras do dataset
-	 * @param samples coleção de amostras a adicionar ao dataset
+	 * Constructs a dataset initialized with the samples of the given collection. 
+	 * @param samples	collection of samples to add to the dataset
 	 */
 	public Dataset(Collection<? extends Sample> samples) {
 		samplesOfTimeT.addAll(samples);
 	}
 	
 	/**
-	 * O constructor recebe um time slice e adiciona todas as amostras que este contém. Amostras
-	 * vazias não são consideradas.
-	 * @param timeSlice
+	 * Constructs a dataset initialized with the samples of the given time slice. 
+	 * @param samples	time slice of samples to add to the dataset
 	 */
 	public Dataset(TimeSlice timeSlice) {
 		for(Sample sample : timeSlice) {
@@ -60,14 +59,23 @@ public class Dataset implements Iterable<Sample> {
 	}
 	
 	/**
-	 * Devolve a amostra com indice dado por indexOfSample
-	 * @param indexOfSample	indice da amostra que se pretende ler
-	 * @return	amostra com o indice dado
+	 * Returns the sample at the given position.
+	 * @param indexOfSample	position
+	 * @return	sample at the given position
 	 */
 	public Sample getSample(int indexOfSample) {
 		return samplesOfTimeT.get(indexOfSample);
 	}
 	
+	/**
+	 * Returns the count of number of samples that have the value @value at the column @indexI and the values
+	 * @values at the columns indexes@
+	 * @param indexI
+	 * @param value
+	 * @param indexes
+	 * @param values
+	 * @return	count
+	 */
 	public int countValues(int indexI, int value, int[] indexes, int[] values) {
 		int count = 0;
 		// o numero de amostras em cada conjunto de amostras é igual
@@ -91,7 +99,12 @@ public class Dataset implements Iterable<Sample> {
 		
 		return count;
 	}
-		
+	
+	/**
+	 * Returns all the Nijks for a given Bayessian Network.
+	 * @param bayessian to compute
+	 * @return Nijks of the bayessian network
+	 */
 	public int[][][] getAllCounts(BayessianNetwork<? extends RandomVariable> bayessian) {
 		// o numero de amostras em cada conjunto de amostras é igual
 		int sampleCount = samplesOfTimeT.size();
@@ -137,12 +150,19 @@ public class Dataset implements Iterable<Sample> {
 		return Nijks;
 	}
 
+	/**
+	 * Returns the value of the dataset at the column @index and in the given sample.
+	 * @param index		column of the dataset
+	 * @param sample	sample to get the value from
+	 * @return	value of the sample
+	 */
 	protected int getValue(int index, int sample) {
 		return this.samplesOfTimeT.get(sample).getValue(index);
 	}
 	
 	/**
-	 * @return	numero de amostras no dataset
+	 * Returns the number of samples in dataset 
+	 * @return number of samples in dataset
 	 */
 	public int size() {
 		return samplesOfTimeT.size();

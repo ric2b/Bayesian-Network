@@ -8,8 +8,8 @@ public class TransitionDataset extends Dataset {
 	protected List<Sample> samplesOfTimeNextT = new ArrayList<>();
 
 	/**
-	 * Contruir TransitionDataset a partir de um conjunto de 2 ou mais timeslices
-	 * @param timeSlices	array de timeslice para contruir transition dataset 
+	 * Constructs the transition dataset based in an array 2 or more time slices 
+	 * @param timeSlices	array of timeslices  
 	 */
 	public TransitionDataset(TimeSlice[] timeSlices) {
 		
