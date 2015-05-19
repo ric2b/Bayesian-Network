@@ -13,11 +13,6 @@ public class StaticRandomVariable extends RandomVariable {
 		this.range = range;
 	}
 	
-	@Override
-	public int getValueCount() {
-		return range;
-	}
-	
 	protected class StaticRandomVariableIterator implements Iterator<Integer> {
 
 		protected int currentValue = 0;
