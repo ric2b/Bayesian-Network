@@ -62,7 +62,7 @@ public class Main {
 		TransitionDataset transitionDataset = null;
 		try {
 			transitionDataset = new TransitionDataset(timeSlices);
-		} catch (Exception except) {
+		} catch (IllegalArgumentException except) {
 			out.println(except.getMessage(), toFile);
 		}	
 		

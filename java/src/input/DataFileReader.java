@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import dataset.Sample;
 import dataset.TimeSlice;
+import dataset.UndefinedSampleLengthException;
 import bayessian.RandomVariable;
 import bayessian.StaticRandomVariable;
 
@@ -147,7 +148,7 @@ public class DataFileReader {
 					break;
 				}
 			}
-		} catch(Exception e) {
+		} catch(UndefinedSampleLengthException e) {
 			// nunca deve ocorrer
 			e.printStackTrace();
 		}
