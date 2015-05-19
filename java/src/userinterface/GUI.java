@@ -84,6 +84,7 @@ public class GUI {
 	 */
 	public GUI() {
 		btnStart = new JButton("");
+		btnStart.setContentAreaFilled(false);
 		btnStart.setDisabledIcon(new ImageIcon(GUI.class.getResource("/userinterface/start.grey.png")));
 		btnStart.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/start.png")));
 		btnStart.setOpaque(false);
@@ -162,10 +163,6 @@ public class GUI {
 		});
 		frame.getContentPane().add(rdbtnMdl);
 		
-		JSeparator separator = new JSeparator();
-		separator.setBounds(-19, 189, 403, 2);
-		frame.getContentPane().add(separator);
-		
 		final JSpinner spinner = new JSpinner();
 		spinner.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 12));
 		spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
@@ -211,6 +208,7 @@ public class GUI {
 		frame.getContentPane().add(rdbtnEscolher);
 		
 		JButton button = new JButton("");
+		button.setContentAreaFilled(false);
 		button.setBorder(null);
 		button.setOpaque(false);
 		button.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/open.png")));
@@ -233,6 +231,7 @@ public class GUI {
 		frame.getContentPane().add(button);
 		
 		JButton button_1 = new JButton("");
+		button_1.setContentAreaFilled(false);
 		button_1.setBorder(null);
 		button_1.setOpaque(false);
 		button_1.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/open.png")));
@@ -260,6 +259,7 @@ public class GUI {
 		frame.getContentPane().add(chckbxSaveToFile);
 		
 		JButton btnBuild = new JButton("");
+		btnBuild.setContentAreaFilled(false);
 		btnBuild.setBorder(null);
 		btnBuild.setOpaque(false);
 		btnBuild.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/build.png")));
@@ -378,11 +378,7 @@ public class GUI {
 		
 		JLabel lblNewLabel = new JLabel("New label");
 		lblNewLabel.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/gui.png")));
-		lblNewLabel.setBounds(0, 11, 384, 400);
+		lblNewLabel.setBounds(0, 0, 384, 400);
 		frame.getContentPane().add(lblNewLabel);
-		
-		JCheckBox chckbxSuperSpeed = new JCheckBox("super speed");
-		chckbxSuperSpeed.setBounds(255, 158, 129, 23);
-		frame.getContentPane().add(chckbxSuperSpeed);
 	}
 }
