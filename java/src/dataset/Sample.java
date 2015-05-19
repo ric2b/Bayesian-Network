@@ -8,6 +8,10 @@ public class Sample {
 												// quando se cria o primeiro objecto da classe Sample
 	int[] values = null; 				// vector de inteiros que corresponde a uma linha de uma time slice
 	
+	/**
+	 * Constructs a new sample
+	 * @throws UndefinedSampleLengthException	when the sample length was not statically set previously
+	 */
 	public Sample() throws UndefinedSampleLengthException {
 		
 		if(Sample.length == -1) {
@@ -18,6 +22,12 @@ public class Sample {
 		this.values = new int[Sample.length];
 	}
 	
+	/**
+	 * Constructs a new sample and fills the sample with the values in the array. If the length of the
+	 * Sample class was not specified yet then length of the class is set to the array length. If the lengths
+	 * of the Sample class and the array don't match a IllegalArgumentException is thrown.
+	 * @param values of the sample
+	 */
 	public Sample(int[] values) {
 		if(values.length == 0) {
 			throw new IllegalArgumentException("o array values deve ter um comprimento superior a zero");
@@ -35,18 +45,35 @@ public class Sample {
 		this.values = Arrays.copyOfRange(values, 0, Sample.length);
 	}
 	
+	/**
+	 * Sets the value of the sample at the position @index with the value @value.
+	 * @param index	position of the value
+	 * @param value	new value
+	 */
 	public void setValue(int index, int value) {
 		values[index] = value;
 	}
 	
+	/**
+	 * Returns the value of the sample at the position @index.
+	 * @param index	position of the value
+	 * @return	value at the position @index
+	 */
 	public int getValue(int index) {
 		return values[index];
 	}
 	
+	/**
+	 * Returns the current length of the class Sample. If the length is not specified -1 is returned.
+	 * @return current length of the class Sample. If the length is not specified -1 is returned.
+	 */
 	public static int length() {
 		return Sample.length;
 	}
 	
+	/**
+	 * Sets the length of the class Sample.
+	 */
 	public static void setLength(int length) {
 		
 		if(length <= 0) {
@@ -54,22 +81,6 @@ public class Sample {
 		}
 		
 		Sample.length = length;
-	}
-	
-	public static void main(String[] args) {
-		Sample s1 = new Sample(new int[10]);
-		
-		System.out.println("sample 1");
-		for(int i = 0; i < Sample.length; i++) {
-			System.out.println(s1.getValue(i));
-		}
-		
-		Sample s2 = new Sample(new int[1]);
-		
-		System.out.println("sample 2");
-		for(int i = 0; i < Sample.length; i++) {
-			System.out.println(s2.getValue(i));
-		}
 	}
 	
 	public String toString() {

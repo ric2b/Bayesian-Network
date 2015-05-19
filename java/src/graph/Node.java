@@ -11,54 +11,39 @@ class Node<T> {
 	protected int index = -1;
 	protected T t = null;
 	
+	/**
+	 * Consctructs a node with index and associates the generic object t to the node
+	 * @param index	index of the node
+	 * @param t		element to be associated with the node
+	 */
 	public Node(int index, T t) {
 		this.index = index;
 		this.t = t;
 	}
 	
+	/**
+	 * Returns the index of the node
+	 * @return the index of the node
+	 */
 	public int getIndex() {
 		return index;
 	}
 	
+	/**
+	 * Returns the element associated with the node
+	 * @return element associated with the node
+	 */
 	public T get() {
 		return t;
 	}
 	
+	/**
+	 * Sets the element associated with the node
+	 */
 	public void set(T t) {
 		this.t = t;
 	}
 
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = 1;
-//		result = prime * result + index;
-//		return result;
-//	}
-//
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (this == obj) {
-//			return true;
-//		}
-//		
-//		/*
-//		 * Nota: o operador 'instanceof' retorna false caso o primeiro operando seja null
-//		 */
-//		
-//		if(!(obj instanceof Node)) {
-//			return false;
-//		}
-//		
-//		//considerar apenas o indice
-//		Node<?> other = (Node<?>) obj;
-//		if (index != other.index)
-//			return false;
-//		
-//					
-//		return true;
-//	}
-	
 	@Override
 	public String toString() {
 		return index + ":" + t.toString();

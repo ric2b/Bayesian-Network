@@ -20,16 +20,15 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 	protected int edgeCount = 0;
 	
 	/**
-	 * Cria um grafo vazio
+	 * Creates and empty graphs
 	 */
 	public DirectedAcyclicGraph() {
 		; // grafo vazio
 	}
 	
 	/**
-	 * Constructor do grafo que permite introduzir uma coleção de nós no grafo.
-	 * Estes nós são colocados no grafo sem qualquer ligação entre eles.
-	 * @param ts	coleção de T's com que se pretende iniciar o grafo 
+	 * Constructs a graph initialized with the nodes in the collection ts and zero edges.
+	 * @param ts	collections of nodes to add to the graph 
 	 */
 	public DirectedAcyclicGraph(Collection<? extends T> ts) {
 		//criar nós a partir da collection
@@ -38,6 +37,10 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		}
 	}
 	
+	/**
+	 * Constructs a graph initialized with the nodes in the array ts and zero edges.
+	 * @param ts	array of nodes to add to the graph
+	 */
 	public DirectedAcyclicGraph(T[] ts) {
 		//criar nós a partir da collection
 		for(T t : ts) {
@@ -45,11 +48,7 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		}
 	}
 	
-	/**
-	 * Adiciona um novo nó ao grafo. Este novo nó é adicionado sem qualquer aresta, ou seja,
-	 * sem qualquer ligação e nenhum dos outros nós que já existam no grafo.
-	 * @param t	objecto T que se pretende adicionar ao grafo
-	 */
+	@Override
 	public void addNode(T t) {
 		if(t == null) {
 			throw new NullPointerException();
@@ -67,14 +66,7 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		nodeCount++;
 	}
 	
-	/**
-	 * Adiciona uma aresta entre os nós que representam src e dest. Caso não exista algum dos nós recebidos
-	 * no grafo a aresta não é criada e é feito um throw de uma NoSuchElementException.
-	 * @param src primeiro nó da aresta
-	 * @param dest segundo nó da aresta
-	 * @throws NullPointerException		caso src ou dest sejam null
-	 * @throws NoSuchElementException	caso src ou dest não existam no grafo
-	 */
+	@Override
 	public boolean addEdge(T src, T dest) throws NullPointerException, NoSuchElementException {
 		if(doesItCreateCycle(this.getNode(src),this.getNode(dest))){
 			return false;
@@ -97,12 +89,7 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 	}
 	
 	
-	/**
-	 * Remove um nó do grafo. Caso t não exista no grafo não é feita qualquer alteração ao mesmo.
-	 * @param t nó do grafo que se prentende remover
-	 * @throws NullPointerException		caso t seja null
-	 * @throws NoSuchElementException	caso t não exista no grafo
-	 */
+	@Override
 	public void removeNode(T t) throws NullPointerException, NoSuchElementException {
 		Node<T> node = getNode(t);
 		
@@ -115,14 +102,7 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		nodeCount--;
 	}
 	
-	/**
-	 * Remove aresta que liga os nós src e dest do grafo. Caso um destes nós não exista no grafo não é feita
-	 * qualquer alteração ao estado do mesmo.
-	 * @param src primeiro nó da aresta a remover
-	 * @param dest segundo nó da aresta a remover
-	 * @throws NullPointerException		caso src ou dest sejam null
-	 * @throws NoSuchElementException	caso src ou dest não exista no grafo
-	 */
+	@Override
 	public boolean removeEdge(T src, T dest) throws NullPointerException, NoSuchElementException {
 		//remover src do conjunto de pais do dest
 		Collection<Node<T>> parents = edgeMap.get(getNode(dest));
@@ -131,6 +111,7 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		return parents.remove(getNode(src));
 	}	
 	
+	@Override
 	public void removeAllEdges() {
 		Set<Map.Entry<Node<T>, Collection<Node<T>>>> entries = edgeMap.entrySet();
 		
@@ -141,19 +122,19 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		edgeCount = 0;
 	}
 	
-	/**
-	 * Remove todas as arestas existentes no grafo que tenham ligação com o nó t. Caso t não exista no grafo,
-	 * não é feita qualquer alteração ao mesmo.
-	 * @param t nó de quais as arestas se quer remover
-	 * @throws NullPointerException		caso t seja null
-	 * @throws NoSuchElementException	caso t não exista no grafo
-	 */
+	@Override
 	public void removeAllEdges(T t) throws NullPointerException, NoSuchElementException {
 		Collection<Node<T>> parents = edgeMap.get(getNode(t));
 		edgeCount -= parents.size();
 		parents.clear();
 	}
 	
+	/**
+	 * Inverts the direction of the edge with the source node src an destination node dest
+	 * @param src	source node of the edge
+	 * @param dest	destination node of the edge
+	 * @return	true if the edge could be inverted
+	 */
 	public boolean flipEdge(T src, T dest) {
 		
 		if(doesItCreateCycle(this.getNode(dest),this.getNode(src))){
@@ -163,10 +144,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		return removeEdge(src, dest) && addEdge(dest, src);
 	}
 	
-	/**
-	 * Retorna o número de nós existente no grafo.
-	 * @return número de nós no grafo
-	 */
 	public int nodeCount() {
 		return nodeCount;
 	}
@@ -175,9 +152,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		return edgeCount;
 	}
 	
-	/**
-	 * Remove todos os nós do grafo.
-	 */
 	public void removeAllNodes() {
 		//limpar todos os mapas
 		edgeMap.clear();
@@ -187,12 +161,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		edgeCount = 0;
 	}
 	
-	/**
-	 * Retorna uma lista com todos os nós existentes actualmente no grafo.
-	 * Caso não existam nós no grafo é retornada uma lista vazia em vez de null, o que
-	 * faz com que o cliente não tenha de testar o retorno do método para o usar. 
-	 * @return lista de todos os nós do grafo
-	 */
 	public List<T> getNodes() {
 		List<T> nodes = new ArrayList<T>();
 		
@@ -205,14 +173,11 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 	}
 	
 	/**
-	 * Devolve um Node<T> tendo em conta o objecto do tipo T que este armazena. É feito um mapeamento entre o
-	 * objecto t recebido tendo em conta os seu métodos de equals() e hashcode(). Desta forma, caso exista no
-	 * grafo um nó que armazene um objecto T igual a t este é retornado.
-	 * @param t indice do nó que se pretende obter
-	 * @return	Node<T> correpondente ao index
-	 * @throws NoSuchElementException	caso o indice indicado não corresponda a nenhum nó existente no grafo
+	 * Tests if the node given by t of generic type T exists in the graph and returns the respective 
+	 * node of type Node<T>.
+	 * @return	the respective node of type Node<T> 
 	 */
-	protected Node<T> getNode(T t) throws NullPointerException, NoSuchElementException {
+	protected Node<T> getNode(T t) {
 		if(t == null) {
 			throw new NullPointerException();
 		}
@@ -227,27 +192,20 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 	}
 	
 	/**
-	 * Devolve uma coleção de todos os nós pais do nó t. Caso este não tenha pais é retornada uma coleção vazia.
-	 * @param	t nó de que se quer obter os pais
-	 * @return	coleção de pais do nó t
-	 * @throws NullPointerException		caso t seja null
-	 * @throws NoSuchElementException	caso t não exista no grafo
+	 * Returns a collection with all the parents of the node t. If t doesn't have parents an empty collection
+	 * is returned.
+	 * @param t	node
+	 * @return	collection of parents of t
 	 */
-	public Collection<T> getParents(T t) throws NullPointerException, NoSuchElementException {
-		//usar metodo abstracto que obter pais de um nó
-		//este metodo abstracto deve ser implementado por um subclasse de acordo com as suas especificações
+	public Collection<T> getParents(T t) {
 		return this.getParents(getNode(t));
 	}
 
 	/**
-	 * Devolve uma coleção de todos os nós pais do nó t. Caso este não tenha pais é retornada uma coleção vazia.
-	 * Não é feita qualquer verificação sobre a existência do nó recebido no grafo uma vez que este método 
-	 * só pode ser chamado dentro da classe do grafo ou classes que herdam o mesmo. Deixa-se assim ao cuidado 
-	 * de quem implementa um grafo ou uma classe que herda o mesmo a responsabilidade de garantir que ambos os 
-	 * nós existem no grafo.
-	 * Este método é chamado por todos os outros métodos com o mesmo nome mas diferentes parametros.
-	 * @param	node nó de que se quer obter os pais
-	 * @return	coleção de pais de node
+	 * Returns a collection with all the parents of the node t. If t doesn't have parents an empty collection
+	 * is returned.
+	 * @param node
+	 * @return	collection of parents of node
 	 */
 	protected Collection<T> getParents(Node<T> node) {
 		Collection<T> parents = new ArrayList<>(nodeCount);
@@ -260,13 +218,11 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 	}
 
 	/**
-	 * Testa se adicionar uma aresta (U,V) (de U para V) cria um ciclo assumindo que o grafo é aciclico antes 
-	 * da nova aresta, isto só acontece se já existe um caminho de V para U, uma vez que nesse caso é possivel 
-	 * ir de V para U e depois usar a nova aresta para ir de U para V (ciclo). O teste é feito com base numa BFS, 
-	 * uma vez que esta DAG pode ter altura infinita mas largura limitada a 3 andares.
-	 * @param source		nó de oridem da aresta
-	 * @param destination	nó de destino da aresta
-	 * @return	true caso se forme um iclo e false caso contrário
+	 * Tests if adding the edge (source, destination) generates a cycle in the graph. It tests this locally 
+	 * using a BFS algorithm.
+	 * @param source		source node of the edge to add
+	 * @param destination	destination node of the edge to add
+	 * @return	true if a cycle is generated by the edge
 	 */
 	protected boolean doesItCreateCycle(Node<T> source, Node<T> destination) {
 		
@@ -306,10 +262,7 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 	}
 	
 	/**
-	 * Innerclass que implementa um iterador que permite iterar por todos o nós pais de um certo nó. Este
-	 * iterador é para ser utilizado apenas pelos clientes deste grafo uma vez que é um iterador de T's. Caso
-	 * se pretenda utilizar um iterador para iterar pelos pais de um certo nó dentro desta classe deve ser utilizado
-	 * um iterador Iterator<Node<T>> que é retornado pelo método parents(Node<T> node).
+	 * Iterator used to iterate trough all the parents of a node.
 	 */
 	protected class ParentsIterator implements Iterator<T> {
 		
@@ -334,22 +287,10 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		}
 	}
 	
-	/**
-	 * Devolve um iterador de nós do tipo T que permite iterar pelos nós pais do nó t. Este método deve ser 
-	 * usado pelo cliente.
-	 * @param t nó do qual se pretende obter os pais
-	 * @return iterador dos pais do nó
-	 */
 	public Iterator<T> parents(T t) throws NullPointerException, NoSuchElementException {
 		return new ParentsIterator(getNode(t));
 	}
-	
-	/**
-	 * Devolve um iterador de nós do tipo Node<T> que permite iterar pelos nós pais do nó de indice index. 
-	 * Este método é que deve ser utilizado dentro dos métodos da classe.
-	 * @param node nó do qual se pretende obter os pais
-	 * @return iterador dos pais do nó
-	 */
+
 	protected Iterator<Node<T>> parents(Node<T> node) {
 		return edgeMap.get(node).iterator();
 	}
@@ -359,6 +300,9 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		throw new UnsupportedOperationException(); 
 	}
 	
+	/**
+	 * Returns a string with the format used to represent the graph.
+	 */
 	public String toString() {
 		
 		String string = "";
@@ -396,10 +340,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 
 	@Override
 	public boolean equals(Object obj) {
-//		System.out.println("Obj");
-//		System.out.println(obj);
-//		System.out.println("This");
-//		System.out.println(this);
 		
 		if (this == obj)
 			return true;
@@ -417,8 +357,6 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		if (edgeMap == null) {
 			if (other.edgeMap != null)
 				return false;
-//		} else if (!edgeMap.equals(other.edgeMap))
-//			return false;
 		} else {
 			Set<Map.Entry<Node<T>, Collection<Node<T>>>> entries = edgeMap.entrySet();
 			
@@ -439,6 +377,7 @@ public class DirectedAcyclicGraph<T> implements Graph<T>, NavigableGraph<T>, Clo
 		return true;
 	}
 	
+	@Override
 	public Object clone() {
 		
 		DirectedAcyclicGraph<T> cloneDag = new DirectedAcyclicGraph<>(this.getNodes());

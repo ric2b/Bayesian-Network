@@ -42,7 +42,8 @@ public class CSVFileReader {
 	}
 	
 	/**
-	 * @return
+	 * Reads a line from the filea and increments the offset of the file.
+	 * @return arrays of elements in the current line of the files
 	 */
 	public String[] readLine() {
 		String[] line = null;
@@ -58,6 +59,10 @@ public class CSVFileReader {
 		return line;
 	}
 	
+	/**
+	 * Reads an element form the file. Increments the offset of the file.
+	 * @return element of the file
+	 */
 	public String read() {
 		String value = null;
 		
@@ -77,26 +82,53 @@ public class CSVFileReader {
 		return value;
 	}
 	
+	/**
+	 * Resets the offset of the files.
+	 */
 	public void reset() {
 		this.cursorRow = 0; 
 		this.cursorColumn = 0;
 	}
 	
+	/**
+	 * Returns the row specified by row of the file
+	 * @param row row to be returned
+	 * @return row of elements
+	 */
 	public String[] getRow(int row) {
 		return contents.get(row);
 	}
 	
+	/**
+	 * Returns the element at the position given by (row, column).
+	 * @param row		position row
+	 * @param column	position column
+	 * @return	element at the position given by (row, column).
+	 */
 	public String getPosition(int row, int column) {
 		return contents.get(row)[column];
 	}
 	
+	/**
+	 * Returns the number of rows of the file.
+	 * @return number of rows of the file
+	 */
 	public int getRowCount() {
 		return contents.size();
 	}
 	
+	/**
+	 * Returns the number of columns of the file.
+	 * @return number of columns of the file
+	 */
 	public int getColumnCount() {
 		return columnCount;
 	}
+	
+	/**
+	 * Returns the number of the elements of the file.
+	 * @return	number of the elements of the file
+	 */
 	public int size() {
 		return this.size;
 	}
