@@ -14,7 +14,7 @@ public class RestartCriterion implements StopCriterion {
 
 	private static Random randomOperation = new Random();
 	private static Random randomOperationCount = new Random();
-	private static Random randomSource = new Random(); 
+	private static Random randomSource = new Random();
 	private static Random randomDestiny = new Random();
 	
 	List<RandomVariable> srcNodesOfBestGraph = new ArrayList<>();
@@ -22,10 +22,18 @@ public class RestartCriterion implements StopCriterion {
 	
 	private double bestScore = Double.NEGATIVE_INFINITY;		// melhor score obtido em todos os random restarts
 	
+	/**
+	 * Sets the number of random-restarts to be performed.
+	 * @param numberOfRandomRestarts number of random-restarts to be performed
+	 */
 	public RestartCriterion(int numberOfRandomRestarts) {
 		this.numberOfRandomRestarts = numberOfRandomRestarts;
 	}
 	
+	/**
+	 * Returns true when the random-restart count reaches the value specified in the constructor.
+	 * Randomly restarts the current graph of the Bayessian Network when the operation is null.
+	 */
 	@Override
 	public boolean toStop(BayessianNetwork<? extends RandomVariable> BN, double bestScore,
 			EdgeOperation<? extends Graph<? extends RandomVariable>, ? extends RandomVariable> operation) {
@@ -37,13 +45,8 @@ public class RestartCriterion implements StopCriterion {
 					srcNodesOfBestGraph.clear();
 					destNodesOfBestGraph.clear();
 					BN.graph.getEdges(srcNodesOfBestGraph, destNodesOfBestGraph);
-//					System.out.println("Arestas best src");
-//					System.out.println(srcNodesOfBestGraph);
-//					System.out.println("Arestas best dest");
-//					System.out.println(destNodesOfBestGraph);
 				}
 		
-//				System.out.println("restart");
 				this.randomlyRestartGraph(BN);
 			}	
 		} else {
@@ -54,16 +57,7 @@ public class RestartCriterion implements StopCriterion {
 		if(randomItr > numberOfRandomRestarts) {
 			if(numberOfRandomRestarts > 0) {
 				BN.graph.removeAllEdges();
-//				System.out.println("removidas arestas:");
-//				System.out.println(this.graph);
-//				
-//				System.out.println("Arestas src");
-//				System.out.println(srcNodesOfBestGraph);
-//				System.out.println("Arestas dest");
-//				System.out.println(destNodesOfBestGraph);
 				BN.graph.addEdge(srcNodesOfBestGraph, destNodesOfBestGraph);
-//				System.out.println("adicionadas arestas:");
-//				System.out.println(this.graph);
 			}
 			
 			return true;
@@ -72,6 +66,10 @@ public class RestartCriterion implements StopCriterion {
 		return false;
 	}
 	
+	/**
+	 * Randomly restarts the current graph of the Bayessian Network when the operation is null.
+	 * @param BN bayssian network with the graph to restart
+	 */
 	protected void randomlyRestartGraph(BayessianNetwork<? extends RandomVariable> BN) {
 		int numberOfRandomIterations = (randomOperationCount.nextInt(BN.vars.length*2)) + 2;
 		
@@ -95,9 +93,6 @@ public class RestartCriterion implements StopCriterion {
 			default:
 				break;
 			}
-			
-//			System.out.println("Random:");
-//			System.out.println(graph);
 		}
 		
 	}
