@@ -9,5 +9,5 @@
 \contentsline {subsubsection}{\numberline {5.2.1}Cria\IeC {\c c}\IeC {\~a}o de DAGs}{1}
 \contentsline {subsubsection}{\numberline {5.2.2}Mapeamento $j \leftrightarrow J$}{2}
 \contentsline {subsection}{\numberline {5.3}Infer\IeC {\^e}ncias}{2}
-\contentsline {subsection}{\numberline {5.4}Performance Geral}{3}
-\contentsline {section}{\numberline {6}Conclus\IeC {\~a}o}{3}
+\contentsline {subsection}{\numberline {5.4}\textit {Performance} Geral}{3}
+\contentsline {section}{\numberline {6}Conclus\IeC {\~a}o}{4}
