@@ -21,9 +21,12 @@ public abstract class RandomVariable implements Iterable<Integer> {
 	public String getName() {
 		return name;
 	}
+	
 	public int getRange() {
 		return range;
 	}
+	
+	public abstract int getValue(int index);
 	
 	public int getTimeInstant() {
 		return timeInstant;

@@ -1,6 +1,7 @@
 package tests;
 import input.DataFileReader;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import score.LLScore;
@@ -12,7 +13,7 @@ import bayessian.RandomVariable;
 import bayessian.TransitionBayessianNetwork;
 
 public class TestMain {
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException {
 		DataFileReader reader = new DataFileReader("short-train-data.csv");
 		
 		System.out.println("#Subjects: " + reader.subjectCount());

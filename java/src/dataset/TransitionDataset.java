@@ -9,14 +9,13 @@ public class TransitionDataset extends Dataset {
 
 	/**
 	 * Contruir TransitionDataset a partir de um conjunto de 2 ou mais timeslices
-	 * @param timeSlices	array de timeslice para contruir transition dataset
-	 * @throws Exception	caso o array de time slices tenha menos 2 2 time slices 
+	 * @param timeSlices	array de timeslice para contruir transition dataset 
 	 */
-	public TransitionDataset(TimeSlice[] timeSlices) throws Exception {
+	public TransitionDataset(TimeSlice[] timeSlices) {
 		
 		if(timeSlices.length < 2) {
 			// temos que criar uma excepção para isto
-			throw new Exception("um TransitionDataset precisa de pelo menos 2 time slices");
+			throw new IllegalArgumentException("um TransitionDataset precisa de pelo menos 2 time slices");
 		}
 		
 		//juntar restantes timeslices

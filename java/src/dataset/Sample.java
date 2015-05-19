@@ -8,11 +8,11 @@ public class Sample {
 												// quando se cria o primeiro objecto da classe Sample
 	int[] values = null; 				// vector de inteiros que corresponde a uma linha de uma time slice
 	
-	public Sample() throws Exception {
+	public Sample() throws UndefinedSampleLengthException {
 		
 		if(Sample.length == -1) {
 			// implementar uma excepção nossa para isto
-			throw new Exception("tamanho da variavel ainda não foi definido");
+			throw new UndefinedSampleLengthException();
 		}
 		
 		this.values = new int[Sample.length];

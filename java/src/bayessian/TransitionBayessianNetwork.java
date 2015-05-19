@@ -1,7 +1,5 @@
 package bayessian;
 
-import com.sun.xml.internal.fastinfoset.util.ValueArrayResourceException;
-
 import score.Score;
 import dataset.Dataset;
 import dataset.Sample;
@@ -112,9 +110,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 				futureValue = m;
 			}
 		}
-		
-		//System.out.println("soma das probabilidades: " + sum);
-		
+				
 		return futureValue;
 	}
 	

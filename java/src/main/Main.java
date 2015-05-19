@@ -15,6 +15,7 @@ import dataset.TransitionDataset;
 import score.LLScore;
 import score.MDLScore;
 import score.Score;
+import userinterface.GUI;
 import input.DataFileReader;
 
 public class Main {
@@ -62,7 +63,7 @@ public class Main {
 		TransitionDataset transitionDataset = null;
 		try {
 			transitionDataset = new TransitionDataset(timeSlices);
-		} catch (Exception except) {
+		} catch (IllegalArgumentException except) {
 			out.println(except.getMessage(), toFile);
 		}	
 		
@@ -75,9 +76,7 @@ public class Main {
 		}
 		
 		TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset, score, transitionCriterion); 
-		//TransitionBayessianNetwork<RandomVariable> transitionBN = new TransitionBayessianNetwork<RandomVariable>(varsOfTandNextT, transitionDataset);
-		//o de baixo forca o grafo do quadro
-		
+
 		elapsedTimeBN = System.nanoTime() - startTime; //tempo que se demorou a construir a o modelo da DBN (sem inferir o test set) 	
 		out.println("Building DBN: " + elapsedTimeBN*Math.pow(10, -9) + " seconds", toFile);
 		
@@ -162,13 +161,19 @@ public class Main {
 		int varToInfer = 0;
 		
 		SaveToFile out = null;
-		String outputFile = "";
 		
-		for(String arg: args) {
-			outputFile += arg + ' ';
+		if(args.length != 0) {
+			String outputFile = "";
+		
+			for(String arg: args) {
+				outputFile += arg + ' ';
+			}
+			if(toFile)
+				out = new SaveToFile(outputFile, toFile);
+		} else {
+			toFile = false;
+			out = new SaveToFile(" ", false);
 		}
-		if(toFile)
-			out = new SaveToFile(outputFile, toFile);
 		
 		if(args.length == 5) { //e especificada a RVar sobre a qual se pretende inferir
 			out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4], toFile);		
@@ -177,8 +182,13 @@ public class Main {
 		else if(args.length == 4) { //inferir para todas as RVars
 			allVars = true;
 			out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3], toFile);
-		}
-		else{
+		} else {
+			if(args.length == 1) {
+				if(args[0].equals("-gui")) {				
+					GUI.main(args);
+					while(true);
+				}				
+			} 
 			out.println("The program parameters must be given by: <train> <test> <score> <randtest> <var> to infer the random variable specified by <var>", toFile);
 			out.println("				     or: <train> <test> <score> <randtest> to infer all random variables.", toFile);
 			System.exit(0);
