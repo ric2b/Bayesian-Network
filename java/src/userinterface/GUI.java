@@ -53,6 +53,7 @@ public class GUI {
 	private JButton btnStart;
 	private JSpinner spinner_1;
 	private JCheckBox chckbxSaveToFile;
+	private JCheckBox checkBox;
 	
 	TransitionBayessianNetwork<RandomVariable> transitionBN = null;
 
@@ -96,6 +97,9 @@ public class GUI {
 		textField_2 = new JTextField();
 		textField_2.setText("filename.csv");
 		chckbxSaveToFile = new JCheckBox("save to file");
+		chckbxSaveToFile.setToolTipText("save the results to the output file \"transition.txt\"");
+		chckbxSaveToFile.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 13));
+		checkBox = new JCheckBox("save to file");
 		initialize();
 	}
 
@@ -329,13 +333,13 @@ public class GUI {
 		btnStart.setBounds(152, 347, 79, 38);
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					SaveToFile out = new SaveToFile("inferedValues.txt", chckbxSaveToFile.isSelected());
+					SaveToFile out = new SaveToFile("inferedValues.txt", checkBox.isSelected());
 					
 					if(allVars == true) {
-						Main.infereValue(textField_1.getText(), true, 0, transitionBN, out, chckbxSaveToFile.isSelected());		
+						Main.infereValue(textField_1.getText(), true, 0, transitionBN, out, checkBox.isSelected());		
 					}
 					else {
-						Main.infereValue(textField_1.getText(), false, (Integer)spinner_1.getValue(), transitionBN, out, chckbxSaveToFile.isSelected());	
+						Main.infereValue(textField_1.getText(), false, (Integer)spinner_1.getValue(), transitionBN, out, checkBox.isSelected());	
 					}
 					txtSeconds_1.setVisible(true);
 					txtSeconds_1.setText(String.format("%s",  Main.elapsedTimeInfere*Math.pow(10, -9)));					
@@ -355,11 +359,6 @@ public class GUI {
 		txtTotalTime.setBorder(null);
 		txtTotalTime.setBounds(194, 97, 70, 20);
 		frame.getContentPane().add(txtTotalTime);
-		
-		JProgressBar progressBar_1 = new JProgressBar();
-		progressBar_1.setValue(70);
-		progressBar_1.setBounds(29, 309, 146, 14);
-		frame.getContentPane().add(progressBar_1);
 		
 		textField = new JTextField();
 		textField.setToolTipText("time to calculate (seconds)");
@@ -408,5 +407,12 @@ public class GUI {
 		txtSeconds_1.setBackground(SystemColor.activeCaptionBorder);
 		txtSeconds_1.setBounds(264, 303, 83, 20);
 		frame.getContentPane().add(txtSeconds_1);		
+		
+		checkBox.setToolTipText("save the results to the output file \"inferenceValues.txt\"");
+		checkBox.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 13));
+		checkBox.setOpaque(false);
+		checkBox.setFocusable(false);
+		checkBox.setBounds(29, 304, 97, 23);
+		frame.getContentPane().add(checkBox);
 	}
 }
