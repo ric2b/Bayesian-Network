@@ -160,13 +160,18 @@ Na prática este método é implementado pelas seguintes parametrizações:
 
 \todo{explicar como se faz com as contagens, etc}
 
+Durante a execuçao do algoritmo sao feitas operacoes sobre um grafo base e sao calculados os scores dos grafos resultantes. De forma a evitar cópia 
+
+\subsection{\textit{Random-Restarts}}
+
+Para se efectuar os \textit{random restarts} selecciona-se uma operaçao aleatoria atravès de um inteiro entre 0 e 1, sendo depois cada operaçao mapeada para: 0 corresponde a soma e 1 corresponde a remoçao.
+
+\subsection{Tabu List}
+
+A Tabu-List é implementada a partir de um HashSet do pacote java.util. Cada vez que se obtém um novo melhor score do grafo entre cada random-restart o grafo correspondente é clonado e armazenado na Tabu-List. A utilização desta estrutura de dados permite que a verificação da existência de um grafo seja feita o através do hashcode do grafo, o que garante um acesso muito rápido à tabu-list para verificar se um grafo gerado já foi percorrido. Esta garantia é importante, uma vez que esta operação é feita sempre que se gera um novo grafo.
+
 \section{Testes Efectuados}
-
 \subsection{Aprendizagem da DBN}
-
-\subsection{\textit{Dataset}}
-
-\todo{explicar este teste}
 
 \subsubsection{Criação de DAGs}
 
@@ -365,6 +370,13 @@ Infering with DBN: 11.182559229 seconds
 Como se pode ver, quantos mais \textit{random restarts} houver, mais tempo se demora na aprendizagem da BN, tal como expectável. No entanto, verifica-se que o \textit{score} obtido para a rede de transição não mudou, isto porque para se notarem diferenças é necessário ter pelo menos 500 ou 1000 \textit{random restarts}.
 
 Assim, optou-se por gerar uma série de teste com valores diferentes de \textit{random restarts}, gerando gráficos dos \textit{scores} obtidos.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.17]{tabelas/testes}
+	\caption{Testes efectuados ao programa.}
+	\vspace{-0.8em}
+\end{figure}
 
 \todo{graficos do excel}
 
