@@ -121,6 +121,42 @@ Para se definir a estrutura do projecto optou-se, à partida, por tentar impleme
 \todo{explicar o que e interface, class, etc}
 
 \section{Detalhes de Implementaçao}
+São de seguida explicados os detalhes pouco óbvios da implementação.
+
+\subsection{Grafo}
+
+
+\subsection{Score}
+O score é implementado como uma interface para facilitar a implementação de outras formas de cálculo do score. O algoritmo de MDL é implementado como uma subclasse de LL, uma vez que é um acrescento ao resultado do LL.
+
+Estão implementados dois métodos diferentes de cálculo de LL, um calcula os Nijk's no momento em que necessita (o que resulta em várias passagens pelo dataset para calcular o scora) e outro calcula os Nijk's para todos os nós com apenas uma passagem pelo dataset. O segundo método é substancialmente mais rápido ao custo de maior uso de memória, o que pode ser problemático se o número de random variables (ou os seus ranges) for muito grande.
+
+\subsection{Conversão $j \leftrightarrow J$}
+A conversão é feita por um método de mapeamento: 
+O número de pais determina o número de dimensões de um objecto, com as suas dimensões sendo dadas pelos ranges dos pais. Desta forma é possível mapear as células do objecto pelos valores dos pais e vice-versa, como mostrado no seguinte exemplo a 3 dimensões:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.12]{./mapeamento}
+	\caption{Representação visual do mapeamento.}
+	\vspace{-0.8em}
+\end{figure}
+
+Na prática este método é implementado pelas seguintes parametrizações:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.12]{./parametrizacoes}
+	\caption{Parametrizações do mapeamento.}
+	\vspace{-0.8em}
+\end{figure}
+
+\subsection{Critérios de paragem, recomeço e máximo}
+
+
+\subsection{Operações de arestas}
+
+
 
 \todo{explicar como se faz com as contagens, etc}
 
