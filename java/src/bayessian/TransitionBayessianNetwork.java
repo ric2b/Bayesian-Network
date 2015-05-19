@@ -112,9 +112,7 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 				futureValue = m;
 			}
 		}
-		
-		//System.out.println("soma das probabilidades: " + sum);
-		
+				
 		return futureValue;
 	}
 	
