@@ -12,6 +12,8 @@ import bayessian.TransitionBayessianNetwork;
 import dataset.Dataset;
 import dataset.TimeSlice;
 import dataset.TransitionDataset;
+import score.FastLLScore;
+import score.FastMDLScore;
 import score.LLScore;
 import score.MDLScore;
 import score.Score;
@@ -43,6 +45,12 @@ public class Main {
 		}
 		else if(scoreArg.equals("LL")){
 			score = new LLScore();
+		}
+		else if(scoreArg.equals("FMDL")){ //com speed-up
+			score = new FastMDLScore();
+		}
+		else if(scoreArg.equals("FLL")){ //com speed-up
+			score = new FastLLScore();
 		}
 		else {
 			out.println("Score must be given by: <MDL> ou <LL>.", toFile);
