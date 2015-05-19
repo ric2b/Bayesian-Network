@@ -141,35 +141,30 @@ public class Dataset implements Iterable<Sample> {
 		}
 		
 		for(int sample = 0; sample < sampleCount; sample++) {
-			
-			boolean toCount = true;
-			for(int i: bayessian) { // for each node of the Network
-				int Q = bayessian.getParentConfigurationCount(i);
-				
-				for(int J = 0; J < Q; J++) {
+			for(int i: bayessian) {
 
-					int range = bayessian.getRange(i);
-					int[] indexes = bayessian.getParents(i);
-					int[] values = InstanceCounting.mapJToj(bayessian.getParentRanges(i),J);
+				int[] parents = bayessian.getParents(i);
+				
+				int J = 0;
+				if(parents.length == 0) {
+					J = 0; // configuração vazia
+				} else {
+					int[] parentValues = new int[parents.length];
 					
-					for(int k = 0; k < range; k++) {
-						toCount = true;
-						for(int j = 0; j < indexes.length; j++) {
-							if(values[j] != getValue(indexes[j], sample)) {
-								// esta linha não contem a configuração dos pais correcta
-								toCount = false;
-								break;
-							}
-						}
-						
-						if(toCount && k == getValue(i, sample)) {
-							// linha cumpriu a configuração dos pais e o valor da variavel
-							Nijks[i][J][k]++;
-						}
+					// obter valores dos pais para esta amostra
+					for(int p = 0; p < parents.length; p++) {
+						parentValues[p] = getValue(parents[p], sample);
 					}
+					
+					// obter indice J dos valores dos pais
+					J = InstanceCounting.mapjToJ(bayessian.getParentRanges(i), parentValues);
 				}
+				
+				// ler valor da variavel
+				int k = getValue(i, sample);
+				
+				Nijks[i][J][k]++;
 			}
-			
 		}
 		
 		return Nijks;
