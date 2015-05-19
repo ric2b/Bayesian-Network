@@ -116,17 +116,46 @@ Para se definir a estrutura do projecto optou-se, à partida, por tentar impleme
 
 É de referir que, apesar da rapidez de computação ser um critério relativamente importante para um programa deste género, decidiu-se que ter uma solução que providencia uma \textit{framework} extensível e reutilizável para a aprendizagem de DBNs é ainda mais importante, quando se considera o âmbito da cadeira na qual o projecto está inserido.
 
+\section{Estrutura do Projecto}
+
+\todo{explicar o que e interface, class, etc}
+
+\section{Detalhes de Implementaçao}
+
+\todo{explicar como se faz com as contagens, etc}
+
 \section{Testes Efectuados}
+
+\subsection{Aprendizagem da DBN}
+
+\subsection{\textit{Dataset}}
+
+\todo{explicar este teste}
+
+\subsubsection{Criação de DAGs}
+
+Ao longo de toda a execução do programa é importante garantir que o grafo que representa a BN é um grafo acíclico. Para testar a implementação desta verificação criou-se um grafo inicial com três nós não ligados e, de seguida, efectuaram-se três operações de adição de arestas que resultariam num grafo com ciclos. 
+
+As duas primeiras operações são realizadas com sucesso, mas a terceira, que iria gerar um ciclo nesse grafo, não chega a ser concluída, voltando o grafo ao seu estado de duas arestas apenas. 
+
+\subsubsection{Mapeamento $j \leftrightarrow J$}
+
+Outro aspecto importante da aprendizagem da DBN é o mapeamento de $j \leftrightarrow J$. Começou-se por testar esta operação isoladamente, ou seja, inicializou-se um \textit{array} correspondente aos \textit{ranges} dos pais, outro com os valores dos pais e outro ainda com o valor de $J$ que esses valores originariam. Uma vez verificado o correcto funcionamento do mapeamento este foi integrado no código do programa.
+
+Face aos resultados obtidos para os testes explicados anteriormente assume-se que a aprendizagem da DBN está a funcionar.
 
 \subsection{Inferências}
 
-Inicialmente, para se verificar o funcionamento das inferências optou-se por verificar que a soma das probabilidades obtidas para os valores futuros possíveis da variável aleatória que se está a inferir dá próximo de 1, isto porque, obrigatoriamente, a variável aleatória toma no futuro um valor dos possíveis do seu \textit{range}. Este teste foi feito com recurso ao grafo apresentado de seguida, que se forçou na execução do programa.
+Inicialmente, para se verificar o funcionamento das inferências optou-se por verificar que a soma das probabilidades obtidas para os valores futuros possíveis da variável aleatória que se está a inferir dá próximo de 1, isto porque, obrigatoriamente, a variável aleatória toma no futuro um valor dos possíveis do seu \textit{range}. 
+
+Este teste foi feito com recurso ao grafo da Figura \ref{fig:grafoforcado}, cuja criação se forçou na execução do programa.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.17]{teoricas/grafoforcado}
 	\caption{Grafo da rede de transição utilizada para testar as inferências.}
 	\vspace{-0.8em}
+	\label{fig:grafoforcado}
 \end{figure}
 
 Assumindo todas as variáveis aleatórias como binárias, os valores obtidos para as probabilidades das três variáveis do futuro para os seus dois valores possíveis apresentam-se na seguinte tabela.
@@ -195,6 +224,8 @@ Infering with DBN: 64.80672281400001 seconds
 \end{lstlisting}
 
 Analisando os valores pretendidos e aqueles que foram de facto obtidos verifica-se uma eficácia de 61.91\%, um valor que se considera aceitável e, tendo em conta, que as somas das probabilidades já foram verificadas como estando próximas de 1 assume-se que as inferências estão correctas.
+
+\subsection{Performance Geral}
 
 \section{Conclusão}
 

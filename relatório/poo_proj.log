@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.26)  19 MAY 2015 01:02
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.26)  19 MAY 2015 01:52
 entering extended mode
 **poo_proj.tex
 (C:\Users\margarida\Downloads\git\POO\relatório\poo_proj.tex
@@ -906,36 +906,40 @@ File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 104.
 
-<teoricas/grafoforcado.png, id=20, 543.53062pt x 568.1225pt>
+
+LaTeX Warning: Marginpar on page 1 moved.
+
+[1
+
+] <teoricas/grafoforcado.png, id=26, 543.53062pt x 568.1225pt>
 File: teoricas/grafoforcado.png Graphic file (type png)
 
 <use teoricas/grafoforcado.png>
-Package pdftex.def Info: teoricas/grafoforcado.png used on input line 127.
+Package pdftex.def Info: teoricas/grafoforcado.png used on input line 155.
 (pdftex.def)             Requested size: 92.39897pt x 96.57954pt.
 
-<tabelas/probabilidades.png, id=21, 706.64pt x 111.91812pt>
+<tabelas/probabilidades.png, id=27, 706.64pt x 111.91812pt>
 File: tabelas/probabilidades.png Graphic file (type png)
 
 <use tabelas/probabilidades.png>
-Package pdftex.def Info: tabelas/probabilidades.png used on input line 138.
+Package pdftex.def Info: tabelas/probabilidades.png used on input line 167.
 (pdftex.def)             Requested size: 211.99364pt x 33.57568pt.
- [1
-
- <C:/Users/margarida/Downloads/git/POO/relatório/teoricas/grafoforcado.png>] [
-2 <C:/Users/margarida/Downloads/git/POO/relatório/tabelas/probabilidades.png>]
-
+ [2 <C:/Users/margarida/Downloads/git/POO/relatório/teoricas/grafoforcado.png>
+ <C:/Users/margarida/Downloads/git/POO/relatório/tabelas/probabilidades.png>] 
+[3]
 (C:\Users\margarida\Downloads\git\POO\relatório\poo_proj.aux) ) 
 Here is how much of TeX's memory you used:
- 16276 strings out of 493921
- 304140 string characters out of 3144864
- 434653 words of memory out of 3000000
- 19270 multiletter control sequences out of 15000+200000
- 8403 words of font info for 31 fonts, out of 3000000 for 9000
+ 16294 strings out of 493921
+ 304598 string characters out of 3144864
+ 410653 words of memory out of 3000000
+ 19287 multiletter control sequences out of 15000+200000
+ 8762 words of font info for 32 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 62i,10n,76p,481b,1074s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 62i,10n,76p,458b,1590s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Fil
 es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files
  (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (
+x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbxti10.pfb><C:/Program Files (
 x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Program Files (x
 86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files (x86
 )/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/M
@@ -946,9 +950,9 @@ onts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
 /type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/t
 ype1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
 e1/public/amsfonts/cm/cmtt8.pfb>
-Output written on poo_proj.pdf (4 pages, 268054 bytes).
+Output written on poo_proj.pdf (5 pages, 283339 bytes).
 PDF statistics:
- 73 PDF objects out of 1000 (max. 8388607)
+ 80 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  28 words of extra memory for PDF output out of 10000 (max. 10000000)
 
