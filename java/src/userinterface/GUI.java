@@ -83,8 +83,8 @@ public class GUI {
 	 */
 	public GUI() {
 		btnStart = new JButton("");
-		btnStart.setDisabledIcon(new ImageIcon("C:\\Users\\margarida\\Desktop\\POO\\java\\design\\start.grey.png"));
-		btnStart.setIcon(new ImageIcon("C:\\Users\\margarida\\Desktop\\POO\\java\\design\\start.png"));
+		btnStart.setDisabledIcon(new ImageIcon(GUI.class.getResource("/userinterface/start.grey.png")));
+		btnStart.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/start.png")));
 		btnStart.setOpaque(false);
 		btnStart.setBorder(null);
 		btnStart.setEnabled(false);	
@@ -117,7 +117,7 @@ public class GUI {
 	private void initialize() {
 				
 		frame = new JFrame();
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\margarida\\Desktop\\POO\\java\\design\\icon.png"));
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(GUI.class.getResource("/userinterface/icon.png")));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.getContentPane().setFont(new Font("Segoe UI Light", Font.PLAIN, 12));
@@ -211,7 +211,7 @@ public class GUI {
 		JButton button = new JButton("");
 		button.setBorder(null);
 		button.setOpaque(false);
-		button.setIcon(new ImageIcon("C:\\Users\\margarida\\Desktop\\POO\\java\\design\\open.png"));
+		button.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/open.png")));
 		final JFileChooser fileChooserTest = new JFileChooser();
 		button.addMouseListener(new MouseAdapter() {
 			@Override
@@ -233,7 +233,7 @@ public class GUI {
 		JButton button_1 = new JButton("");
 		button_1.setBorder(null);
 		button_1.setOpaque(false);
-		button_1.setIcon(new ImageIcon("C:\\Users\\margarida\\Desktop\\POO\\java\\design\\open.png"));
+		button_1.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/open.png")));
 		final JFileChooser fileChooserTrain = new JFileChooser();
 		button_1.addMouseListener(new MouseAdapter() {
 			@Override
@@ -260,7 +260,7 @@ public class GUI {
 		JButton btnBuild = new JButton("");
 		btnBuild.setBorder(null);
 		btnBuild.setOpaque(false);
-		btnBuild.setIcon(new ImageIcon("C:\\Users\\margarida\\Desktop\\POO\\java\\design\\build.png"));
+		btnBuild.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/build.png")));
 		btnBuild.setToolTipText("build the bayesian network");
 		btnBuild.setDebugGraphicsOptions(DebugGraphics.NONE_OPTION);
 		btnBuild.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -358,7 +358,7 @@ public class GUI {
 		frame.getContentPane().add(checkBox);
 		
 		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\margarida\\Desktop\\POO\\java\\design\\gui.png"));
+		lblNewLabel.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/gui.png")));
 		lblNewLabel.setBounds(0, 0, 384, 400);
 		frame.getContentPane().add(lblNewLabel);
 	}
