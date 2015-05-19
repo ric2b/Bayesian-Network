@@ -359,7 +359,11 @@ public class GUI {
 		
 		JLabel lblNewLabel = new JLabel("New label");
 		lblNewLabel.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/gui.png")));
-		lblNewLabel.setBounds(0, 0, 384, 400);
+		lblNewLabel.setBounds(0, 11, 384, 400);
 		frame.getContentPane().add(lblNewLabel);
+		
+		JCheckBox chckbxSuperSpeed = new JCheckBox("super speed");
+		chckbxSuperSpeed.setBounds(255, 158, 129, 23);
+		frame.getContentPane().add(chckbxSuperSpeed);
 	}
 }
