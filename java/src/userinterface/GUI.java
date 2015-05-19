@@ -317,7 +317,7 @@ public class GUI {
 					if ("enable".equals(e.getActionCommand())) {
 						btnStart.setEnabled(true);
 						txtSeconds.setVisible(true);
-						txtSeconds.setText(Double.toString((Main.elapsedTimeBN/1000000)*Math.pow(10, -9)));
+						txtSeconds.setText(Double.toString(Main.elapsedTimeBN / 1000000000.0).substring(0,9)+'s');
 				    } else {
 				    	btnStart.setEnabled(false);
 				    }
@@ -342,7 +342,7 @@ public class GUI {
 						Main.infereValue(textField_1.getText(), false, (Integer)spinner_1.getValue(), transitionBN, out, checkBox.isSelected());	
 					}
 					txtSeconds_1.setVisible(true);
-					txtSeconds_1.setText(String.format("%s",  Main.elapsedTimeInfere*Math.pow(10, -9)));					
+					txtSeconds_1.setText(Double.toString(Main.elapsedTimeInfere / 1000000000.0).substring(0,9)+'s');					
 					out.close();
 			} 
 		});
@@ -408,7 +408,7 @@ public class GUI {
 		txtSeconds_1.setBounds(264, 303, 83, 20);
 		frame.getContentPane().add(txtSeconds_1);		
 		
-		checkBox.setToolTipText("save the results to the output file \"inferenceValues.txt\"");
+		checkBox.setToolTipText("save the results to the output file \"inferedValues.txt\"");
 		checkBox.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 13));
 		checkBox.setOpaque(false);
 		checkBox.setFocusable(false);
