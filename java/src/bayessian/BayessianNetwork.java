@@ -60,10 +60,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 			}
 			
 			randomBestScore = score.getScore(this, dataset);
-			
-//				System.out.println(graph);
-//				System.out.println("Score: " + randomBestScore);
-			
+	
 			for(int i = 0; i < vars.length; i++) {
 				for(int j = 0; j < vars.length; j++) {
 					if(i == j) {
@@ -309,6 +306,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		}
 		
 		return string;
+	}
+	
+	public int size() {
+		return vars.length;
 	}
 	
 }

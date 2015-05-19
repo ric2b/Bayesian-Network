@@ -13,7 +13,7 @@ public class InstanceCounting {
 		
 		for(int i = (j.length-1); i >= 0; i--) {
 			
-			// cálculo de j'[i]
+			// cï¿½lculo de j'[i]
 			if(i != j.length-1) {
 				multtmp = 1;
 				for(int k = 0; k <= i; k++) {
@@ -21,7 +21,7 @@ public class InstanceCounting {
 				}
 				jtmp %= multtmp;
 			}
-			// jtmp é j'[i]
+			// jtmp ï¿½ j'[i]
 			
 			multtmp=1;
 			for(int k = 0; k < i; k++) {
@@ -65,6 +65,10 @@ public class InstanceCounting {
 		}
 		
 		return Nij;
+	}
+	
+	public static int[] getNijks(int i, int J, BayessianNetwork<? extends RandomVariable> BN, Dataset dataset) {
+		return dataset.getAllCounts(i, BN.getRange(i), BN.getParents(i), InstanceCounting.mapJToj(BN.getParentRanges(i),J));
 	}
 	
 	public static int getjOfProbability(int indexOfVar, Sample sample, int[] parents, int[] d, TransitionBayessianNetwork<? extends RandomVariable> BN) {
