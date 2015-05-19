@@ -67,10 +67,6 @@ public class InstanceCounting {
 		return Nij;
 	}
 	
-	public static int[] getNijks(int i, int J, BayessianNetwork<? extends RandomVariable> BN, Dataset dataset) {
-		return dataset.getAllCounts(i, BN.getRange(i), BN.getParents(i), InstanceCounting.mapJToj(BN.getParentRanges(i),J));
-	}
-	
 	public static int getjOfProbability(int indexOfVar, Sample sample, int[] parents, int[] d, TransitionBayessianNetwork<? extends RandomVariable> BN) {
 		
 		if(parents.length == 0) {

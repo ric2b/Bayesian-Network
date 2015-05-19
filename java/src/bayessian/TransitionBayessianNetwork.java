@@ -1,7 +1,5 @@
 package bayessian;
 
-import com.sun.xml.internal.fastinfoset.util.ValueArrayResourceException;
-
 import score.Score;
 import dataset.Dataset;
 import dataset.Sample;

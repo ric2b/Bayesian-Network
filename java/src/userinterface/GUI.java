@@ -18,7 +18,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Component;
 import javax.swing.DebugGraphics;
-import javax.swing.JProgressBar;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;

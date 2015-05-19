@@ -91,40 +91,7 @@ public class Dataset implements Iterable<Sample> {
 		
 		return count;
 	}
-	
-	public double getScore(BayessianNetwork<? extends RandomVariable> bayessian, Dataset dataset) {
 		
-		double score = 0;		
-		for(int i: bayessian) { // for each node of the Network
-			int Q = bayessian.getParentConfigurationCount(i);
-			
-			for(int J = 0; J < Q; J++) {
-				int N = bayessian.getRange(i);
-				
-				// calcular Nijks
-				int[] Nijks = InstanceCounting.getNijks(i,J, bayessian, dataset);
-				int Nij = 0;
-				for(int k = 0; k < N; k++) {
-					Nij += Nijks[k];				
-				}
-				
-				// calcular score
-				if(Nij != 0) {
-					for(int k = 0; k < N; k++) {
-						if(Nijks[k] != 0)
-							score += Nijks[k] * Math.log((Nijks[k]*1.0)/Nij) / Math.log(2);
-					}
-				}
-			}
-		}
-		
-		return score;
-	}
-	
-	public static int[] getNijks(int i, int J, BayessianNetwork<? extends RandomVariable> BN, Dataset dataset) {
-		return dataset.getAllCounts(i, BN.getRange(i), BN.getParents(i), InstanceCounting.mapJToj(BN.getParentRanges(i),J));
-	}
-	
 	public int[][][] getAllCounts(BayessianNetwork<? extends RandomVariable> bayessian) {
 		// o numero de amostras em cada conjunto de amostras é igual
 		int sampleCount = samplesOfTimeT.size();
@@ -169,35 +136,7 @@ public class Dataset implements Iterable<Sample> {
 		
 		return Nijks;
 	}
-	
-	public int[] getAllCounts(int indexI, int range, int[] indexes, int[] values) {
-		// o numero de amostras em cada conjunto de amostras é igual
-		int sampleCount = samplesOfTimeT.size();
-		
-		int[] Nijk = new int[range];
-		
-		for(int i = 0; i < sampleCount; i++) {
-			boolean toCount = true;	// indica se esta linha de amostras é para contar como uma combinação
-			
-			for(int k = 0; k < range; k++) {
-				for(int j = 0; j < indexes.length; j++) {
-					if(values[j] != getValue(indexes[j], i)) {
-						// esta linha não contem a configuração dos pais correcta
-						toCount = false;
-						break;
-					}
-				}
-				
-				if(toCount && k == getValue(indexI, i)) {
-					// linha cumpriu a configuração dos pais e o valor da variavel
-					Nijk[k]++;
-				}
-			}
-		}
-		
-		return Nijk;
-	}
-	
+
 	protected int getValue(int index, int sample) {
 		return this.samplesOfTimeT.get(sample).getValue(index);
 	}
