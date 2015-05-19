@@ -1,11 +1,21 @@
 package graph;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public interface NavigableGraph<T> {
 	
-	public Iterator<T> parents(T t) throws NullPointerException, NoSuchElementException;
-	public Iterator<T> children(T t) throws NullPointerException, NoSuchElementException;
+	/**
+	 * Returns an iterator for all the parents of the node
+	 * @param node
+	 * @return iterador of the parents of the node
+	 */
+	public Iterator<T> parents(T t);
+	
+	/**
+	 * Returns an iterator for all the children of the node
+	 * @param node
+	 * @return iterador of the children of the node
+	 */
+	public Iterator<T> children(T t);
 
 }

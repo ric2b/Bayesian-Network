@@ -8,6 +8,12 @@ public abstract class RandomVariable implements Iterable<Integer> {
 	protected int range = -1;
 	protected int timeInstant = -1;
 	
+	/**
+	 * Constructs a random variable with the given name, range and time instant
+	 * @param name			random variable name
+	 * @param range			random variable range
+	 * @param timeInstant	random variable time instant
+	 */
 	public RandomVariable(String name, int range, int timeInstant) {
 		if(range < 0 || timeInstant < 0) {
 			throw new IllegalArgumentException();
@@ -18,20 +24,40 @@ public abstract class RandomVariable implements Iterable<Integer> {
 		this.timeInstant = timeInstant;
 	}
 	
+	/**
+	 * Returns the name of the random variable
+	 * @return name of the random variable
+	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Returns the range of the random variable
+	 * @return range of the random variable
+	 */
 	public int getRange() {
 		return range;
 	}
 	
+	/**
+	 * Returns the value with the given position of the random variable
+	 * @return value with the given position of the random variable
+	 */
+	public abstract int getValue(int index);
+	
+	/**
+	 * Returns the time instant of the random variable
+	 * @return time instant of the random variable
+	 */
 	public int getTimeInstant() {
 		return timeInstant;
 	}
 	
+	/**
+	 * Returns iterator for the values of the random variable
+	 */
 	public abstract Iterator<Integer> iterator();
-	
-	public abstract int getValueCount();
 	
 	@Override
 	public int hashCode() {

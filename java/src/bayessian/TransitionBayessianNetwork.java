@@ -6,11 +6,14 @@ import dataset.Sample;
 import dataset.TransitionDataset;
 
 public class TransitionBayessianNetwork<T extends RandomVariable> extends BayessianNetwork<T>{
-
+	
 	public TransitionBayessianNetwork(RandomVariable[] vars, TransitionDataset dataset, Score score, StopCriterion criterion) {
 		super(vars, dataset, score, vars.length / 2, criterion);
 	}
 	
+	/**
+	 * Doesn't associate variables form the future to the present and from the present to the present.
+	 */
 	@Override
 	protected boolean addAssociation(int srcIndex, int destIndex) {
 		
@@ -23,6 +26,9 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		return graph.addEdge(vars[srcIndex], vars[destIndex]);
 	}
 	
+	/**
+	 * Doesn't associate variables form the future to the present and from the present to the present.
+	 */
 	@Override
 	protected boolean flipAssociation(int srcIndex, int destIndex) {
 		
@@ -35,14 +41,30 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		return graph.flipEdge(vars[srcIndex], vars[destIndex]);
 	}
 	
+	/**
+	 * Tests if a variable with the given position is from the future
+	 * @param index	position of the random variable
+	 * @return
+	 */
 	boolean isFutureVar(int index) {
 		return index >= varCount;
 	}
 	
+	/**
+	 * Returns the number of random variables of one time instant
+	 * @return  number of random variables of one time instant
+	 */
 	public int getVarCount () {
 		return varCount;
 	}
 	
+	/**
+	 * Computes the probability of a single random variable to have the value specified
+	 * @param indexOfVar	index of the random variable to compute the probability
+	 * @param value			value of the random variable to compute the probability
+	 * @param sample
+	 * @return
+	 */
 	private double calculateSingleProbability(int indexOfVar, int value, Sample sample) {
 		//
 		//value = valor que estamos a considerar nesse momento para a RVar que se pretende obter
@@ -97,6 +119,12 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		return probability;
 	}
 	
+	/**
+	 * Computes the future value of the random variable with the given position
+	 * @param indexOfVar	position
+	 * @param sample		sample
+	 * @return	future value of the random variable
+	 */
 	private int calculateFutureValue(int indexOfVar, Sample sample) {
 		
 		double maxProbability = 0;
@@ -114,6 +142,12 @@ public class TransitionBayessianNetwork<T extends RandomVariable> extends Bayess
 		return futureValue;
 	}
 	
+	/**
+	 * Returns an array with all the future values of the given random variable
+	 * @param indexOfVar	random variable to compute the furture values
+	 * @param dataset
+	 * @return array with all the future values of the given random variable
+	 */
 	public int[] getFutureValues(int indexOfVar, Dataset dataset) {
 		//indexOfVar = index of X[t+1] do qual queremos saber o valor mais provavel
 		

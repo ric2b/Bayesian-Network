@@ -12,12 +12,21 @@ public class DataFileReader {
 	
 	CSVFileReader fileReader = null; 
 	String[] firstLine = null; 
-		
+	
+	/**
+	 * Opens a train files given by the obsolute or relative pathname
+	 * @param pathname		pathname of the files
+	 * @throws IOException	when a I/O failure occurs
+	 */
 	public DataFileReader(String pathname) throws IOException {
 		this.fileReader = new CSVFileReader(pathname);
 		this.firstLine = fileReader.getRow(0);
 	}
 	
+	/**
+	 * Returns the number of time instants of the train file.
+	 * @return number of time instants of the train file
+	 */
 	public int timeInstantCount() {
 		String lastElement = firstLine[firstLine.length - 1]; // obter ultima posicao da primeira linha do ficheiro
 		int indexOfUnderScore = lastElement.lastIndexOf("_");	// obter indice do ultimo underscore (_)
@@ -31,27 +40,25 @@ public class DataFileReader {
 	}
 	
 	/**
-	 * Devolve numero de linhas dos dados do ficheiro de entrada
-	 * @return
+	 * Returns the number of subjects of the train file.
+	 * @return number of time subjects of the train file
 	 */
 	public int subjectCount() {
 		return fileReader.getRowCount() - 1; 
 	}
 	
 	/**
-	 * Devolve o numero de variáveis aleatorias no ficheiro de entrada. Uma variavel aleatoria é identificada pelo seu
-	 * nome e instante de tempo.
-	 * @return
-	 */
+	 * Returns the number of random variables of the train file.
+	 * @return number of time random variables of the train file
+	 */ 
 	public int randomVarCount() {
 		// numero de elementos da primeira linha
 		return firstLine.length;
 	}
 	
 	/**
-	 * Obtem um array com todas as variaveis aleatorias do ficheiro. Duas variaveis aleatorias com o mesmo nome em dois 
-	 * instantes de tempo diferentes sao consideradas diferentes
-	 * @return
+	 * Returns an array of all the random variables in the train file. 
+	 * @return array of all the random variables in the train file
 	 */
 	public RandomVariable[] getRVars() {		
 		
@@ -87,8 +94,8 @@ public class DataFileReader {
 	}
 	
 	/**
-	 * Permite obter todos os ranges de todas as variaveis aletorais de forma sequencial. Preferivel a fazê-lo uma a uma.
-	 * @return range das variaveis aletorias pela mesma odem que se encontram no ficheiro
+	 * Returns an array of all the ranges of each random variables in the train file. 
+	 * @return array with ranges of each random variables in the train file.
 	 */
 	private int[] getRanges() {
 		
@@ -123,6 +130,10 @@ public class DataFileReader {
 		return ranges;
 	}
 	
+	/**
+	 * Returns the time slice of the data file of time @time 
+	 * @return time slice of the data file of time @time
+	 */
 	public TimeSlice getTimeSlice(int time) {
 		int numberOfSubjects = subjectCount();
 		int numberOfRVars = randomVarCount() / timeInstantCount();	// numero de variaveis num instante de tempo

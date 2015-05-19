@@ -13,11 +13,6 @@ public class StaticRandomVariable extends RandomVariable {
 		this.range = range;
 	}
 	
-	@Override
-	public int getValueCount() {
-		return range;
-	}
-	
 	protected class StaticRandomVariableIterator implements Iterator<Integer> {
 
 		protected int currentValue = 0;
@@ -48,5 +43,15 @@ public class StaticRandomVariable extends RandomVariable {
 	@Override
 	public Iterator<Integer> iterator() {
 		return new StaticRandomVariableIterator();
+	}
+
+	@Override
+	public int getValue(int index) {
+		
+		if(index >= range) {
+			throw new NoSuchElementException();
+		}
+		
+		return index;
 	}
 }
