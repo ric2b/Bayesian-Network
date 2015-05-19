@@ -388,4 +388,8 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		return string;
 	}
 	
+	public int size() {
+		return vars.length;
+	}
+	
 }

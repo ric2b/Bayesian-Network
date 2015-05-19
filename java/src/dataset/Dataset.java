@@ -6,6 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import bayessian.BayessianNetwork;
+import bayessian.InstanceCounting;
+import bayessian.RandomVariable;
+
 public class Dataset implements Iterable<Sample> {
 	
 	protected List<Sample> samplesOfTimeT = new ArrayList<>();	// amostras de um único instante temporal t
@@ -86,6 +90,89 @@ public class Dataset implements Iterable<Sample> {
 		}
 		
 		return count;
+	}
+	
+	public double getScore(BayessianNetwork<? extends RandomVariable> bayessian, Dataset dataset) {
+		
+		double score = 0;		
+		for(int i: bayessian) { // for each node of the Network
+			int Q = bayessian.getParentConfigurationCount(i);
+			
+			for(int J = 0; J < Q; J++) {
+				int N = bayessian.getRange(i);
+				
+				// calcular Nijks
+				int[] Nijks = InstanceCounting.getNijks(i,J, bayessian, dataset);
+				int Nij = 0;
+				for(int k = 0; k < N; k++) {
+					Nij += Nijks[k];				
+				}
+				
+				// calcular score
+				if(Nij != 0) {
+					for(int k = 0; k < N; k++) {
+						if(Nijks[k] != 0)
+							score += Nijks[k] * Math.log((Nijks[k]*1.0)/Nij) / Math.log(2);
+					}
+				}
+			}
+		}
+		
+		return score;
+	}
+	
+	public static int[] getNijks(int i, int J, BayessianNetwork<? extends RandomVariable> BN, Dataset dataset) {
+		return dataset.getAllCounts(i, BN.getRange(i), BN.getParents(i), InstanceCounting.mapJToj(BN.getParentRanges(i),J));
+	}
+	
+	public int[][][] getAllCounts(BayessianNetwork<? extends RandomVariable> bayessian) {
+		// o numero de amostras em cada conjunto de amostras é igual
+		int sampleCount = samplesOfTimeT.size();
+		
+		int[][][] Nijks = new int[bayessian.size()][][];
+		
+		for(int i: bayessian) {
+			int Q = bayessian.getParentConfigurationCount(i);
+			Nijks[i] = new int[Q][];
+			for(int J = 0; J < Q; J++) {
+				int range = bayessian.getRange(i);
+				Nijks[i][J] = new int[range];
+			}
+		}
+		
+		for(int sample = 0; sample < sampleCount; sample++) {
+			
+			boolean toCount = true;
+			for(int i: bayessian) { // for each node of the Network
+				int Q = bayessian.getParentConfigurationCount(i);
+				
+				for(int J = 0; J < Q; J++) {
+
+					int range = bayessian.getRange(i);
+					int[] indexes = bayessian.getParents(i);
+					int[] values = InstanceCounting.mapJToj(bayessian.getParentRanges(i),J);
+					
+					for(int k = 0; k < range; k++) {
+						toCount = true;
+						for(int j = 0; j < indexes.length; j++) {
+							if(values[j] != getValue(indexes[j], sample)) {
+								// esta linha não contem a configuração dos pais correcta
+								toCount = false;
+								break;
+							}
+						}
+						
+						if(toCount && k == getValue(i, sample)) {
+							// linha cumpriu a configuração dos pais e o valor da variavel
+							Nijks[i][J][k]++;
+						}
+					}
+				}
+			}
+			
+		}
+		
+		return Nijks;
 	}
 	
 	public int[] getAllCounts(int indexI, int range, int[] indexes, int[] values) {
