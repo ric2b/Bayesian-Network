@@ -22,13 +22,9 @@ public class Main {
 	public static long elapsedTimeBN;
 	public static long elapsedTimeInfere;
 		
-	public static TransitionBayessianNetwork<RandomVariable> buildDBN(String traindataset, String scoreArg, int randtest, SaveToFile out) {
+	public static TransitionBayessianNetwork<RandomVariable> buildDBN(String traindataset, String scoreArg, int randtest, SaveToFile out, boolean toFile) {
 	
 		long startTime = System.nanoTime();  
-		boolean toFile = false;
-				
-		if(out != null)
-			toFile = true;
 		
 		//arg[0] - filename do train dataset
 		DataFileReader trainFile = null;
@@ -114,14 +110,9 @@ public class Main {
 		return transitionBN;
 	}
 	
-	public static void infereValue(String testdataset, boolean allVars, int varToInfere, TransitionBayessianNetwork<RandomVariable> transitionBN, SaveToFile out) {
+	public static void infereValue(String testdataset, boolean allVars, int varToInfere, TransitionBayessianNetwork<RandomVariable> transitionBN, SaveToFile out, boolean toFile) {
 		
 		long startTime = System.nanoTime();   
-		
-		boolean toFile = false;
-		
-		if(out != null)
-			toFile = true;
 		
 		//arg[1] - filename do test dataset
 		DataFileReader testFile = null;
@@ -177,7 +168,7 @@ public class Main {
 			outputFile += arg + ' ';
 		}
 		if(toFile)
-			out = new SaveToFile(outputFile);
+			out = new SaveToFile(outputFile, toFile);
 		
 		if(args.length == 5) { //e especificada a RVar sobre a qual se pretende inferir
 			out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4], toFile);		
@@ -193,8 +184,8 @@ public class Main {
 			System.exit(0);
 		}
 		
-		TransitionBayessianNetwork<RandomVariable> transitionBN = buildDBN(args[0], args[2], Integer.parseInt(args[3]), out);
-		infereValue(args[1], allVars, varToInfer, transitionBN, out);
+		TransitionBayessianNetwork<RandomVariable> transitionBN = buildDBN(args[0], args[2], Integer.parseInt(args[3]), out, toFile);
+		infereValue(args[1], allVars, varToInfer, transitionBN, out, toFile);
 		
 		out.close();
 	}

@@ -5,12 +5,16 @@ import java.io.PrintWriter;
 
 public class SaveToFile {
 	PrintWriter out = null;	
+	boolean opened = false;
 	
-	public SaveToFile(String filename){
-		try {
-			out = new PrintWriter(filename);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+	public SaveToFile(String filename, boolean writeToFile){
+		if(writeToFile){
+			try {
+				out = new PrintWriter(filename);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();				
+			}
+			opened = true;
 		}
 	}
 	
@@ -27,11 +31,12 @@ public class SaveToFile {
 	}
 	
 	public void close(){
-		out.close();
+		if(opened)
+			out.close();
 	}	
 	
 	public static void main(String[] args) {
-		SaveToFile writer = new SaveToFile("hello.txt");
+		SaveToFile writer = new SaveToFile("hello.txt", true);
 		writer.println("howdy neighbour!", true);
 		writer.close();
 	}

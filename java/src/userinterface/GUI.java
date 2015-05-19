@@ -27,6 +27,7 @@ import bayessian.TransitionBayessianNetwork;
 import java.io.File;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JCheckBox;
 
 public class GUI {
 
@@ -51,6 +52,7 @@ public class GUI {
 	
 	private JButton btnStart;
 	private JSpinner spinner_1;
+	private JCheckBox chckbxSaveToFile;
 	
 	TransitionBayessianNetwork<RandomVariable> transitionBN = null;
 
@@ -93,6 +95,7 @@ public class GUI {
 		textField_1.setText("filename.csv");
 		textField_2 = new JTextField();
 		textField_2.setText("filename.csv");
+		chckbxSaveToFile = new JCheckBox("save to file");
 		initialize();
 	}
 
@@ -281,6 +284,12 @@ public class GUI {
 		button_1.setBounds(286, 14, 61, 22);
 		frame.getContentPane().add(button_1);
 		
+		
+		chckbxSaveToFile.setOpaque(false);
+		chckbxSaveToFile.setFocusable(false);
+		chckbxSaveToFile.setBounds(29, 98, 97, 23);
+		frame.getContentPane().add(chckbxSaveToFile);
+		
 		JButton btnBuild = new JButton("build");
 		btnBuild.setToolTipText("build the bayesian network");
 		btnBuild.setDebugGraphicsOptions(DebugGraphics.NONE_OPTION);
@@ -291,18 +300,15 @@ public class GUI {
 		btnBuild.setActionCommand("enable");
 		btnBuild.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					SaveToFile out = null;	
-					boolean toFile = true;
-					if(toFile)
-						out = new SaveToFile("transitionBN.out");
+					SaveToFile out = new SaveToFile("transition.txt", chckbxSaveToFile.isSelected());
 					
 					if(LL == true) {
-						out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue(), toFile);	
-						transitionBN = Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue(), out);			
+						out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue(), chckbxSaveToFile.isSelected());	
+						transitionBN = Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue(), out, chckbxSaveToFile.isSelected());			
 					}
 					else if(MDL == true) {
-						out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue(), toFile);
-						transitionBN = Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue(), out);	
+						out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue(), chckbxSaveToFile.isSelected());
+						transitionBN = Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue(), out, chckbxSaveToFile.isSelected());	
 					}
 					if ("enable".equals(e.getActionCommand())) {
 						btnStart.setEnabled(true);
@@ -323,15 +329,13 @@ public class GUI {
 		btnStart.setBounds(152, 347, 79, 38);
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					SaveToFile out = null;	
-					boolean toFile = true;
-					if(toFile)
-						out = new SaveToFile("inferedValues.out");	
+					SaveToFile out = new SaveToFile("inferedValues.txt", chckbxSaveToFile.isSelected());
+					
 					if(allVars == true) {
-						Main.infereValue(textField_1.getText(), true, 0, transitionBN, out);		
+						Main.infereValue(textField_1.getText(), true, 0, transitionBN, out, chckbxSaveToFile.isSelected());		
 					}
 					else {
-						Main.infereValue(textField_1.getText(), false, (Integer)spinner_1.getValue(), transitionBN, out);	
+						Main.infereValue(textField_1.getText(), false, (Integer)spinner_1.getValue(), transitionBN, out, chckbxSaveToFile.isSelected());	
 					}
 					txtSeconds_1.setVisible(true);
 					txtSeconds_1.setText(String.format("%s",  Main.elapsedTimeInfere*Math.pow(10, -9)));					
@@ -339,11 +343,6 @@ public class GUI {
 			} 
 		});
 		frame.getContentPane().add(btnStart);
-		
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setValue(30);
-		progressBar.setBounds(29, 103, 146, 14);
-		frame.getContentPane().add(progressBar);
 		
 		txtTotalTime = new JTextField();
 		txtTotalTime.setToolTipText("time to calculate (seconds)");
@@ -354,7 +353,7 @@ public class GUI {
 		txtTotalTime.setFocusable(false);
 		txtTotalTime.setColumns(10);
 		txtTotalTime.setBorder(null);
-		txtTotalTime.setBounds(185, 97, 79, 20);
+		txtTotalTime.setBounds(194, 97, 70, 20);
 		frame.getContentPane().add(txtTotalTime);
 		
 		JProgressBar progressBar_1 = new JProgressBar();
@@ -371,7 +370,7 @@ public class GUI {
 		textField.setFocusable(false);
 		textField.setColumns(10);
 		textField.setBorder(null);
-		textField.setBounds(185, 303, 79, 20);
+		textField.setBounds(194, 303, 70, 20);
 		frame.getContentPane().add(textField);
 		
 		textField_2.setOpaque(false);
@@ -395,7 +394,7 @@ public class GUI {
 		txtSeconds.setEditable(false);
 		txtSeconds.setColumns(10);
 		txtSeconds.setBackground(SystemColor.activeCaptionBorder);
-		txtSeconds.setBounds(253, 97, 94, 20);
+		txtSeconds.setBounds(264, 97, 83, 20);
 		frame.getContentPane().add(txtSeconds);
 		
 		txtSeconds_1 = new JTextField();
@@ -407,7 +406,7 @@ public class GUI {
 		txtSeconds_1.setEditable(false);
 		txtSeconds_1.setColumns(10);
 		txtSeconds_1.setBackground(SystemColor.activeCaptionBorder);
-		txtSeconds_1.setBounds(253, 303, 94, 20);
-		frame.getContentPane().add(txtSeconds_1);
+		txtSeconds_1.setBounds(264, 303, 83, 20);
+		frame.getContentPane().add(txtSeconds_1);		
 	}
 }
