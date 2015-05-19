@@ -1,0 +1,42 @@
+Parameters: train-data-2.csv test-data-2-TRAIN.csv LL 1000
+Building DBN: 72.14043270900001 seconds
+Initial network: 
+=== Structure connectivity
+A : C B E 
+B : C G 
+C : E 
+D : A B 
+E : 
+F : A E D 
+G : C 
+=== Scores
+LL Score: -4.754887502163468
+MDL Score: -2053.318919684258
+Transition network: 
+=== Inter-slice connectivity
+A : G F 
+B : A G F 
+C : E F 
+D : A E 
+E : 
+F : A 
+G : 
+=== Intra-slice connectivity
+A : C 
+B : 
+C : D 
+D : B 
+E : D C F 
+F : B C 
+G : A F E 
+=== Scores
+LL Score: -4208.01460278223
+MDL Score: -33424.031323885916
+Performing inference:
+-> instance 1: 
+3, 3, 1, 0, 1, 1, 0
+-> instance 2: 
+2, 3, 1, 3, 1, 0, 0
+-> instance 3: 
+3, 1, 4, 4, 1, 1, 0
+Infering with DBN: 8.923906177000001 seconds
