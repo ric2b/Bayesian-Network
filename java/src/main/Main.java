@@ -15,6 +15,7 @@ import dataset.TransitionDataset;
 import score.LLScore;
 import score.MDLScore;
 import score.Score;
+import userinterface.GUI;
 import input.DataFileReader;
 
 public class Main {
@@ -176,7 +177,14 @@ public class Main {
 			allVars = true;
 			out.println("Parameters: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3], toFile);
 		}
-		else{
+		else if(args.length == 1) {
+			if(args[0].equals("-gui")) {
+				
+				GUI.main(args);
+				while(true);
+			}
+		} 
+		else { 			
 			out.println("The program parameters must be given by: <train> <test> <score> <randtest> <var> to infer the random variable specified by <var>", toFile);
 			out.println("				     or: <train> <test> <score> <randtest> to infer all random variables.", toFile);
 			System.exit(0);
