@@ -49,4 +49,14 @@ public class StaticRandomVariable extends RandomVariable {
 	public Iterator<Integer> iterator() {
 		return new StaticRandomVariableIterator();
 	}
+
+	@Override
+	public int getValue(int index) {
+		
+		if(index >= range) {
+			throw new NoSuchElementException();
+		}
+		
+		return index;
+	}
 }
