@@ -51,6 +51,7 @@ public class GUI {
 	private JSpinner spinner_1;
 	private JCheckBox chckbxSaveToFile;
 	private JCheckBox checkBox;
+	private JCheckBox chckbxTurboMode;
 	
 	TransitionBayessianNetwork<RandomVariable> transitionBN = null;
 
@@ -108,6 +109,7 @@ public class GUI {
 		chckbxSaveToFile.setToolTipText("save the results to the output file \"transition.txt\"");
 		chckbxSaveToFile.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 13));
 		checkBox = new JCheckBox("");
+		chckbxTurboMode = new JCheckBox("turbo mode");
 		initialize();
 	}
 
@@ -273,12 +275,22 @@ public class GUI {
 					SaveToFile out = new SaveToFile("transition.txt", chckbxSaveToFile.isSelected());
 					
 					if(LL == true) {
-						out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue(), chckbxSaveToFile.isSelected());	
-						transitionBN = Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue(), out, chckbxSaveToFile.isSelected());			
+						if(chckbxTurboMode.isSelected()) {
+							out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue(), chckbxSaveToFile.isSelected());	
+							transitionBN = Main.buildDBN(textField_2.getText(), "FLL", (Integer)spinner.getValue(), out, chckbxSaveToFile.isSelected());
+						} else{
+							out.println("Parameters: " + textField_2.getText() + " LL " + (Integer)spinner.getValue(), chckbxSaveToFile.isSelected());	
+							transitionBN = Main.buildDBN(textField_2.getText(), "LL", (Integer)spinner.getValue(), out, chckbxSaveToFile.isSelected());
+						}
 					}
 					else if(MDL == true) {
-						out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue(), chckbxSaveToFile.isSelected());
-						transitionBN = Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue(), out, chckbxSaveToFile.isSelected());	
+						if(chckbxTurboMode.isSelected()) {
+							out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue(), chckbxSaveToFile.isSelected());
+							transitionBN = Main.buildDBN(textField_2.getText(), "FMDL", (Integer)spinner.getValue(), out, chckbxSaveToFile.isSelected());
+						} else {
+							out.println("Parameters: " + textField_2.getText() + " MDL " + (Integer)spinner.getValue(), chckbxSaveToFile.isSelected());
+							transitionBN = Main.buildDBN(textField_2.getText(), "MDL", (Integer)spinner.getValue(), out, chckbxSaveToFile.isSelected());
+						}	
 					}
 					if ("enable".equals(e.getActionCommand())) {
 						btnStart.setEnabled(true);
@@ -356,6 +368,13 @@ public class GUI {
 		checkBox.setFocusable(false);
 		checkBox.setBounds(29, 315, 97, 23);
 		frame.getContentPane().add(checkBox);
+		
+		
+		chckbxTurboMode.setToolTipText("lots of memory used, might crash");
+		chckbxTurboMode.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		chckbxTurboMode.setOpaque(false);
+		chckbxTurboMode.setBounds(253, 146, 97, 23);
+		frame.getContentPane().add(chckbxTurboMode);
 		
 		JLabel lblNewLabel = new JLabel("New label");
 		lblNewLabel.setIcon(new ImageIcon(GUI.class.getResource("/userinterface/gui.png")));
