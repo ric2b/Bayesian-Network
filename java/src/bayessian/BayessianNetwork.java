@@ -26,6 +26,17 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	protected int varCount = 0; 
 	protected static int parentCount = 3;
 	
+	/**
+	 * Builds a Bayessian Network for given random vector and the repective dataset. To build the 
+	 * Bayessian Network first it builds a graph of the variables dependencies. It uses the 
+	 * Greedy Hill-Climbing Algorithm with the given score function and stop criterion, to build the graph.
+	 * After building the graph, is computed an estimate table for each random variable. 
+	 * @param vars		random vector with all the random variables
+	 * @param dataset	dataset used to build the bayessian network
+	 * @param score		score function used in the Greedy Hill-Climbing Algorithm
+	 * @param varCount	count of the random variables
+	 * @param criterion stopping criterion used in the Greedy Hill-Climbing Algorithm
+	 */
 	public BayessianNetwork(RandomVariable[] vars, Dataset dataset, Score score, int varCount, StopCriterion criterion) {
 		this.varCount = varCount;
 		this.vars = Arrays.copyOf(vars, vars.length);
@@ -46,6 +57,13 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		fillEstimateTable(dataset);
 	}
 	
+	/**
+	 * Executes the Greedy Hill-Climbing Algorithm using a given dataset, score and stopping criterion
+	 * on the bayessian network object.
+	 * @param dataset	dataset used to compute the score of the graph
+	 * @param score		score function used
+	 * @param criterion	stopping criterion used
+	 */
 	protected void greedyHillClimbingAlgorithm(Dataset dataset, Score score, StopCriterion criterion) {
 		
 		// operação sobre o grafo actual que resultou no grafo com melhor score
@@ -128,6 +146,14 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		} while(!criterion.toStop(this, randomBestScore, operation));	
 	}
 	
+	/**
+	 * Adds an association between two random variables of the bayessian network's graph.
+	 * This method should be overriden by a sub-class in order to define the sub-class association
+	 * criterion.
+	 * @param srcIndex	index of the source random variable
+	 * @param destIndex	index of the destination random variable
+	 * @return	true if the association can be done or false otherwise
+	 */
 	protected boolean addAssociation(int srcIndex, int destIndex) {
 		
 		if(graph.getParents(vars[destIndex]).size() >= BayessianNetwork.parentCount) {
@@ -138,6 +164,14 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		return graph.addEdge(vars[srcIndex], vars[destIndex]);
 	}
 	
+	/**
+	 * Flips a current association between two random variables of the bayessian network's graph.
+	 * This method should be overriden by a sub-class in order to define the sub-class association
+	 * criterion.
+	 * @param srcIndex	index of the source random variable of the original association
+	 * @param destIndex	index of the destination random variable of the original association
+	 * @return	true if the inverse association can be done or false otherwise
+	 */
 	protected boolean flipAssociation(int srcIndex, int destIndex) {
 		
 		if(graph.getParents(vars[srcIndex]).size() == BayessianNetwork.parentCount) {	// variavel ja tem 3 pais
@@ -148,29 +182,61 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	}
 	
 	/**
-	 * Retorna um objecto do tipo RandomVariable da variavel aleatoria actual do iterador.
-	 * @return variavel aleatoria actual
+	 * Fills all the estimate tables from a given dataset of each random variable after 
+	 * the graph is built. 
+	 * @param index	position of the random variable
+	 */
+	protected void fillEstimateTable(Dataset dataset) {
+		for(int i = 0; i < vars.length; i++) { //iterar sobre as RVars
+			EstimateTable estimate;
+			estimate = new EstimateTable(getParentConfigurationCount(i), getRange(i)); //criar estimate table para cada RVar	
+			
+			for(int j = 0; j < getParentConfigurationCount(i); j++) { //iterar sobre as configura�oes dos pais da RVar
+				int Nij = InstanceCounting.getNij(i, j, this, dataset);
+				
+				for(int k = 0; k < getRange(i); k++) { //iterar sobre o range da RVar	
+					int Nijk = InstanceCounting.getNijk(i, j, k, this, dataset);
+					double estimateValue = (Nijk + 0.5)/(Nij + getRange(i)*0.5);
+					estimate.setEstimate(j, k, estimateValue);
+				}			
+			}			
+			estimates[i] = estimate;
+		}
+	}
+	
+	/**
+	 * Returns the random variable with the specified index in the network.
+	 * @param index	position of the random variable
+	 * @return random variable with the specified index in the network
 	 */
 	public RandomVariable getVariable(int index) {
 		return vars[index];
 	}	
 	
+	/**
+	 * Returns the estimate table of the random variable with the specified index in the network. 
+	 * @param index	position of the random variable
+	 * @return	the estimate table of the random variable with the specified index in the network.
+	 */
 	public EstimateTable getEstimate(int index) {
 		return estimates[index];
 	}
 	
 	/**
-	 * Retorna o range da variavel aleatoria actual.
-	 * @return range da variavel aleatoria actual
+	 * Returns the range of the random variable with the specified index in the network. 
+	 * @param index	position of the random variable
+	 * @return range of the repective random variable
 	 */
 	public int getRange(int index) {
 		return vars[index].getRange();
 	}
 	
 	/**
-	 * Retorna um array com os indices dos pais da variável aleatória actual do iterador.
-	 * @param index
-	 * @return array com os indices dos pais
+	 * Returns all the parents of the random variable with the specified index in the network.
+	 * The ordering of the parents is undefined. In case the variable doesn't have parents an
+	 * empty array is returned. 
+	 * @param index	position of the random variable
+	 * @return array of parents of the repective random variable
 	 */
 	public int[] getParents(int index) {
 		//obter collection dada pelo grafo
@@ -189,9 +255,11 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	}
 	
 	/**
-	 * Retorna o número de configurações dos pais da variável aleatória dada.
-	 * @return número de configurações dos pais
-	 */	
+	 * Returns the parent configuration count of the random variable with the specified 
+	 * index in the network. In case the variable doesn't have parents the count is 1. 
+	 * @param index	position of the random variable
+	 * @return the parent configuration count of the repective random variable
+	 */
 	public int getParentConfigurationCount(int index) {
 		Collection<RandomVariable> parents = graph.getParents(vars[index]);
 		if(parents.isEmpty()) {
@@ -205,29 +273,13 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		}		
 		return count; 
 	}
-	
-	protected void fillEstimateTable(Dataset dataset) {
-		for(int i = 0; i < vars.length; i++) { //iterar sobre as RVars
-			EstimateTable estimate;
-			estimate = new EstimateTable(getParentConfigurationCount(i), getRange(i)); //criar estimate table para cada RVar	
-			
-			for(int j = 0; j < getParentConfigurationCount(i); j++) { //iterar sobre as configura�oes dos pais da RVar
-				int Nij = InstanceCounting.getNij(i, j, this, dataset);
-				
-				for(int k = 0; k < getRange(i); k++) { //iterar sobre o range da RVar	
-					int Nijk = InstanceCounting.getNijk(i, j, k, this, dataset);
-					double estimateValue = (Nijk + 0.5)/(Nij + getRange(i)*0.5);
-					estimate.setEstimate(j, k, estimateValue);
-				}			
-			}			
-			estimates[i] = estimate;
-		}
-	}
 
 	/**
-	 * Retorna o número de configurações dos pais da variável aleatória dada.
-	 * @return número de configurações dos pais
-	 */	
+	 * Returns the parent ranges of the random variable with the specified index in the network. 
+	 * In case the variable doesn't have parents an empty array is returned.  
+	 * @param index	position of the random variable
+	 * @return array of the parent ranges count of the repective random variable
+	 */
 	public int[] getParentRanges(int index) {
 		Collection<RandomVariable> parents = graph.getParents(vars[index]);
 		int[] parentRanges = new int[parents.size()];
@@ -242,17 +294,16 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	}
 	
 	/**
-	 * Iterador que pode ser usado para iterar por todas as variáveis aleatórias da BN.
-	 * Este iterador utiliza apenas os indices das variáveis tendo em conta o vector aleatório.
-	 * O objectivo deste iterador é ser usado por métodos deste package para iterar pelas vários
-	 * indices que correspondem às variáveis aleatórias armazenadas em vars.
+	 * Iterator used to iterate through all random variables in the network.
 	 */
-	protected class BayessianIterator<E extends Number> implements Iterator<Integer> {
+	protected class BayessianIterator implements Iterator<Integer> {
 
 		protected int currentIndex = 0;		// indice da variável aleatória actual
 		
 		/**
-		 * Testa se ainda existem variáveis para iterar por neste iterador.
+		 * Returns true if the iteration has more random variables. (In other words, returns true 
+		 * if next() would return an element rather than throwing an exception.)
+		 * @return	true if the iteration has more elements
 		 */
 		@Override
 		public boolean hasNext() {
@@ -260,8 +311,9 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		}
 		
 		/**
-		 * Retorna o indice da variavel aleatória actual do iterador e incrementa a posição actual
-		 * do iterador para a próxima variável aleatória.
+		 * Returns the next index of the random variables.
+		 * @return next next index of the random variables
+		 * @throws NoSuchElementException	when there is no more indexes in the iteration 
 		 */
 		@Override
 		public Integer next() {
@@ -274,7 +326,7 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		}
 
 		/**
-		 * Não implementada!!
+		 * Not implemented
 		 */
 		@Override
 		public void remove() {
@@ -284,13 +336,16 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 	}
 	
 	/**
-	 * Devolve um BayessianIterator que permite iterar por todas as variáveis aleatórias da BN pelo seus indices.
-	 * @return iterador por indices das variaveis da BN
+	 * Returns an iterator over the indexes of all the random variables in the network.
+	 * @return an random variable index iterator
 	 */
-	public BayessianIterator<Integer> iterator() {
-		return new BayessianIterator<Integer>();
+	public Iterator<Integer> iterator() {
+		return new BayessianIterator();
 	}
 	
+	/**
+	 * Returns a string with the Bayessian Network format 
+	 */
 	public String toString() {
 		String string = "=== Structure connectivity\n";
 		
@@ -308,6 +363,10 @@ public class BayessianNetwork<T extends RandomVariable> implements Iterable<Inte
 		return string;
 	}
 	
+	/**
+	 * Returns the total number of random variables in the bayssian network
+	 * @return total number of random variables in the bayssian network
+	 */
 	public int size() {
 		return vars.length;
 	}
